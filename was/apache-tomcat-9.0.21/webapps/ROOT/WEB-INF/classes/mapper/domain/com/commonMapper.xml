@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwl.app.domain.com.dao.CommonDAO">
+
+	<select id="getHospital" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.getHospital
+			 * Description : 병원 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   HOSPITAL_CODE
+				 , HOSPITAL_NAME  
+			  FROM HOSPITAL_INFO
+			 WHERE USE_YN = 'Y' 		
+			 ORDER BY HOSPITAL_CODE
+		]]>
+	</select>
+	
+	<select id="getOffice" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getOffice
+			 * Description : 병원 지점 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   OFFICE_CODE
+				 , HOSPITAL_CODE
+				 , OFFICE_LOCATION	 
+			  FROM HOSPITAL_OFFICE_INFO
+			 WHERE HOSPITAL_CODE = #{hospitalCode}
+			   AND USE_YN		 = 'Y'
+		]]>
+		<if test="view == 'join'">
+			AND OFFICE_CODE NOT IN ('CL998', 'CL999')			
+		</if>
+		<![CDATA[			   
+			 ORDER BY OFFICE_LOCATION
+		]]>
+	</select>
+
+	<select id="getCodeList" parameterType="camelHashMap" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.getCodeList
+			 * Description : 공통코드 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.11  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   COMMON_CODE AS CODE
+				 , COMMON_NAME AS NAME
+			  FROM 
+				   COMMON_CODE
+			 WHERE GROUP_CODE = #{code}
+			 ORDER BY SORT_ORDER
+		]]>
+	</select>
+	
+	<select id="getOfficeSite" parameterType="com.wwl.app.domain.com.dto.SessionDTO" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.getOfficeSite
+			 * Description : 홈페이지 주소 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+			 * 2022.11.11  이승현      REST 서버 호출시 사용되는 액세스 토큰 값 추가
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   OFFICE_SITE
+				 , M_APP_TOKEN AS ACCESS_TOKEN
+			  FROM HOSPITAL_OFFICE_INFO
+			 WHERE OFFICE_CODE = #{officeCode}
+		]]>
+	</select>
+	
+	<select id="getOfficeInfo" parameterType="camelHashMap" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.getOfficeInfo
+			 * Description : 지점 정보 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.27  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 			
+				   HOI.HOSPITAL_CODE
+		         , HI.HOSPITAL_NAME
+				 , HOI.OFFICE_CODE
+				 , HOI.OFFICE_LOCATION
+				 , HB.OFFICE_PHONE
+			  FROM HOSPITAL_OFFICE_INFO HOI
+                   INNER JOIN HOSPITAL_INFO HI
+				      ON HOI.HOSPITAL_CODE = HI.HOSPITAL_CODE				   
+				    LEFT OUTER JOIN HOME_BASIC HB
+                      ON HOI.OFFICE_CODE   = HB.OFFICE_CODE
+			 WHERE HOI.OFFICE_CODE = #{officeCode}
+		]]>
+	</select>
+	
+	<select id="getLogSysData" parameterType="camelHashMap" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.getLogSysData
+			 * Description : 데이터 로그 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.23  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   SUA.LOG_SEQ
+				 , SUA.CONFIRM_YN
+				 , X.HOSPITAL_NAME
+			     , X.MENU_NAME
+			     , X.WORK_TYPE
+			     , X.SYS_NAME
+			     , X.UPDATE_DATE
+			  FROM SYS_USER_ALARM SUA			  	
+				   INNER JOIN (
+						SELECT 
+							   LSD.SEQ
+                             , LSD.OFFICE_CODE
+						     , CONCAT(X.HOSPITAL_NAME, '(', X.OFFICE_LOCATION, ')') AS HOSPITAL_NAME
+						     , MI.MENU_NAME
+						     , CASE WHEN LSD.TYPE = 'U' THEN '저장'
+									ELSE '삭제'
+								END WORK_TYPE
+						     , SUI.SYS_NAME
+						     , CONCAT(REPLACE(
+									REPLACE(
+										DATE_FORMAT(LSD.UPDATE_DATE,'%Y년 %m월 %d일 %p %I:%i')
+										,'AM','오전')
+									,'PM','오후')) UPDATE_DATE
+						  FROM LOG_SYS_DATA LSD
+							   INNER JOIN (SELECT 
+							 				     HI.HOSPITAL_CODE
+											   , HI.HOSPITAL_NAME
+											   , HOI.OFFICE_CODE
+											   , HOI.OFFICE_LOCATION
+										    FROM HOSPITAL_INFO HI
+											 	 INNER JOIN HOSPITAL_OFFICE_INFO HOI
+													ON HI.HOSPITAL_CODE = HOI.HOSPITAL_CODE
+							   ) X	
+								ON LSD.OFFICE_CODE = X.OFFICE_CODE
+							 INNER JOIN MENU_INFO MI
+								ON LSD.MENU_CODE   = MI.MENU_CODE
+							 INNER JOIN SYS_USER_INFO SUI
+						        ON LSD.OFFICE_CODE = SUI.OFFICE_CODE
+						       AND LSD.UPDATE_USER = SUI.SYS_USER_ID			
+			      ) X ON SUA.OFFICE_CODE = X.OFFICE_CODE
+			         AND SUA.LOG_SEQ 	 = X.SEQ
+			 WHERE SUA.SYS_USER_ID  = #{sysUserId}	
+			   AND CONFIRM_YN = 'N'		     
+		]]>
+		<if test="roleCode != 'ROLE_WWL'">
+		      AND SUA.OFFICE_CODE = (SELECT OFFICE_CODE
+		       						   FROM SYS_USER_INFO
+		       					  	  WHERE SYS_USER_ID = #{sysUserId})
+		</if>			   			
+		 ORDER BY SUA.LOG_SEQ DESC
+	</select>
+	
+	<select id="getMaxLogSeq" parameterType="camelHashMap" resultType="int">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.getMaxLogSeq
+			 * Description : 데이터 로그 MAX값 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.23  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT IFNULL(MAX(SEQ),0) + 1
+			  FROM LOG_SYS_DATA
+			 WHERE OFFICE_CODE = #{officeCode}
+		]]>
+	</select>
+	
+	<insert id="insertLogSysData" parameterType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.insertLogSysData
+			 * Description : 데이터 로그 생성
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.23  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO LOG_SYS_DATA (
+				  OFFICE_CODE
+				, SEQ 
+				, MENU_CODE
+				, TYPE				
+				, UPDATE_USER
+				, UPDATE_DATE
+			) VALUES (
+				  #{officeCode}
+				, #{seq}
+				, #{menuCode}
+				, #{type}				
+				, #{updateUser}
+				, NOW()
+			);
+			
+			INSERT INTO SYS_USER_ALARM
+			SELECT
+				  OFFICE_CODE
+			    , SYS_USER_ID
+			    , #{seq} SEQ
+			    , 'N' CONFIRM_YN
+			  FROM SYS_USER_INFO
+			 WHERE OFFICE_CODE   = #{officeCode};
+		]]>
+	</insert>	
+	
+	<update id="updateLogSysData" parameterType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.updateLogSysData
+			 * Description : 데이터 로그 확인 처리
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.23  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_ALARM
+			   SET CONFIRM_YN = 'Y'
+			 WHERE SYS_USER_ID   = #{sysUserId}
+			   AND CONFIRM_YN    = 'N'
+		]]>
+		<if test="roleCode != 'ROLE_WWL'">
+		       AND OFFICE_CODE   = #{officeCode}
+		</if>	   			   			   	
+	</update>
+	
+	<insert id="insertLogSysContent" parameterType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.insertLogSysContent
+			 * Description : 데이터 로그 생성
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.13  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO LOG_SYS_DATA (
+				  OFFICE_CODE
+				, SEQ 
+				, MENU_CODE
+				, TYPE				
+				, CONTENT
+				, UPDATE_USER
+				, UPDATE_DATE
+			) VALUES (
+				  #{officeCode}
+				, (
+					SELECT IFNULL(MAX(SEQ),0) + 1
+					  FROM LOG_SYS_DATA A
+					 WHERE OFFICE_CODE = #{officeCode}
+				  )
+				, #{menuCode}
+				, #{type}			
+				, #{content}	
+				, #{updateUser}
+				, NOW()
+			)
+		]]>
+	</insert>
+	
+	<insert id="insertLogSms" parameterType="hashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.insertLogSms
+			 * Description : 문자 로그 기록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.27  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO LOG_SMS_TALK (			  
+				  OFFICE_CODE
+				, GUBUN
+				, MOBILE
+				, AUTH_NUMBER
+				, MSG
+				, SEND_TYPE
+				, SEND_DATE
+				, CREATE_USER
+			) VALUES (
+			      #{officeCode}
+				, 'S'
+				, #{mobile}
+				, COALESCE(#{authNumber},'')
+				, #{msg}
+				, 'A'
+				, NOW()
+				, #{createUser}
+			)
+		]]>
+	</insert>
+	
+	<insert id="insertLogAlimtalk" parameterType="hashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.insertLogAlimtalk
+			 * Description : 알림톡 로그 기록(발송실패시만 기록)
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.21  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO LOG_SMS_TALK (			  
+				  OFFICE_CODE
+				, GUBUN
+				, MOBILE
+				, AUTH_NUMBER
+				, MSG
+				, SEND_TYPE
+				, SEND_DATE
+				, CREATE_USER
+			) VALUES (
+			      #{officeCode}
+				, 'T'
+				, #{mobile}
+				, ''
+				, #{message}
+				, 'A'
+				, NOW()
+				, #{createUser}
+			)
+		]]>
+	</insert>
+	
+	<insert id="insertLogUploadFile" parameterType="hashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.insertLogUploadFile
+			 * Description : 파일 업로드 기록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.09.13  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO LOG_UPLOAD_FILE (
+				  OFFICE_CODE	
+				, SEQ	
+				, ORIGIN_FILENAME	
+				, ENCRYPT_FILENAME	
+				, REMARK	
+				, UPDATE_USER	
+				, UPDATE_DATE				
+			) VALUES (
+				  #{officeCode}
+				, (SELECT IFNULL(MAX(SEQ),0) + 1
+				     FROM LOG_UPLOAD_FILE A
+				    WHERE OFFICE_CODE = #{officeCode})			      
+				, #{originFilename}
+				, #{encryptFilename}	
+				, #{remark}
+				, #{updateUser}	
+				, NOW()
+			)		
+		]]>
+	</insert>
+	
+	<select id="getUserPushUsed" parameterType="hashMap" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : com.getUserPushUsed
+			 * Description : 푸쉬 알림 서비스 이용 여부
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.14  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   PUSH_TOKEN
+				 , PUSH_RESERVE_YN				 
+			  FROM USER_INFO
+			 WHERE OFFICE_CODE = #{officeCode}  
+			   AND USER_ID	   = #{userId}			 
+		]]>	
+	</select>
+	
+	<select id="getAuthNumber" parameterType="hashMap" resultType="String">
+		<![CDATA[
+			/*
+			 * SQL ID      : common.getAuthNumber
+			 * Description : 인증번호 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.09.26  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT AUTH_NUMBER
+			  FROM LOG_SMS_TALK
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND GUBUN  	     = 'S'
+			   AND MOBILE 	     = #{mobile}
+			   AND SEND_TYPE	 = 'A'
+			   AND SEND_DATE     = (SELECT MAX(SEND_DATE) 
+			   						  FROM LOG_SMS_TALK A 
+			   						 WHERE OFFICE_CODE   = #{officeCode} 
+			   						   AND GUBUN  		 = 'S' 
+			   						   AND MOBILE 		 = #{mobile}
+			   						   AND SEND_TYPE	 = 'A') 		
+		]]>
+	</select>
+	
+	<update id="confirmSmsTalk" parameterType="hashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : common.confirmSmsTalk
+			 * Description : SMS 본인인증
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.03  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE LOG_SMS_TALK
+			   SET CONFIRM	   = 'Y'
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND GUBUN  	     = #{gubun}
+			   AND MOBILE 	     = #{mobile}
+			   AND AUTH_NUMBER   = #{authNumber}
+			   AND SEND_TYPE	 = 'A' 
+		]]>
+	</update>
+	
+	<select id="getReserveMstName" parameterType="com.wwl.app.domain.res.dto.ResReserveDTO" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : common.getReserveMstName
+			 * Description : 예약 상품 대분류 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.12.20  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   PSM.PRD_MST_CODE 
+				 , PSM.PRD_MST_NAME 
+			  FROM (
+					-- 예약 상품
+					SELECT 
+						   X.OFFICE_CODE
+						 , X.UPDATE_SEQ
+						 , X.PRD_ITEM_CODE
+					  FROM (
+							SELECT 
+								   P1.OFFICE_CODE
+								 , P1.UPDATE_SEQ
+								 , P1.PRD_ITEM_CODE
+							  FROM USER_RESERVE_ITEM R1
+							       INNER JOIN ALL_PRODUCT_INFO P1
+								      ON R1.OFFICE_CODE    = P1.OFFICE_CODE
+							         AND R1.RES_GROUP_CODE = P1.ITEM_CODE
+							 WHERE R1.OFFICE_CODE = #{officeCode}
+							   AND R1.RES_NO      = #{resNo}
+							   AND R1.ITEM_TYPE   = 'N'
+							 UNION ALL
+							SELECT 
+								   E1.OFFICE_CODE 
+								 , E1.EVENT_UPDATE_SEQ AS UPDATE_SEQ
+								 , E1.PRD_ITEM_CODE 
+							  FROM USER_RESERVE_ITEM R1
+							       INNER JOIN ALL_EVENT_PRODUCT_INFO P1
+								      ON R1.OFFICE_CODE    = P1.OFFICE_CODE
+							         AND R1.RES_GROUP_CODE = P1.ITEM_CODE
+							       INNER JOIN EVENT_PRODUCT_SURGICAL_ITEM E1
+									  ON P1.OFFICE_CODE   	   = E1.OFFICE_CODE
+									 AND P1.EVENT_UPDATE_SEQ   = E1.EVENT_UPDATE_SEQ
+									 AND P1.EVENT_SEQ          = E1.EVENT_SEQ
+									 AND P1.EVENT_SUB_SEQ      = E1.EVENT_SUB_SEQ
+									 AND P1.EVENT_PRODUCT_CODE = E1.EVENT_PRODUCT_CODE
+									 AND E1.EVENT_DETAIL_SEQ   = 1
+							 WHERE R1.OFFICE_CODE = #{officeCode}
+							   AND R1.RES_NO      = #{resNo}
+							   AND R1.ITEM_TYPE   <> 'N'
+							) X
+					UNION ALL
+					-- 남은시술권
+					SELECT 
+						   P2.OFFICE_CODE 
+						 , P2.UPDATE_SEQ 
+						 , P2.PRD_ITEM_CODE
+					  FROM USER_RESERVE_PRODUCT P1
+					  	   INNER JOIN USER_PRODUCT_ITEM P2
+					  	      ON P1.OFFICE_CODE    = P2.OFFICE_CODE 
+					  	     AND P1.PRD_RES_NO     = P2.RES_NO  
+					  	     AND P1.RES_GROUP_CODE = P2.RES_GROUP_CODE
+							 AND P1.RES_GROUP_SEQ  = P2.RES_GROUP_SEQ
+					  	     AND P1.ITEM_SEQ 	   = P2.ITEM_SEQ 
+					 WHERE P1.OFFICE_CODE = #{officeCode}
+					   AND P1.RES_NO	  = #{resNo}
+					 ) Y 
+					 INNER JOIN PRODUCT_SURGICAL_ITEM PSI
+					    ON Y.OFFICE_CODE    = PSI.OFFICE_CODE 
+					   AND Y.UPDATE_SEQ	    = PSI.UPDATE_SEQ 
+					   AND Y.PRD_ITEM_CODE  = PSI.PRD_ITEM_CODE 
+					 INNER JOIN PRODUCT_SURGICAL_SUB PSS
+			 		    ON PSI.OFFICE_CODE  = PSS.OFFICE_CODE 
+			 		   AND PSI.UPDATE_SEQ	= PSS.UPDATE_SEQ 
+					   AND PSI.PRD_SUB_CODE = PSS.PRD_SUB_CODE 
+					 INNER JOIN PRODUCT_SURGICAL PS
+					    ON PSS.OFFICE_CODE  = PS.OFFICE_CODE 
+					   AND PSS.UPDATE_SEQ   = PS.UPDATE_SEQ 
+					   AND PSS.PRD_CODE     = PS.PRD_CODE 
+					 INNER JOIN PRODUCT_SURGICAL_MASTER PSM
+			 		    ON PS.OFFICE_CODE   = PSM.OFFICE_CODE 
+			 		   AND PS.PRD_MST_CODE  = PSM.PRD_MST_CODE  
+		]]>
+	</select>
+	
+</mapper>

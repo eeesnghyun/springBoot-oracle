@@ -1,0 +1,116 @@
+.sys006 {
+	margin:60px;
+}
+/* 탭 타이틀 */
+.tab-tit {
+    width: 100%;
+    border-bottom: 1px solid #aaaaaa50;
+}
+
+.tab-tit ul {
+    display: flex;
+    width: 600px;
+    height: 60px;
+    position: relative;
+}
+
+.tab-tit li {
+    border: solid 1px #aaaaaa50;
+    background-color: #f8f9fb;
+  	font-size: var(--font-size-regular2);
+  	font-weight: var(--font-weight-bold);
+    color: #494a58;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+    width: 300px;
+    border-bottom: none;
+    cursor: pointer;
+    position: absolute;
+    top: 0px;
+   	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tab-tit p.inquire-count{
+  	font-size: var(--font-size-regular2);
+  	font-weight: var(--font-weight-bold);
+	color: #ff5454;
+	margin-left: 2px;
+}
+
+.tab-tit li:first-child {
+    left: 0;
+    border-right: none;	
+}
+
+.tab-tit li:last-child {
+    right: 0;
+}
+
+.tab-tit li.active {
+    border-top: solid 4px #3b3e86;
+    background-color: #fff;
+  	font-size: var(--font-size-regular2);
+  	font-weight: var(--font-weight-bold);
+    color: #494a58;
+    height: 61px;
+}
+
+.tab-con{
+ 	width:100%;
+ 	margin-top:20px;
+}
+
+#grid2 {
+	display:none;
+}
+
+.btn-check {
+	width:82px;
+	height:32px;
+	border-radius:2px;
+	border:1px solid #ccc;
+	background-image: linear-gradient(to bottom, #fff, #fbfbfb);
+	font-size:var(--font-size-regular);
+	margin:auto;
+}
+.btn-check.active {
+	 background-image: linear-gradient(to bottom, #6a6ece, #383b82);
+	 color:#fff;
+}
+.btn-inqury-content {
+	width:120px;
+	height:32px;
+	background-color:#e8e9eb;
+	font-size: var(--font-size-regular);
+	border-radius:2px;
+	border: solid 1px #eee;
+	justify-content: center;
+    align-items: center;
+}
+.btn-inqury-content::before {
+	display:inline-block;
+	content:'';
+	width:11px;
+	height:11px;
+    background: url(/resources/images/sys/Icon_inqury_content.svg) no-repeat center center;
+    background-size: contain;
+    margin-right:6.5px;
+    margin-bottom:2px;
+}
+.content-box {
+	width:460px;
+	height:440px;
+	border-radius: 4px;
+ 	border: solid 1px #ccc;
+	font-size:var(--font-size-regular1);
+	padding: 12px 10px;
+}
+.tabulator .tabulator-header {
+	padding:0 !important;
+}
+.sys006 .tabulator-row {
+	padding: 8px 10px 8px 0px !important
+}

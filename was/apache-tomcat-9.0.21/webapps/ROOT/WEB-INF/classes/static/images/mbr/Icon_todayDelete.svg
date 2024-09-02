@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+  <g id="동그라미닫기" transform="translate(-1 -1)">
+    <rect id="사각형_1546" data-name="사각형 1546" width="18" height="18" rx="9" transform="translate(1 1)" fill="#333"/>
+    <path id="Icon_close" d="M3,3,0,6,3,3,0,0,3,3,6,0,3,3,6,6Z" transform="translate(6.931 7.228)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"/>
+  </g>
+</svg>

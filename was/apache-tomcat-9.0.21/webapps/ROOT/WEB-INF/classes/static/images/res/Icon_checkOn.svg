@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17.4" height="17.4" viewBox="0 0 17.4 17.4">
+  <g id="CheckOn" transform="translate(0.7 0.7)">
+    <rect id="사각형_1513" data-name="사각형 1513" width="16" height="16" rx="1.5" transform="translate(0)" fill="#34353d" stroke="#34353d" stroke-width="1.4"/>
+    <path id="Icon_feather-check" data-name="Icon feather-check" d="M5.721,11.607a.484.484,0,0,1-.342-.142l-4.3-4.3a.65.65,0,0,1-.1-1,.711.711,0,0,1,1.047.1L5.721,8.735l8.238-7.26a.484.484,0,0,1,.684.684l-8.58,9.306A.484.484,0,0,1,5.721,11.607Z" transform="translate(0.596 0.673)" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+  </g>
+</svg>

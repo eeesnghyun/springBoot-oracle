@@ -1,0 +1,284 @@
+.col1 .tit-bar{
+	justify-content: space-between;
+}
+
+/* 자동 승인 시간 설정 */
+.set-auto{
+	display: flex;
+    align-items: center;
+}
+
+.auto-area{
+	display: flex;
+    align-items: center;
+    min-width: 220px;
+}
+
+.auto-area label{
+  	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-bold);
+	color: #111;
+	margin: 0 10px 0 40px;
+}
+
+.auto-area input{
+	background: none;
+}
+
+.auto-area input:checked + p{
+	color: #ff5f2d;
+}
+
+.auto-area > div{
+	display: flex;
+    align-items: center;
+}
+
+.auto-area > div > p{
+  	font-size: var(--font-size-regular2);
+  	font-weight: var(--font-weight-bold);
+  	color: #93989c;
+}
+
+button.btn-auto{
+    width: 200px;
+    height: 30px;
+    border-radius: 4px;
+    border: solid 1px #494a58;
+    background-color: #34353d;
+    color: #fff;
+  	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-bold);
+    padding: 0 7px;
+}
+
+button.btn-auto.ing{
+    border: solid 1px #ef8354;
+  	background-color: #ef8354;
+}
+
+button.btn-auto.not{
+    border: solid 1px #aaa;
+  	background-color: rgba(170, 170, 170, 0.2);
+  	color: #11111180;
+}
+
+/* 자동 승인 시간 설정 - 타임 테이블 */
+.time-con{
+    margin-bottom: 20px;
+}
+
+.time-con .btn{
+	display: flex;
+	margin: 10px 0;
+	justify-content: flex-end;
+}
+
+.time-con .btn button{
+	min-width: 80px;
+}
+
+.time-con ul.con{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.time-con ul.con p{
+  	font-size: var(--font-size-regular2);
+  	font-weight: var(--font-weight-regular);
+    color:#666;
+    width: 100%;
+    height: 40px;
+    box-shadow: 0 1px 2px 0 rgba(204, 204, 204, 0.5);
+    border: solid 1px #eee;
+    background-color: #fbfbfb;
+    text-align: center;
+    line-height: 39px;
+}
+
+.time-con ul.con li > ul{
+    border: solid 1px #eee;
+    background-color: #fdfdfd;
+    display: flex;
+    padding: 16px 0;
+    flex-direction: column;
+    min-height: 360px;
+    overflow-y: auto;
+}
+
+.time-con ul.con li > ul input + label{
+    width: 20px;
+    height: 20px;
+    margin-top: 4px;
+}
+
+.time-con ul.con-date > li{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.time-con ul.con-date > li:last-child{
+    margin-bottom: 0;
+}
+
+.time-con .time-table{
+    position: relative;
+    display: flex;
+}
+
+.time-con .time-table .txt{
+    display: flex;
+    width: 125px;
+    cursor: pointer;
+}
+
+.hover-area{
+    width: 125px;
+    position: absolute;
+    z-index: 9999;
+    display: flex;
+    flex-wrap: wrap;
+    top: 30px;
+    justify-content: space-between;
+    border: solid 1px #ccc;
+  	background-color: #fefefe;
+}
+
+.hover-area > div{
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.hover-area ul{
+    max-height: 180px;
+    width: 50%;
+    overflow-y: auto;
+}
+
+.hover-area ul li{
+  	font-size: var(--font-size-regular);
+  	font-weight: var(--font-weight-regular);
+    text-align: center;
+	line-height: 26px;
+    cursor: pointer;
+}
+
+.hover-area ul li.active , .hover-area ul li:hover{
+  	background-color: #f6f7fb;
+}
+
+.hover-area button{
+    width: 100%;
+    border-top: solid 1px #ccc;
+    background-color: #fefefe;
+  	font-size: var(--font-size-regular);
+  	font-weight: var(--font-weight-bold);
+    color: #4a4d9f;
+    line-height: 26px;
+}
+
+.time-con ul.con-date span{
+    width: 54px;
+    height: 30px;
+    border-radius: 2px;
+    border: solid 1px #ccc;
+    background-color: #fff;
+  	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-regular);
+    text-align: center;
+    line-height: 29px;
+}
+
+.time-con ul.con-date i{
+    color: #aaa;
+    margin: 5px 2px 0 2px;
+    display: block;
+  	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-regular);
+}
+
+.time-con ul.con-date button.del-btn{
+    width: 10px;
+    height: 10px;
+}
+
+/* 자동 승인 예외 설정 - 특정 소분류 예외 */
+.excep-con{
+    display: flex;
+    padding: 50px 30px;
+    gap: 140px;
+}
+
+.excep-con .left{
+    width: 555px;
+}
+
+.excep-con .left .add{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.excep-con .left .add > div:last-child{
+	display: flex;
+	height: 40px;
+    align-items: center;
+}
+
+.excep-con .left ul{
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px 8px;
+}
+
+/* 자동 승인 예외 설정 - 기타 예외 */
+.excep-con .right{
+    display: flex;
+}
+
+.check-area{
+	margin-left: 50px;
+}
+
+ul.add-list li:nth-of-type(3n){
+	margin-right: 0;
+}
+
+/* 팝업 - 시간 추가*/
+.popup .label{
+	display: flex;	
+   	align-items: center;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.popup .label input.rec-check+label{
+	width: 20px;
+	height: 20px;	
+	margin: 0;
+}
+
+.popup .label > div{
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.popup .label label:last-child{
+	font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+	cursor: pointer;
+	margin: 0 0 0 8px;
+	opacity: 0.4;
+}
+
+.popup .label input:checked + label + label{
+	opacity: 1;
+}

@@ -1,0 +1,17 @@
+<svg id="계정관리" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+  <rect id="사각형_1530" data-name="사각형 1530" width="36" height="36" fill="none"/>
+  <g id="그룹_2891" data-name="그룹 2891" transform="translate(7.445 9.984)">
+    <g id="그룹_2889" data-name="그룹 2889" transform="translate(0)">
+      <path id="패스_1655" data-name="패스 1655" d="M2.75,6.959A2.873,2.873,0,0,1,0,3.975V2.982A2.873,2.873,0,0,1,2.75,0h16.5A2.873,2.873,0,0,1,22,2.982v.993A2.874,2.874,0,0,1,19.25,6.959ZM.915,2.982v.993A1.919,1.919,0,0,0,2.75,5.964h16.5a1.917,1.917,0,0,0,1.832-1.989V2.982A1.917,1.917,0,0,0,19.25.995H2.75A1.919,1.919,0,0,0,.915,2.982Z" transform="translate(0)" fill="#111" stroke="#111" stroke-width="0.6"/>
+      <circle id="타원_565" data-name="타원 565" cx="1.5" cy="1.5" r="1.5" transform="translate(12.777 1.816)" fill="#111"/>
+      <circle id="타원_567" data-name="타원 567" cx="1.5" cy="1.5" r="1.5" transform="translate(2.777 1.969)" fill="#111"/>
+      <circle id="타원_566" data-name="타원 566" cx="1.5" cy="1.5" r="1.5" transform="translate(16.645 1.816)" fill="#111"/>
+    </g>
+    <g id="그룹_2894" data-name="그룹 2894" transform="translate(0 11)">
+      <path id="패스_1655-2" data-name="패스 1655" d="M2.75,6.959A2.873,2.873,0,0,1,0,3.975V2.982A2.873,2.873,0,0,1,2.75,0h16.5A2.873,2.873,0,0,1,22,2.982v.993A2.874,2.874,0,0,1,19.25,6.959ZM.915,2.982v.993A1.919,1.919,0,0,0,2.75,5.964h16.5a1.917,1.917,0,0,0,1.832-1.989V2.982A1.917,1.917,0,0,0,19.25.995H2.75A1.919,1.919,0,0,0,.915,2.982Z" transform="translate(0)" fill="#111" stroke="#111" stroke-width="0.6"/>
+      <circle id="타원_565-2" data-name="타원 565" cx="1.5" cy="1.5" r="1.5" transform="translate(12.777 1.816)" fill="#111"/>
+      <circle id="타원_567-2" data-name="타원 567" cx="1.5" cy="1.5" r="1.5" transform="translate(2.777 1.969)" fill="#111"/>
+      <circle id="타원_566-2" data-name="타원 566" cx="1.5" cy="1.5" r="1.5" transform="translate(16.645 1.816)" fill="#111"/>
+    </g>
+  </g>
+</svg>

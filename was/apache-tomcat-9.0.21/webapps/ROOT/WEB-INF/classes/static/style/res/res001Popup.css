@@ -1,0 +1,135 @@
+/* 팝업 - 특정일 설정 */
+.popup #popupInner{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.popup #popupInner > div{
+    padding: 17px 30px;
+}
+
+.popup .popup-inner{
+    padding: 0;
+}
+
+.popup .popup-con > div:not('popup-btn'){
+	margin-bottom: 15px;
+}
+
+.popup select{
+	padding: 3px 0 5px 10px;
+}
+
+/* 팝업 - 특정일 설정 (왼쪽 영역) */
+.popup .left{
+    width: 300px;
+    border-right: 1px solid #e3e7ee;
+}
+
+.popup .left .popup-tit{
+	min-height: 35px;
+}
+
+.popup .left .popup-con > div{
+    margin-bottom: 20px;
+}
+
+.popup .left .con.date{
+	width: 100%;
+}
+
+.popup .left ul{
+    width: 100%;
+    height: 545px;
+    overflow-y: auto;
+}
+
+/* 팝업 - 예약 시간 및 인원 설정 */
+.popup ul.table-tit li:first-child{
+	margin-right: 25px;
+}
+
+.popup button.copy-btn{
+    width: 110px;
+    min-height: 34px;
+}
+
+.popup .center select{
+	width: 100px;
+	height: 34px;
+}
+
+.popup .center{
+    width: 660px;
+    border-right: 1px solid #e3e7ee;
+}
+
+.center .table-pop{
+	position: relative;
+}
+
+.center .table-pop.active::after{
+	display: block;
+}
+
+.center .table-pop::after{
+	content: '';
+	display: none;
+	width: 100%;
+	height: 600px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: #fff;
+	opacity: 0.5;
+}
+
+.popup table td.time{
+    width: 114.5px;
+}
+
+.popup .center .popup-tit , .popup .right .popup-tit{
+    display: flex;
+	align-items: center;
+}
+
+.popup .center .btn-area{
+    display: flex;
+    gap: 10px;
+}
+
+.popup .center .btn-area .select-box{
+	margin-right: 0;
+}
+
+.popup ul.table-tit{
+    padding-left: 23px;
+}
+
+.popup .table-scroll{
+    overflow-y: auto;
+    height : 520px;
+}
+
+/* 팝업 - 소분류 인원 설정 */
+.popup .right{
+    width: 380px;
+}
+
+.popup .right .btn-area{
+	margin-right: 30px;
+}
+
+.popup ul.list{
+    height: 500px;
+    overflow-y: auto;
+}
+
+.popup .label-area label:first-child{
+    width: 155px;
+    text-align: left;
+}
+
+.popup p.name{
+	min-width: 145px;
+}

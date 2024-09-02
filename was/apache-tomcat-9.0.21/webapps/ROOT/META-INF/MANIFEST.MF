@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: WWL-LSH
+Build-Jdk: version 1.8.0_312
+Implementation-Title: admin
+Implementation-Version: 1.0
+Implementation-Vendor-Id: com.wwl.app
+Main-Class: ${start-class}
+

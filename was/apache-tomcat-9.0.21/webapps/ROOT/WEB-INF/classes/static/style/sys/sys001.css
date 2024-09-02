@@ -1,0 +1,193 @@
+.tit-con{
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgb(204 204 204 / 50%);
+    border: solid 1px #eee;
+    background-color: #fbfbfb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    margin: 0;
+}
+
+.con{
+    display: flex;
+    padding: 25px 60px 40px;
+}
+
+.con .col1{
+    width: 25%;
+    margin-right: 20px;
+    border-radius: 4px;
+}
+
+.col1.location{
+	opacity: 0.5;
+}
+
+.con .con2{
+    width: 50%;
+    border: 1px solid #000;
+}
+
+.con p{
+    font-size: var(--font-size-regular3);
+    font-weight: var(--font-weight-bold);
+}
+
+.con .list-con{
+    padding: 20px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+    border: solid 1px #eee;
+    background-color: #fdfdfd;
+    border-radius: 4px;
+    min-height: 600px;
+    position: relative;
+}
+
+.con ul{
+    width: 100%;
+    overflow-y: auto;
+    max-height: 540px;    
+}
+
+/* 병원정보 */
+.col2{
+    width: 50%;
+}
+
+.col2 form{
+	width:100%;	
+	display: flex;
+    flex-direction: column;
+}
+
+.col2 form input[type="text"]{
+	width: 100%;
+}
+
+.col2 form > div{
+	display: flex;
+    flex-direction: column;
+}
+
+label{
+  	font-size: var(--font-size-regular);
+  	font-weight: var(--font-weight-regular);
+    color: #666;
+    margin-bottom: 4px;
+}
+
+input:last-of-type{
+    margin-bottom: 0px;
+    max-width: 100%;
+}
+
+.col2 .btn-area{
+	display: flex;
+	gap: 5px;
+}
+
+.col2 input[type="text"]{
+    margin-bottom: 20px;
+}
+
+.col2 .inputs{
+    min-height: 600px;
+    border: solid 1px #eee;
+    background-color: #fdfdfd;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+/* 병원 정보 */
+.info-div > div{
+	display: flex;
+    flex-direction: column;
+}
+
+/* 계정 최대 허용 */
+.count-div{
+	display: flex;
+	gap: 20px;
+	margin-top: 16px;
+	padding-left: 9.5px;
+}
+
+.count-div label{
+	margin: 0;
+  	font-size: var(--font-size-regular1);
+}
+
+.count-div > div{
+	display: flex;
+    align-items: center;
+    gap: 10px;
+   	position: relative;
+}
+
+input[name="count"] , input[name="countPop"] { 
+	position: absolute; 
+	width: 1px; 
+	height: 1px; 
+	padding: 0; 
+	margin: -1px; 
+	overflow: hidden; 
+	clip: rect(0,0,0,0); 
+	border: 0; 
+}
+
+input[name="count"] + label , input[name="countPop"] + label { 
+	display: inline-block; 
+	position: relative; 
+	padding-left: 30px; 
+	cursor: pointer; 
+	-webkit-user-select: none; 
+	-moz-user-select: none; 
+	-ms-user-select: none; 
+}
+
+input[name="count"] + label:before , input[name="countPop"] + label:before {
+	content: ''; 
+	position: absolute; 
+    left: 0;
+    top: -1px;
+	width: 16px; 
+	height: 16px; 
+	text-align: center; 
+	background: #fafafa; 
+  	border: solid 1px rgba(17, 17, 17, 0.5);
+	border-radius: 100%; 
+}
+
+input[name="count"]:checked + label:after , input[name="countPop"]:checked + label:after { 
+	content: ''; 
+	position: absolute; 
+    top: 3px;
+    left: 4px;
+	width: 10px;
+	height: 10px;
+  	background-color: #000;
+	border-radius: 100%; 
+}
+
+/* 팝업 */
+.popup-con.office input{
+    margin-bottom: 20px;
+}
+
+.popup-con.office .inputs input:last-child{
+	margin: 0;
+}
+
+.popup-inner .popup-con.hospital input{
+    margin-bottom: 10px;
+}
+
+/* 키관리 */
+#frm2 .popup-con.key > div{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <g id="helpIcon" transform="translate(-927.383 -196.383)">
+    <circle id="타원_550" data-name="타원 550" cx="10" cy="10" r="10" transform="translate(927.383 196.383)" fill="#666"/>
+    <path id="패스_1311" data-name="패스 1311" d="M-3.288-41.184s.231-.383.462-.383.462.383.462.383.645,6.256.49,6.842-.453.673-.929.673-.768,0-.976-.673S-3.288-41.184-3.288-41.184Zm.462-4.486a1.03,1.03,0,0,1,1,.977.982.982,0,0,1-1,.943.981.981,0,0,1-1-.943A1.02,1.02,0,0,1-2.825-45.669Z" transform="translate(940.209 246.184)" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.4"/>
+  </g>
+</svg>

@@ -1,0 +1,325 @@
+.contents{
+    padding-bottom: 100px;
+}
+
+.con-area{
+    margin-top: 80px;
+    padding-bottom: 80px;
+    border-bottom: 2px solid #f8f9fb;
+}
+
+.con-area:last-of-type{
+    border-bottom: none;
+}
+
+h2.txt{
+    font-size: 36px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 3.5px;
+    margin-right: 10px;
+}
+
+h3.txt {
+    font-size: 24px;
+    font-weight: var(--font-weight-bold);
+    margin-top: 2px;
+}
+
+p.txt{
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-bold);
+    width: 100%;
+    margin-top: 5px;
+}
+
+span.txt{
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.25;
+}
+
+input.h4{
+    min-width: 400px;
+    font-size: 32px;
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+    display: inherit;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    min-height: 50px;
+}
+
+input.span{
+    min-width: 800px;
+    font-size: var(--font-size-regular5);
+    text-align: center;
+    display: inherit;
+    margin: 0 auto;
+    min-height: 45px;
+}
+
+input.mid-txt{
+    max-width: 200px;
+    font-size: 24px;
+    font-weight: var(--font-weight-regular);
+    margin-bottom: 10px;
+    min-height: 50px;
+    text-align: center;
+    display: inherit;
+    margin: 0 auto; 
+}
+
+.file-upload{
+    border: solid 1px #eee;
+    background-color: #fcfdfe;
+}
+
+.file-upload input[type=file]{
+    background:none;
+    border:none;
+}
+
+/* .con-area > .btn button{
+    min-width: 80px;
+    min-height: 30px;
+    border-radius: 2px;
+    font-size: var(--font-size-regular);
+    font-weight: var(--font-weight-regular);
+	display: flex;
+    align-items: center;
+    justify-content: center;
+} */
+
+.profile , .all{
+    display: none;
+}
+
+.profile.active , .all.active{
+    display: block;
+    padding: 0 0 80px 0;
+}
+
+/* 의료진 프로필 */
+.profile .con-area{
+	border-bottom: 2px solid #f8f9fb;
+}
+
+.profile .con{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    max-width: 1150px;
+    margin: 0 auto;
+}
+
+.profile .img-area{
+    width: 600px;
+}
+
+.profile .img{
+    position: relative;
+    height: 620px;
+}
+
+.profile .sub-img{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    height: 200px;
+    margin-top: 8px;
+}
+
+.profile .sub-img > div{
+	position: relative;
+	height: 200px;
+}
+
+.profile .con li.btn-area{ /* 상단 버튼 모음 */
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.history-area{
+    margin-right: 45px;
+    width: 370px;
+}
+
+.history-area > .hospital{
+    border-radius: 50px;
+    background-color: rgba(224, 230, 230, 0.6);
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-bold);
+	width: fit-content;
+    height: 38px;
+    text-align: center;
+    line-height: 38px;
+    margin-bottom: 28.5px;
+    padding: 0 15px;
+}
+
+.profile .input{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 13.5px 35px;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.profile .input.hide{
+    justify-content: flex-start;
+}
+
+.input.hide input{
+	display: none;
+}
+
+input.name{
+    width: 200px;
+}
+
+input.position{
+    width: 160px;
+}
+
+input.desc{
+    width: 100%;
+    margin-top: 10px;
+}
+
+ul.history{
+    width: 100%;
+    margin-left: 13.5px;
+}
+
+ul.history li{
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+ul.history li::before{
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 8px;
+    background-color: #e0e6e6;
+}
+
+ul.history li span{
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-regular);
+    width: 310px;
+    display: inline-block;
+    margin: 0 8px 0 10px;
+}
+
+ul.history li .btn{
+    height: 24px;
+}
+
+ul.history li input.history-fin{
+	display: none;
+}
+
+ul.history input{
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 0;
+    width: 310px;
+    margin: 0 8px 0 10px;
+}
+
+ul.history input:focus{
+    border: none;
+    border-bottom: solid 2px #3b3e86;
+}
+
+.profile .add-person{
+    position: relative;
+    min-height: 400px;
+    border: solid 1px #ccc;
+    background-color: #fcfdfe;
+    max-width: 1150px;
+    margin: 80px auto;
+    cursor: pointer;
+}
+
+/* 의료진 전체 */
+.all .con{
+    display: grid;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 68.5px auto 80px ;
+    width: 100%;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 35px;
+    max-width:1150px;
+}
+
+.all .con li{
+    width: 260px;
+}
+
+.all .con li .input{
+    text-align: center;
+}
+
+input.doc-pos{
+    max-width: 160px;
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-regular);
+    color: #111;
+    text-align: center;
+    display: inherit;
+    margin: 0 auto; 
+    min-height: 35px;
+}
+
+input.doc-name{
+    text-align: center;
+    display: inherit;
+    margin: 0 auto; 
+    max-width: 160px;
+    font-size: 24px;
+    font-weight: var(--font-weight-bold);
+    color: #111;
+    margin-top: 10px;
+    height: 45px;
+}
+
+.all .con li.add-person{
+    min-height: 274px;
+    position: relative;
+    margin-top: 30px;
+    border: solid 1px #ccc;
+    background-color: #fcfdfe;
+    cursor: pointer;
+}
+
+.add-person::after{
+    content: '';
+    display: inline-block;
+    width: 90px;
+    height: 90px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: url(/resources/images/common/Icon_PlusDoc.svg) no-repeat center center;
+    background-size: contain;
+}
+
+.all .btn-area{
+	justify-content: flex-end;
+}
+
+.all .img{
+    position: relative;
+    width: 260px;
+    height: 280px;
+    margin: 4px 0 15px;
+}

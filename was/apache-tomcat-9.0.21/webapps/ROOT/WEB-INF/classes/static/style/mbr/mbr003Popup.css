@@ -1,0 +1,93 @@
+#popupInner{
+    flex-direction: column;
+}
+
+.popup-inner {
+	width:440px;
+	padding: 20px 30px;
+}
+
+.popup-con{
+	flex-direction: column;
+}
+
+.popup-con .tem-box{
+	margin-bottom:40px;
+}
+
+.tem-wrap {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 6px;
+}
+
+.tem-wrap .sms-tem {
+    width: 90px;
+    height: 30px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+    color: #999;
+    padding: 0 10px;
+    background-color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    line-height: 26px;
+}
+
+.tem-wrap .sms-tem:hover,
+.tem-wrap .sms-tem.active {
+    color: #4a4d9f;
+    border: 1px solid #4a4d9f;
+    background-color: #f8f9fb;
+}
+
+.tem-wrap .add-tem {
+    padding: 1px 0 4px;
+	font-size: 24px;
+    font-weight: var(--font-weight-bold);
+    line-height: 24px;
+    background-color: #ececec;
+}
+
+.wrap.tem {
+	display: flex;
+    justify-content: space-between;
+	margin-bottom: 6px;
+}
+
+.wrap.tem label{
+	margin-bottom: 0;
+}
+
+.wrap.tem button {
+	color:#555;
+	opacity:0.5;
+	font-size:13px;
+	background :none;
+}
+
+.wrap.tem button:before {
+	width:14px;
+	height:16px;
+	display:inline-block;
+	content:'';
+    background : url(/resources/images/mbr/Icontr.svg) no-repeat center center;
+    background-size: contain;
+    margin-right:5px;
+}
+
+.inputs.tem input {
+	margin-bottom: 8px;
+    font-weight: var(--font-weight-regular);
+}
+
+.inputs.tem textarea {
+	height:300px;
+}

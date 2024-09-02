@@ -1,0 +1,50 @@
+.col{
+    padding-top: 70px;
+    padding-bottom: 40px;
+}
+
+.col ul li{
+    border-bottom: solid 1px #e9e9e9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 10px 12px 30px;
+}
+
+.col ul li:last-child{
+    border-bottom: none;
+}
+
+.col ul li p{
+	font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.45;
+    display: inline-block;
+}
+
+.col span.recent-login{
+	font-size: var(--font-size-regular);
+    font-weight: var(--font-weight-regular);
+    color: #666;
+    margin-right: 48px;
+}
+
+/* 팝업 */
+.popup-inner input{
+    margin-bottom: 20px;
+}
+
+.popup-inner input:nth-last-child(-n+2){
+    margin-bottom: 0;
+}
+
+.popup-inner input:nth-last-child(2){
+    margin-bottom: 10px;
+}
+
+/* 그리드 */
+.tabulator-cell[tabulator-field="loginDate"]{
+	font-size: var(--font-size-regular);
+    font-weight: var(--font-weight-regular);
+    color: #666;
+}

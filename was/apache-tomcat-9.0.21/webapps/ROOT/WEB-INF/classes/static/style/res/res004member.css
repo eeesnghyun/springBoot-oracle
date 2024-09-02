@@ -1,0 +1,129 @@
+#userPhone::-webkit-outer-spin-button,
+#userPhone::-webkit-inner-spin-button{
+   -webkit-appearance: none;
+    margin: 0;
+}
+.popup-inner .mbr001member .popup-con{
+	display:flex;
+	flex-wrap:nowrap;
+}
+.mbr001member .popup-con label.need {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.mbr001member .popup-con .left {
+    width:auto;
+    margin-bottom:0;
+}
+.mbr001member .popup-con .right{
+	display:flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+	width:280px;
+}
+.mbr001member .popup-con .info-box {
+    width: 280px;
+    height: auto;
+    font-size:var(--font-size-regular1);
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.1);
+    margin-bottom:20px;
+}
+.mbr001member .popup-con .left .info-box{
+    margin-right: 30px;
+}
+.mbr001member .popup-con .left .info-box:last-of-type{
+    margin-bottom: 0;
+}
+.mbr001member .popup-con .info-box .item {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    flex-wrap: nowrap;
+    border-bottom: 1px solid #f1f1f1;
+    align-items: center;
+    font-size:var(--font-size-regular1);
+}
+.mbr001member .popup-con .info-box .item:last-of-type{
+    border-bottom: none;
+} 
+.mbr001member .popup-con .info-box .item .label {
+    width: 100px;
+    color:#666;
+    padding-left: 20px;
+    font-size:var(--font-size-regular);
+}
+
+/* input select */
+.mbr001member .popup-con .info-box .item input[type="text"],
+.mbr001member .popup-con .info-box .item input[type="number"] {
+	width:180px;
+    padding-left: 10px;
+    height: 100%;
+    border: none;
+    font-size:var(--font-size-regular1);
+    background-color: transparent;
+}
+.mbr001member .popup-con .info-box .item input[type="text"]:hover,
+.mbr001member .popup-con .info-box .item input[type="text"]:focus,
+.mbr001member .popup-con .info-box .item input[type="number"]:hover,
+.mbr001member .popup-con .info-box .item input[type="number"]:focus {
+	box-shadow:none;
+}
+.mbr001member .popup-con .info-box .item .select-box {
+	width:180px;
+	margin-right:0;
+}
+.mbr001member .popup-con .info-box .item select {
+	width:100%;
+	border:none;
+	font-size:var(--font-size-regular1);
+	background-color:transparent;
+}
+.mbr001member .popup-con .info-box .item select:hover {
+	box-shadow:none;
+}
+.mbr001member .popup-con .info-box .item input::placeholder{
+    font-size:var(--font-size-regular1);
+}
+
+.mbr001member .popup-con .info-box .user-memo {
+	width:100%;
+	height:80px;
+	border:none;
+	color:#666;
+	font-size:var(--font-size-regular1);
+}
+.mbr001member .popup-con .info-box textarea:focus,
+.mbr001member .popup-con .info-box textarea:hover{
+	box-shadow:none;
+}
+
+.left label {
+	margin-bottom:10px;
+}
+.mbr001member .need::before{
+	margin-right:0px;
+}
+/* 입력 불가 div*/
+.mbr001member .popup-con .info-box .item .text {
+    padding-left: 10px;
+}
+
+/* 수신 동의 toggle 영역 */
+.mbr001member .popup-con .info-box .item.push .label{
+  width: 150px;
+}
+.mbr001member .popup-con .info-box .item.push input {
+	width:auto;
+    margin-left: auto;
+    margin-right:20px;
+}
+.mbr001member .popup-con .info-box .item .cm-toggle {
+	margin-right:0;
+}
+/* 저장하기 버튼 영역 */
+.mbr001member .popup-btn {
+	margin-top:0;
+}

@@ -1,0 +1,90 @@
+input.h4{
+    min-width: 400px;
+    font-size: 32px;
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+    display: inherit;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    min-height: 50px;
+}
+
+input.span{
+    min-width: 800px;
+    font-size: var(--font-size-regular5);
+    font-weight: var(--font-weight-regular);
+    text-align: center;
+    display: inherit;
+    margin: 0 auto;
+    min-height: 45px;
+}
+
+input.p{
+    min-width: 600px;
+    font-size: 26px;
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 10px;
+    min-height: 50px;
+}
+
+input.p-small{
+    min-width: 600px;
+    font-size: var(--font-size-regular5);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 10px;
+}
+
+textarea.span{
+    min-width: 900px;
+    min-height: 130px;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+    text-align: left;
+    overflow: hidden;
+}
+
+textarea.span-small{
+    min-width: 900px;
+    min-height: 80px;
+    font-size: var(--font-size-regular3);
+    font-weight: var(--font-weight-regular);
+    overflow: hidden;
+}
+
+.col1:last-of-type .contents{
+    padding-top: 0;
+}
+
+.contents{
+    padding: 100px 0;
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.contents img{
+    max-width: 100%;
+    max-height: 100%;
+    vertical-align: middle;
+}
+
+.file-upload{
+    height: 280px;
+    background-color: #fcfdfe;
+}
+
+.col1 .txt{
+    padding: 0 30px;
+}
+
+.col1 div.txt{
+    margin-top: 100px;
+}
+
+.col1 li{
+    padding: 60px 0 60px 0px;
+    border-bottom: 1px solid #e0e6e6;
+}
+
+.col1 li:last-child{
+    border-bottom: none;
+}

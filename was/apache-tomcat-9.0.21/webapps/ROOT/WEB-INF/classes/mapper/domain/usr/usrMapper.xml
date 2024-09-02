@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwl.app.domain.usr.dao.UsrDAO">
+
+	<select id="getOfficeUserList" parameterType="hashMap" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : usr.getOfficeUserList
+			 * Description : 지점 사용 계정 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.10  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 				    
+				  SUI.SYS_USER_ID	-- 아이디
+				, SUI.SYS_NAME		-- 이름
+				, HOI.HOSPITAL_CODE -- 병원코드
+				, SUI.OFFICE_CODE	-- 지점코드
+				, FN_GET_HOSPITAL_NAME(SUI.OFFICE_CODE) AS OFFICE_LOCATION -- 병원위치 + 지점위치
+				, SUI.SYS_POSITION	-- 직책코드
+				, (SELECT COMMON_NAME 
+				     FROM COMMON_CODE 
+				    WHERE GROUP_CODE  = 'POS001' 
+				      AND COMMON_CODE = SUI.SYS_POSITION) POS_NAME	-- 직책명
+				, SUI.SYS_MOBILE	-- 휴대폰번호					
+                , (SELECT MAX(ACCESS_IP) FROM LOG_SYS_LOGIN A WHERE SYS_USER_ID = SUI.SYS_USER_ID) AS ACCESS_IP
+                , (SELECT MAX(BROWSER)   FROM LOG_SYS_LOGIN A WHERE SYS_USER_ID = SUI.SYS_USER_ID) AS BROWSER
+                , IFNULL((SELECT REPLACE(
+					REPLACE(
+						DATE_FORMAT(MAX(LOGIN_DATE),'%Y년 %m월 %d일 %p %I:%i')
+                    	,'AM','오전')
+			 		,'PM','오후') FROM LOG_SYS_LOGIN A WHERE SYS_USER_ID = SUI.SYS_USER_ID),'-') AS LOGIN_DATE
+			 	, IFNULL(REPLACE(
+					REPLACE(
+						DATE_FORMAT(SUI.BLOCK_DATE,'%Y년 %m월 %d일 %p %I:%i')
+                    	,'AM','오전')
+			 		,'PM','오후'),'-') BLOCK_DATE
+			 	, IFNULL(REPLACE(
+					REPLACE(
+						DATE_FORMAT(SUI.CREATE_DATE,'%Y년 %m월 %d일 %p %I:%i')
+                    	,'AM','오전')
+			 		,'PM','오후'),'-') CREATE_DATE
+				, (SELECT GROUP_CONCAT(MENU_CODE) MENU_CODE
+				    FROM SYS_MENU_AUTH
+                    WHERE SYS_USER_ID = SUI.SYS_USER_ID
+				    GROUP BY SYS_USER_ID) MENU_CODE    
+				, NOTICE_USER
+				, SUI.AUTH_CHECK  -- 2차인증사용여부
+			 FROM SYS_USER_INFO SUI
+				  INNER JOIN HOSPITAL_OFFICE_INFO HOI
+	 				 ON SUI.OFFICE_CODE = HOI.OFFICE_CODE
+		   WHERE SUI.ROLE_CODE <> 'ROLE_WWL'
+	         AND SUI.USE_YN = #{useYn}
+		]]>
+		<if test="hospitalCode != null and hospitalCode != ''">		     
+		     AND HOI.HOSPITAL_CODE = #{hospitalCode}
+		</if>
+		<if test="officeCode != null and officeCode != ''">	     
+		     AND SUI.OFFICE_CODE = #{officeCode}
+		</if>
+		<if test="user != null and user != ''">		     
+		     AND (SUI.SYS_USER_ID LIKE TRIM(CONCAT('%',#{user},'%'))
+		     		OR SUI.SYS_NAME LIKE TRIM(CONCAT('%',#{user},'%'))
+		     		OR SUI.SYS_MOBILE LIKE TRIM(CONCAT('%',#{user},'%')))
+		</if>
+			ORDER BY SUI.CREATE_DATE DESC
+	</select>
+	
+	<insert id="insertOfficeUser" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : usr.insertOfficeUser
+			 * Description : 지점 관리자 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.10  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO SYS_USER_INFO (
+				  SYS_USER_ID
+				, OFFICE_CODE
+				, SYS_USER_PW
+				, PW_SALT
+				, SYS_NAME
+				, SYS_MOBILE
+				, SYS_IMG
+				, SYS_POSITION
+				, ROLE_CODE
+				, USE_YN
+				, CREATE_DATE
+			) VALUES (
+				  #{sysUserId}
+				, #{officeCode}
+				, #{sysUserPw}
+				, #{pwSalt}
+				, #{sysName}
+				, #{sysMobile}
+				, ''			
+				, #{sysPosition}
+				, 'ROLE_ADMIN'
+				, 'P'
+				, NOW()
+			)
+		]]>	     
+	</insert>
+	
+	<insert id="insertMenuList" parameterType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : usr.insertMenuList
+			 * Description : 지점 관리자 메뉴 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.10  진가영     최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO SYS_MENU_AUTH (
+				  SYS_USER_ID
+				, MENU_CODE
+			) VALUES (
+				  #{sysUserId}
+				, #{menuCode}
+			)
+		]]>
+	</insert>
+	
+	<update id="updateBlockClear" parameterType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : usr.updateBlockClear
+			 * Description : 로그인 차단 해제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.14  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_INFO
+			   SET USE_YN = 'Y'
+			     , BLOCK_DATE = NULL
+			 WHERE SYS_USER_ID = #{sysUserId}
+		]]>
+	</update>
+	
+	<update id="updateOfficeUser" parameterType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : usr.updateOfficeUser
+			 * Description : 지점 관리자 수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.05.25  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_INFO 
+			   SET OFFICE_CODE  = IF(IFNULL(#{officeCode}, '') = '' , OFFICE_CODE, #{officeCode})
+				 , SYS_NAME   	= IF(IFNULL(#{sysName}, '') = ''    , SYS_NAME, #{sysName})
+				 , SYS_MOBILE   = IF(IFNULL(#{sysMobile}, '') = ''  , SYS_MOBILE, #{sysMobile})
+				 , SYS_POSITION = IF(IFNULL(#{sysPosition}, '') = '', SYS_POSITION, #{sysPosition})
+				 , SYS_USER_PW  = IF(IFNULL(#{sysUserPw}, '') = ''  , SYS_USER_PW, #{sysUserPw})
+				 , USE_YN       = IF(IFNULL(#{useYn}, '') = ''      , USE_YN, #{useYn})
+				 , SIGN_USER    = IF(IFNULL(#{signUser}, '') = ''   , SIGN_USER, #{signUser})
+				 , AUTH_CHECK   = IF(IFNULL(#{authCheck}, '') = ''  , AUTH_CHECK, #{authCheck})
+				 , PW_SALT   	= IF(IFNULL(#{pwSalt}	, '') = ''  , PW_SALT, #{pwSalt})
+				 , RESET_PW_YN  = IF(IFNULL(#{resetPwYn}, '') = ''  , RESET_PW_YN, #{resetPwYn})
+			 WHERE SYS_USER_ID  = #{sysUserId}
+		 ]]>
+	</update>
+	
+ 	<delete id="deleteMenuList" parameterType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : usr.deleteMenuList
+			 * Description : 지점 관리자 메뉴 수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.05.25  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[			
+             DELETE FROM SYS_MENU_AUTH WHERE SYS_USER_ID = #{sysUserId}; 
+		]]>
+	</delete> 
+	
+	<delete id="deleteOfficeUser" parameterType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : usr."deleteOfficeUser"
+			 * Description : 관리자 계정 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.12.07  홍민혁      관리자 계정 삭제
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM SYS_USER_INFO
+			 WHERE SYS_USER_ID = #{sysUserId}		 
+		]]>
+	</delete>	
+	
+	<select id="getUserRegisterInfo" parameterType="String" resultType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+		/*
+         * SQL ID      : usr.getUserRegisterInfo
+         * Description : 관리자 회원가입 요청시, 정보 조회
+         * Modification Information
+         * Date        Author      Content
+         * ----------  ----------  ----------------------
+         * 2022.12.07  홍민혁      관리자 회원가입 요청시, 정보 조회
+         */
+		]]>
+		<![CDATA[
+			SELECT
+				   A.SYS_USER_ID
+				 , A.OFFICE_CODE
+				 , A.SYS_USER_PW
+				 , A.PW_SALT
+				 , A.SYS_NAME
+				 , A.SYS_MOBILE
+				 , A.SYS_POSITION 
+				 , B.HOSPITAL_CODE
+				 , B.MAX_USR_COUNT
+				 , (
+					SELECT COUNT(SUI.SYS_USER_ID) AS CNT
+					  FROM SYS_USER_INFO SUI
+					 WHERE OFFICE_CODE = A.OFFICE_CODE
+ 					   AND USE_YN      = 'Y'
+					   AND ROLE_CODE   = 'ROLE_ADMIN'
+					 GROUP BY OFFICE_CODE
+				    ) AS CURRENT_USR_COUNT
+			  FROM SYS_USER_INFO A
+				   INNER JOIN HOSPITAL_OFFICE_INFO B
+				      ON A.OFFICE_CODE = B.OFFICE_CODE
+			 WHERE A.SYS_USER_ID = #{username}
+		]]>
+	</select>
+	
+	<select id="getMaxUserInfo" parameterType="com.wwl.app.domain.usr.dto.UsrDTO" resultType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+		/*
+         * SQL ID      : usr.getMaxUserInfo
+         * Description : 지점별 계정 최대 허용수, 현재 인원 조회
+         * Modification Information
+         * Date        Author      Content
+         * ----------  ----------  ----------------------
+         * 2022.12.13  홍민혁      지점별 계정 최대 허용수, 현재 인원 조회
+         */
+		]]>
+		<![CDATA[
+			SELECT A.OFFICE_CODE,COALESCE(B.CURRENT_USR_COUNT,0) AS CURRENT_USR_COUNT,A.MAX_USR_COUNT 
+			  FROM HOSPITAL_OFFICE_INFO A
+			  LEFT JOIN (SELECT OFFICE_CODE
+						  ,COUNT(OFFICE_CODE) AS CURRENT_USR_COUNT 
+					  FROM SYS_USER_INFO 
+					 WHERE USE_YN      = 'Y'
+					   AND ROLE_CODE   = 'ROLE_ADMIN'
+					 GROUP BY OFFICE_CODE
+				   )B 
+			   ON A.OFFICE_CODE = B.OFFICE_CODE
+			WHERE A.OFFICE_CODE = #{officeCode}
+
+		]]>
+	</select>
+
+	<update id="updateWebToken" parameterType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+		/*
+         * SQL ID      : usr.updateWebToken
+         * Description : 웹푸쉬 토큰값 저장
+         * Modification Information
+         * Date        Author      Content
+         * ----------  ----------  ----------------------
+         * 2023.01.05  홍민혁      최초 생성
+         */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_INFO
+		SET WEB_TOKEN = #{webToken}
+		WHERE SYS_USER_ID = #{sysUserId}
+		]]>
+	</update>
+
+	<update id="updateWebPushYn" parameterType="com.wwl.app.domain.usr.dto.UsrDTO">
+		<![CDATA[
+		/*
+         * SQL ID      : usr.updateWebPushYn
+         * Description : 웹푸시알림여부 수정
+         * Modification Information
+         * Date        Author      Content
+         * ----------  ----------  ----------------------
+         * 2023.01.05  홍민혁      최초 생성
+         */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_INFO
+		SET WEB_PUSH_YN = #{webPushYn}
+		WHERE SYS_USER_ID = #{sysUserId}
+		]]>
+	</update>
+	
+</mapper>

@@ -1,0 +1,604 @@
+/* 상단 메뉴 */
+#topMenu{
+    width: calc(100% - 280px);  
+    right: 0;
+    position: absolute;
+    transition: 0.1s;
+}
+
+#topMenu.active .top-menu{
+    width: 100%;
+    max-width: calc(100% - 78px);
+}
+
+.top-menu{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    background-color: #494a58;
+    position: fixed;
+    width: calc(100% - 280px);
+    z-index: 7000;
+	right: 0
+}
+
+.top-menu .container{
+	display: flex;
+	justify-content: space-between;
+}
+
+.top-menu .container > div{
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+    color: #fff;
+}
+
+.top-menu .h-menu-b{
+    min-width: 20px;
+    height: 16px;
+    margin-right: 40.5px;
+    background: url(/resources/images/main/Icon_leftBar.svg) no-repeat center center;
+    background-size: contain;
+    cursor: pointer;
+}
+
+.top-menu .left-menu > div{
+    margin-right: 40px;
+    cursor: pointer;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+    color: #fff;
+}
+
+.top-menu .left-menu > div:last-child{
+    margin-right: 0;
+}
+
+.top-menu .help{
+    cursor: pointer;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.top-menu .help::after{
+    content: '';
+    display: inline-block;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 8px;
+    background: url(/resources/images/main/Icon_Guid.svg) no-repeat center center;
+    background-size: contain;
+    cursor: pointer;
+}
+
+.top-menu .alarm > span{
+    width: 6px;
+    height: 6px;
+    display: inline-block;
+    margin-left: 4px;
+    background-color: #ff5454;
+    border-radius: 3px;
+    position: absolute;
+}
+
+.top-menu .alarm > span.active{
+	display: none;
+}
+
+.top-menu .user{
+    display: flex;
+    align-items: center;
+}
+
+.top-menu .user::after{
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: url(/resources/images/main/Icon_tap_white.svg) no-repeat center center;
+    background-size: contain;
+    margin-left: 8.5px;
+    cursor: pointer;
+}
+
+/* 사이드 메뉴 */
+#sideMenu{
+    width: 280px;
+    height: 100vh;
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.25s;
+    z-index: 7000;
+}
+
+#sideMenu.active{
+	transform: translateX(-205px);
+}
+
+.side-menu .logo{
+    min-height: 110px;
+	border-bottom: 1px solid #e3e7ee;
+    text-align: center;
+    padding: 40px 0 43px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#sideMenu.active .logo{
+	text-align: right;
+	padding: 24px 0;
+	background-color: #f1f4f8;
+	margin: 0;
+}
+
+.side-menu h2{
+	font-size: 30px;
+	font-weight: var(--font-weight-bold);
+	margin-bottom: 4px;
+	font-family: 'Montserrat', sans-serif;
+	color: #373757;
+}
+
+.side-menu p.shop-name{
+    font-size: var(--font-size-regular1);
+	font-weight: var(--font-weight-regular);
+	display: block;
+  	letter-spacing: 7px;	
+  	color: #aaa;
+}
+
+#sideMenu.active h2{
+    font-size: var(--font-size-regular4);
+	font-weight: var(--font-weight-bold);
+    width: 30px;
+	margin: 0px 0 0 218px;	
+}
+
+#sideMenu.active p.shop-name{
+    font-size: var(--font-size-small);
+	margin: 4px 1px 0;
+}
+
+.menu > div > div:first-child{
+    display: flex;
+    padding: 7px 20px 9px 30px;  
+    cursor: pointer;
+}
+
+#sideMenu.active .menu > div > div:first-child{
+    justify-content: flex-end;
+}
+
+.menu > div > div:first-child:hover , .menu > div > div:first-child.active{
+    background-color: #f1f4f8;
+}
+
+.accordion > div , .dash-board > div{
+    display: flex;
+    align-items: center;
+}
+
+.menu > div > div img{
+    max-width: 36px;
+    max-height: 36px;
+    margin-right: 13.5px;
+}
+
+#sideMenu.active .menu > div > div img{
+    margin-right: 0;
+}
+
+#sideMenu.active .no-child button , #sideMenu.active .accordion{
+    display: none;
+}
+
+.no-child button{
+    background-color: transparent;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+}
+
+.accordion{
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    color: #111;
+    background-color: transparent;
+    transition: 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+}
+
+.accordion::after{
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: url(/resources/images/main/Icon_Open.svg) no-repeat center center;
+    background-size: contain;
+    opacity: 0.6;
+}
+
+.accordion.active::after{
+    background-image: url(/resources/images/main/Icon_Close.svg);
+}
+
+.panel{
+    background-color: #fff;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease-out;
+    width: 100%;
+}
+
+.panel p{
+    text-align: left;
+    min-height: 31px;
+    font-weight: var(--font-weight-light);
+    font-size: 13px;
+    position: relative;
+}
+
+.panel p a{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    padding: 0 0 0 80px;
+    cursor: pointer;
+    line-height: 31px;
+}
+
+.panel p:hover ,.panel p.active , panel p:active{
+    background-color: #f1f4f8;
+    font-weight: var(--font-weight-bold);
+}
+
+.panel p.active::after , panel p:active::after{
+	content:'';
+	display: inline-block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 6px;
+	height: 100%;
+	background-color: #494a58;
+}
+
+/* 푸시 관련 */
+#pushMenu{
+	position: fixed;
+	left: 20px;
+	bottom: 20px;
+    z-index: 8000;
+}
+
+#pushMenu .push-area{
+	padding: 20px 10px 20px 20px;
+	border-radius: 8px;
+	box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+	border: solid 1px #eff0f6;
+	background-color: #fff;
+	min-width: 280px;
+	margin-bottom: 15px;
+	display: none;
+}
+
+#pushMenu .push-area.active{
+	display: block;
+}
+
+.push-tit{
+	display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.push-tit .toggle-knob .toggle-feature{
+	height: 20px;
+}
+
+.push-tit .toggle-knob .toggle-btn{
+	height: 20px;
+	width: 40px;
+    background-image: linear-gradient(89deg, #4f52a7 20%, #383b82 96%);
+}
+
+.push-tit .toggle-knob .toggle-btn:after{
+	width: 18px;
+	height: 18px;
+	left: 52%;
+}
+
+.push-tit .toggle-checkbox:checked + .toggle-btn{
+    background-image: linear-gradient(to left, #b1b9c5 99%, #989ca1 19%) !important;	
+}
+
+#pushMenu .push-area p{
+    font-weight: 300;
+    font-size: var(--font-size-regular);
+}
+
+#pushMenu .push-tit p{
+    font-weight: 600;
+    font-size: var(--font-size-regular1);
+    color: #111;
+}
+
+#pushMenu .push-icon{
+	display: flex;
+	gap: 14px;
+}
+
+#pushMenu a{
+	border-radius: 35px;
+	box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+	border: solid 1px #eff0f6;
+	background-color: #fff;	
+	width: 70px;
+	height: 70px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+#pushMenu i{
+	width: 70px;
+	height: 70px;
+	display: inherit;
+}
+
+#pushMenu a.push-alarm.active i{
+    background: url(/resources/images/main/Icon_pushAlarm.svg) no-repeat center center;
+}
+
+#pushMenu a.push-alarm i{
+    background: url(/resources/images/main/Icon_pushAlarmOff.svg) no-repeat center center;	
+    background-size: 30px;
+}
+
+#pushMenu a.go-direct i{
+    background: url(/resources/images/main/Icon_goHomePage.svg) no-repeat center center;
+    background-size: 30px;
+}
+
+/* 메인 */
+p.copy{
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-small);
+    color: #999;
+    display: inline-block;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+p.copy > span{
+	color:#333;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+}
+
+#main::-webkit-scrollbar-thumb {
+	height: 6px;
+	border-radius: 30px;
+	background-color: #aeb1bf;
+}
+
+#main::-webkit-scrollbar {
+    display: block;
+    height: 6px;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+.main{
+    margin-top: 60px;
+    position: absolute;
+    right: 0; 
+    transition: 0.25s;
+    padding-bottom: 75px;
+    width: calc(100% - 280px);
+}
+
+.main .container{
+    border-radius: 8px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    overflow-x: auto;
+    min-height: 840px;
+    position: relative;
+}
+
+.main.active{
+    width: calc(100% - 78px);
+}
+
+/* 알람 */
+.alarm{
+/*     width: 340px; */
+    text-align: right;
+    position: relative;
+}
+
+.alert-overlay{
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+    border: solid 1px #707070;
+    background-color: #000;
+    position: fixed;
+    z-index: 5000;
+    top: 0;
+    left: 0;
+	opacity: 0.6;
+    background-color: #111;
+    display: none;
+}
+
+.alert-overlay.active{
+	display: block;
+}
+
+.alarm-area{
+	width: 335px;
+	min-height: 180px;
+ 	box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.5);
+	background-color: #fff;
+	position: absolute;
+	z-index: 6000;
+    top: 30px;
+    right: -10px;
+	border-radius:4px;
+	display: none;
+	text-align: left;
+	padding: 8.5px 10px 15px 10px;
+	border-radius: 10px;	
+}
+
+.alarm-area.active{
+	display: flex;
+	flex-direction: column;
+}
+
+.alarm-area .alarm-tit{	
+	display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;	
+}
+
+.alarm-area .alarm-tit p{
+    font-weight: var(--font-size-bold);
+    font-size: var(--font-size-regular);
+  	color: #555;
+  	display: flex;
+   	align-items: center;
+   	margin: 0;
+}
+
+.alarm-area .alarm-tit p:before{
+	display: block;
+	content: '';
+	width: 14px;
+	height: 18px;
+	margin-right: 5px;
+	background: url(/resources/images/main/Icon_alertBell.svg) no-repeat center center;
+    background-size: contain;
+}
+
+.alarm-area .alarm-tit::after{
+	display: inline-block;
+	content: '';
+	width: 7.1px;
+  	height: 7.1px;
+	background: url(/resources/images/main/Icon_alertTab.svg) no-repeat center center;
+    background-size: contain;
+}
+
+.no-alert{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.alarm-area .no-alert > span{
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-regular);
+}
+
+.alarm-area .no-alert::before{
+	display: block;
+	content: '';
+	width: 31px;
+	height: 36px;
+	background: url(/resources/images/main/Icon_noAlert.svg) no-repeat center center;
+    background-size: contain;
+	margin-bottom: 20px;	
+}
+	
+.alarm-area ul{
+	display: flex;
+	flex-direction: column;
+	max-height: 195px;
+	overflow-y: auto; 
+	width: 100%;
+	margin-top: 10px;
+}
+
+.alarm-area li{
+    display: flex;
+    flex-direction: column;
+    border-bottom: solid 1px #ccc;
+	padding-top: 10px;
+	margin-right: 4px;	
+}
+
+.alarm-area li:first-child{
+	padding: 0;
+}
+
+.alarm-area li:hover{
+	background-color: #f5f5f5;
+}
+
+.alarm-area li:last-of-type{
+	border-bottom: none;
+}
+
+.alarm-area p{
+  	margin-bottom: 4px;
+    font-weight: var(--font-weight-light);
+    font-size: var(--font-size-regular);
+ 	color: #111;
+}
+
+.alarm-area span.u-date{
+     font-weight: var(--font-weight-regular);
+     font-size: var(--font-size-regular);
+	 color: #999;
+	 margin-bottom: 10px;
+}
+
+/* 사용자 정보 - 로그아웃 */
+.user {
+	position: relative;
+}
+
+.user-area{
+	width: 95px;
+	height: 37px;
+	box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.5);
+	background-color: #fff;
+	position: absolute;
+	z-index: 6000;
+	top: 30px;
+	right:0px;
+	border-radius:10px;
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-regular1);
+    padding: 5px 20px;
+    line-height: 26px;
+    display: none;
+    text-align: center;	
+}
+
+.user-area:hover{
+ 	background-color: #f9f9ff;
+}
+
+.user-area.active{
+	display: block;
+}

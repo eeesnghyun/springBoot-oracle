@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30.716" height="35.699" viewBox="0 0 30.716 35.699">
+    <g data-name="그룹 2185">
+        <g data-name="타원 504" transform="translate(8.238 24.715)" style="stroke:#555;stroke-width:1.4px;fill:#fff">
+            <circle cx="5.492" cy="5.492" style="stroke:none" r="5.492"/>
+            <circle cx="5.492" cy="5.492" style="fill:none" r="4.792"/>
+        </g>
+        <g data-name="합치기 72" style="fill:#fff">
+            <path d="M26.489 30.574H.972l2.743-8.198.036-.109v-7.673a9.998 9.998 0 0 1 5.904-9.112l.498-.224-.095-.538A3.423 3.423 0 0 1 13.425.7a3.423 3.423 0 0 1 3.395 3.823l-.064.542.511.194a9.962 9.962 0 0 1 4.634 3.603 9.915 9.915 0 0 1 1.809 5.732v7.673l.036.109 2.743 8.198z" style="stroke:none"/>
+            <path d="m25.516 29.874-2.506-7.493v-7.787c0-1.921-.582-3.764-1.682-5.33a9.265 9.265 0 0 0-4.309-3.35l-1.022-.388.128-1.085a2.722 2.722 0 0 0-2.7-3.04 2.722 2.722 0 0 0-2.678 3.197l.19 1.076-.996.446a9.297 9.297 0 0 0-5.49 8.474v7.787l-2.506 7.493h23.571m1.945 1.4H0l3.051-9.12v-7.56c0-4.345 2.594-8.083 6.318-9.751a4.119 4.119 0 1 1 8.147-.238c4.03 1.527 6.894 5.423 6.894 9.989v7.56l3.05 9.12z" style="fill:#555;stroke:none"/>
+        </g>
+    </g>
+    <g data-name="그룹 2184">
+        <g data-name="구성 요소 157 – 2">
+            <g data-name="타원 507" transform="translate(17.272 21.406)" style="stroke:#ff8964;stroke-width:2px;fill:#fff">
+                <circle cx="6.722" cy="6.722" r="6.722" style="stroke:none"/>
+                <circle cx="6.722" cy="6.722" r="5.722" style="fill:none"/>
+            </g>
+            <path data-name="패스 1514" d="m95.974 70.841-8.083 8.811" transform="translate(-67.85 -46.904)" style="fill:none;stroke:#ff8964;stroke-width:2px"/>
+        </g>
+    </g>
+</svg>

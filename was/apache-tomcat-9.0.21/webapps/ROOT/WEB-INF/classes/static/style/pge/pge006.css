@@ -1,0 +1,116 @@
+*{
+    box-sizing: border-box;
+}
+select{
+	cursor:pointer;
+}
+textarea:focus{
+	-webkit-box-shadow: none !important;
+	box-shadow:none !important;
+	outline: none;
+}
+.usr-top {
+    margin-bottom: 40px;
+}
+.usr-top .select-box > label {
+	font-size:var(--font-size-regular1);
+	color:#333;
+	margin-right:20px;
+} 
+.usr-top .home-page-url {
+    position: relative;
+	display: inline;
+	padding-left:80px;
+}
+.usr-top .home-page-url span:first-child {
+	font-size:var(--font-size-regular1);
+	color:#333;
+}
+.usr-top .home-page-url span:first-child:before {
+	position: absolute;
+    top: 6px;
+    left: 175px;
+	display:block;
+	content:'';
+	width:4px;
+	height:14px;
+	background-color:#d4d7dc;
+}
+.usr-top .home-page-url span:nth-child(2) {
+	font-size:var(--font-size-regular1);
+	font-weight:700;
+    padding-left: 30px;
+}
+
+.pge-area{
+	padding: 70px 60px 80px;
+}
+.tab-wrap > div{
+	float: right;
+    width: calc(100% - 600px);
+    height: 100%;
+    border-bottom: 1px solid #eee;
+}
+.pge06 .tabs {
+	width :100%;
+	display:flex;
+	flex-wrap:nowrap;
+}
+.pge06 .tabs > li {
+	width:300px;
+	height:60px;
+    text-align: center;
+    padding: 19px 0 20px;
+	border: solid 1px #aaa;
+	cursor:pointer;
+	background-color: #f8f9fb;
+}
+.pge06 .tabs > li:first-child {
+	border-right:none;
+}
+.pge06 .tabs > li.active {
+	position:relative;
+	font-size:var(--font-size-regular2);
+	font-weight:700;
+	color:#494a58;
+  	background-color: #fff;
+  	border-bottom:none;
+}
+.pge06 .tabs > li.active:before {
+	position:absolute;
+	top:0;
+	left:0;
+	display:block;
+	content:'';
+	width:100%;
+	height:4px;
+	background-color:#3b3e86;
+}
+.pge06 .terms-box {
+	width:100%;
+	height:1000px;
+	color:#494a58;
+	padding:60px 30px 50px;
+  	border: solid 1px #eee;
+  	background-color: #fff;	
+  	border-top:none;
+}
+.pge06 .terms-box textarea {
+	width:100%;
+	height:100%;
+	font-size:var(--font-size-regular1);
+	line-height:30px;
+	white-space:pre-wrap;
+	border:none;
+}
+.terms-box textarea::-webkit-scrollbar {
+	display:block !important;
+	width:6px;
+	background-color: #eef1f4;
+	
+}
+.terms-box textarea::-webkit-scrollbar-thumb {
+	width:6px;
+	border-radius: 30px;
+	background-color: #aeb1bf;
+}

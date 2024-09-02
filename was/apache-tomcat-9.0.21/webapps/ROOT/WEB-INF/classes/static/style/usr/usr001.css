@@ -1,0 +1,209 @@
+
+.inputs > div{
+	display: flex;
+    flex-direction: column;	
+    margin-bottom: 20px;
+}
+
+.inputs > div:last-child{
+	margin-bottom: 0;
+}
+
+.inputs .loca{
+	gap: 10px;
+	display: flex;
+}
+
+.popup-inner .select-box{
+   	width: 140px;
+   	margin: 0;
+}
+
+.auto-area{
+    flex-wrap: wrap;
+}
+
+button.auth-btn:nth-of-type(2n){
+    margin-right: 0;
+}
+
+button.auth-btn:last-child{
+    margin-bottom: 0;
+}
+
+.popup-inner input{
+    margin-bottom: 20px;
+}
+ 
+input#password{
+    margin-bottom: 4px;
+}
+
+input#confirmPw{
+    margin-bottom: 0;
+}
+.div-flex {
+	display:flex;
+    flex-direction: unset !important;
+}
+.div-flex > div{
+	width:140px;
+}
+.div-flex > div:first-of-type {
+	margin-right:10px;
+}
+.div-flex > div select,
+.div-flex > div input {
+	width:140px;
+}
+.flex-wrap{
+	display:flex;
+}
+.flex-wrap .left {
+	width:290px;
+	margin-right:20px;
+}
+.flex-wrap .right {
+	wdith:calc(100% - 310px);
+}
+
+/* 계정 신청 */
+.btn-user-ok{
+ width: 60px;
+  height: 32px;
+  border: solid 0.5px #ccc;
+  background-image: linear-gradient(to bottom, #575867, #292939);
+  color:#fff;
+  font-size:var(--font-size-regular);
+  font-weight:var(--font-weight-regular);
+  margin-right:10px;
+}
+.btn-user-no{
+  width: 60px;
+  height: 32px;
+  border: solid 0.5px #ccc;
+  background-image: linear-gradient(to bottom, #fff, #fbfbfb);
+  font-size:var(--font-size-regular);
+  font-weight:var(--font-weight-regular);
+}
+
+/* 계정 승인 팝업 */
+#popupInner .popup-tit {
+	display:block;
+}
+#popupInner .popup-tit .tit-text {
+    font-size: var(--font-size-regular);
+    font-weight: 300;
+    color: #676767;
+    margin-top: 4px;
+}
+#popupInner .check-wrap {
+	width:100%;
+	height:auto;
+	display:grid;
+	gap:8px;
+	grid-template-columns:1fr 1fr;
+}
+#popupInner .check-wrap .menu-auth-btn {
+	width:198px;
+	height:42px;
+	border:1px solid #e6e6e6;
+	color:#333;
+	display:flex;
+	align-items: center;
+    cursor:pointer;
+    background-color: #fff;
+    font-size:var(--font-size-regular1);
+}
+#popupInner .check-wrap .menu-auth-btn::before {
+	width:36px;
+	height:36px;
+	display:block;
+	content:'';
+	background-color:pink; 
+	margin-right:20px;
+}
+#popupInner .check-wrap .menu-auth-btn:first-of-type::before {
+	background: url(/resources/images/main/Icon_Dashborad.svg) no-repeat center center;
+}
+#popupInner .check-wrap .menu-auth-btn:nth-of-type(2)::before {
+	background: url(/resources/images/main/Icon_member.svg) no-repeat center center;
+}
+#popupInner .check-wrap .menu-auth-btn:nth-of-type(3)::before {
+	background: url(/resources/images/main/Icon_Page.svg) no-repeat center center;
+}
+#popupInner .check-wrap .menu-auth-btn:nth-of-type(4)::before {
+	background: url(/resources/images/main/Icon_Event.svg) no-repeat center center;
+}
+#popupInner .check-wrap .menu-auth-btn:nth-of-type(5)::before {
+	background: url(/resources/images/main/Icon_reserv.svg) no-repeat center center;
+}
+#popupInner .check-wrap .menu-auth-btn:nth-of-type(6)::before {
+	background: url(/resources/images/main/Icon_Users.svg) no-repeat center center;
+}
+#popupInner .check-wrap .menu-auth-btn:nth-of-type(7)::before {
+	background: url(/resources/images/main/Icon_App.svg) no-repeat center center;
+}
+#popupInner .check-wrap .menu-auth-btn:hover {
+	color: #4a4d9f;
+}
+#popupInner .check-wrap .menu-auth-btn.active {
+	border:1px solid #4a4d9f;
+	color: #4a4d9f;
+}
+#popupInner .pass-wrap {
+	display:flex;
+	position:relative;
+}
+#popupInner .pass-wrap::after {
+	position:absolute;
+	top:0;
+	left:0;
+	display:block;
+	width:16px;
+	height:20px;
+	content:'';
+	background: url(/resources/images/usr/Icon_lock.svg) no-repeat center center;
+    background-size: contain;
+}
+#popupInner .text-wrap {
+	display:flex;
+	flex-direction: column;
+	width:270px;
+	margin-left:27px;
+}
+#popupInner .text-wrap span {
+	font-size:var(--font-size-regular2);
+	font-weight:var(--font-weight-bold);
+	margin-bottom:5px;
+}
+#popupInner .text-wrap p {
+	font-size:var(--font-size-regular);
+	color: #676767;
+}
+.popup-inner input {
+	width:auto;
+}
+#popupInner .pass-wrap .cm-toggle {
+	position:absolute;
+	top:-10px;
+	right: 0;
+}
+.btn-reset-pw {
+	width:290px;
+	height:40px;
+	border-radius:4px;
+	border:1px solid #ccc;
+	background-image: linear-gradient(to bottom, #575867, #292939);
+	color:#fff;
+	font-size:var(--font-size-regular1);
+	font-weight:var(--font-weight-regular);
+}
+.btn-reset-pw::before {
+	display:inline-block;
+	content:'';
+	width:16px;
+	height:16px;
+	background:url(/resources/images/usr/Icon_reset.svg) no-repeat center center;
+	margin-right:10px;
+	}

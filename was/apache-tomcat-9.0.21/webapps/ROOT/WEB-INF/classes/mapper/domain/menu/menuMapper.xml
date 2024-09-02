@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwl.app.domain.menu.dao.MenuDAO">
+	
+	<select id="getMenuList" parameterType="String" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : menu.getMenuList
+			 * Description : 메뉴리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   X.MENU_CODE
+				 , X.MENU_NAME     
+			     , CONCAT_WS('>', Y.MENU_NAME, X.MENU_NAME) FULL_NAME
+			     , X.PARENT_MENU
+			     , IF(IFNULL(X.MENU_URL, '')='', 'R', X.MENU_URL) MENU_URL        
+			     , IF(X.PARENT_MENU = Y.MENU_CODE, Y.MENU_ORDER, X.MENU_ORDER) GROUP_ORDER     
+			     , X.MENU_ORDER
+			     , X.MENU_IMG
+			  FROM 
+				  (
+			      SELECT
+			             A.MENU_CODE
+			  		   , B.MENU_NAME
+					   , B.PARENT_MENU
+					   , B.MENU_ORDER
+					   , B.MENU_URL
+					   , B.MENU_IMG
+				    FROM 
+					   SYS_MENU_AUTH A
+					   INNER JOIN MENU_INFO B
+						  ON (A.MENU_CODE = B.MENU_CODE OR
+							  A.MENU_CODE = B.PARENT_MENU)
+				   WHERE A.SYS_USER_ID = #{sysUserId}
+				     AND B.USE_YN = 'Y'
+			      ) X 
+			      LEFT OUTER JOIN MENU_INFO Y
+					ON X.PARENT_MENU = Y.MENU_CODE
+			 ORDER BY 
+				  GROUP_ORDER, IF(X.PARENT_MENU = 'ROOT', 0, X.MENU_ORDER)
+		]]>
+	</select>
+
+	<select id="getMenuCode" parameterType="hashMap" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : menu.getMenuCode
+			 * Description : 어드민 메뉴 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   MENU_CODE
+				 , MENU_NAME
+			  FROM MENU_INFO
+			 WHERE PARENT_MENU = 'ROOT'
+			   AND MENU_CODE <> 'SYS000'	-- 윈윈랩 메뉴 제외				
+			 ORDER BY 
+				 MENU_ORDER		
+		]]>
+	</select>
+	
+	<select id="getMaxNoticePage" parameterType="com.wwl.app.domain.menu.dto.NoticeDTO" resultType="int">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.getMaxNoticePage
+			 * Description : 공지사항 리스트 페이지 구하기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.06.16  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT IFNULL(MAX(X.ROWNUM), 0)
+			  FROM (
+					SELECT @RNUM := @RNUM + 1 AS ROWNUM
+						 , HN.NOTICE_SEQ
+					  FROM HOSPITAL_NOTICE HN
+                           INNER JOIN (SELECT @RNUM := 0) TMP
+                     WHERE 1=1
+		]]>
+			<if test="noticeType != null and noticeType != ''">		   
+	  			   AND HN.NOTICE_TYPE = #{noticeType}
+	  		</if>
+  			<choose>
+  				<when test="view == null or view == ''">
+  					AND (HN.NOTICE_TITLE LIKE TRIM(CONCAT('%', #{field}, '%')) OR
+  						 HN.NOTICE_CONTENT LIKE TRIM(CONCAT('%', #{field}, '%')))	  						
+  				</when>
+  				<otherwise>
+  					<if test="view == 'title'">
+	  					AND HN.NOTICE_TITLE LIKE TRIM(CONCAT('%', #{field}, '%'))
+	  				</if>
+	  				<if test="view == 'content'">
+	  					AND HN.NOTICE_CONTENT LIKE TRIM(CONCAT('%', #{field}, '%'))
+	  				</if>	  					
+  				</otherwise>
+  			</choose>  			   
+					) X		
+   </select>
+	
+	<select id="getNoticeList" parameterType="com.wwl.app.domain.menu.dto.NoticeDTO" resultType="com.wwl.app.domain.menu.dto.NoticeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : menu.getNoticeList
+			 * Description : 공지사항 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.06.16  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT		  
+				   HN.NOTICE_SEQ     -- 글순번 
+				 , (SELECT COMMON_NAME
+				      FROM COMMON_CODE
+				     WHERE GROUP_CODE  = 'NTC001'
+				       AND COMMON_CODE = HN.NOTICE_TYPE) AS NOTICE_TYPE	   
+				 , HN.NOTICE_TITLE   -- 공지사항제목 
+				 , HN.NOTICE_CONTENT -- 공지사항내용 
+				 , HN.CREATE_USER    -- 생성자
+				 , DATE_FORMAT(HN.CREATE_DATE, '%Y.%m.%d') AS CREATE_DATE -- 생성일 					 
+			  FROM HOSPITAL_NOTICE HN
+			       LEFT OUTER JOIN SYS_USER_INFO SUI
+			         ON HN.CREATE_USER = SUI.SYS_USER_ID
+  			 WHERE HN.DISPLAY_YN  = 'Y'
+  		]]>
+  		<if test="noticeType != null and noticeType != ''">		   
+  			   AND HN.NOTICE_TYPE = #{noticeType}
+  		</if>
+  		<choose>
+ 			<when test="view == null or view == ''">
+ 					AND (HN.NOTICE_TITLE LIKE TRIM(CONCAT('%', #{field}, '%')) OR
+ 						 HN.NOTICE_CONTENT LIKE TRIM(CONCAT('%', #{field}, '%')))	  						
+ 			</when>
+ 			<otherwise>
+ 					<if test="view == 'title'">
+  					AND HN.NOTICE_TITLE LIKE TRIM(CONCAT('%', #{field}, '%'))
+  				</if>
+  				<if test="view == 'content'">
+  					AND HN.NOTICE_CONTENT LIKE TRIM(CONCAT('%', #{field}, '%'))
+  				</if>	  					
+ 			</otherwise>
+ 		</choose>  
+			 ORDER BY NOTICE_SEQ DESC		 
+			 LIMIT 15 OFFSET #{offset}	 		   	
+	</select>
+		
+	<update id="updateNotice" parameterType="com.wwl.app.domain.menu.dto.NoticeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : menu.updateNotice
+			 * Description : 공지사항 저장
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.06.16  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOSPITAL_NOTICE (
+				  NOTICE_SEQ	
+				, NOTICE_TYPE	
+				, NOTICE_TITLE	
+				, NOTICE_CONTENT	
+				, CREATE_USER	
+				, CREATE_DATE	
+			) VALUES (
+				  IF(#{noticeSeq} = 0, 
+				  		(SELECT IFNULL(MAX(NOTICE_SEQ), 0) + 1
+				     	   FROM HOSPITAL_NOTICE A), #{noticeSeq})				     
+				, #{noticeType}	
+				, #{noticeTitle}	
+				, #{noticeContent}				
+				, #{createUser}
+				, NOW()	
+			) ON DUPLICATE KEY
+			UPDATE NOTICE_TYPE    = #{noticeType}
+				 , NOTICE_TITLE   = #{noticeTitle}
+				 , NOTICE_CONTENT = #{noticeContent}			 
+		]]>
+	</update>
+	
+	<update id="deleteNotice" parameterType="com.wwl.app.domain.menu.dto.NoticeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : menu.deleteNotice
+			 * Description : 공지사항 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.12.09  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOSPITAL_NOTICE
+			 WHERE NOTICE_SEQ = #{noticeSeq} 						
+		]]>
+	</update>
+	
+	<select id="getNoticeInfo" parameterType="com.wwl.app.domain.menu.dto.NoticeDTO" resultType="com.wwl.app.domain.menu.dto.NoticeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : menu.getNoticeInfo
+			 * Description : 공지사항 정보 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.12.14  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT		  
+				   NOTICE_SEQ    				  	  
+				 , NOTICE_TYPE	
+				 , NOTICE_TITLE  
+				 , NOTICE_CONTENT 				   					
+			  FROM HOSPITAL_NOTICE			       
+  			 WHERE NOTICE_SEQ = #{noticeSeq}					
+		]]>
+	</select>
+	
+	<select id="getOfficeSite" parameterType="String" resultType="String">
+		<![CDATA[
+			/*
+			 * SQL ID      : menu.getOfficeSite
+			 * Description : 지점 사이트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.12.16  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT OFFICE_SITE			   					
+			  FROM HOSPITAL_OFFICE_INFO			       
+  			 WHERE OFFICE_CODE = #{officeCode}					
+		]]>
+	</select>
+	
+</mapper>

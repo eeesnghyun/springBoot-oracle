@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="IconClose" transform="translate(0.866 -1.001)">
+    <path id="IconSave" d="M-2928-1249a12,12,0,0,1,12,12,12,12,0,0,1-12,12,12,12,0,0,1-12-12A12,12,0,0,1-2928-1249Z" transform="translate(2939.134 1250.001)" fill="#333"/>
+    <path id="Icon_close" d="M5,5,0,10,5,5,0,0,5,5l5-5L5,5l5,5Z" transform="translate(5.981 8.3)" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"/>
+  </g>
+</svg>

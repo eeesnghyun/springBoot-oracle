@@ -1,0 +1,421 @@
+/*팝업 - 예약일 변경*/
+.popup-inner.all{
+	display: flex;
+	padding: 0;
+}
+
+.popup-inner.all #popupInner{
+	padding: 20px 20px 20px 30px;
+}
+
+.popup-tit p > span{
+	font-size: inherit;
+	color: inherit;
+    font-weight: var(--font-weight-bold);
+	display: inline-block;
+	margin: 0;
+}
+
+.popup-con {
+	display: flex;
+    justify-content: space-between;
+}
+
+.popup-con span{
+	margin-top: 0;
+}
+
+.pop-left{
+	display: flex;
+	width: 200px;
+    flex-direction: column;
+    padding: 6px 0 0 0;
+}
+
+.pop-left .con.date{
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.pop-left .con.time{
+	max-height: 460px;
+	overflow-y: auto;
+	width: 108%;
+	display: flex;
+    flex-direction: column;
+    padding: 0 10px 0 0;	
+}
+
+.pop-left .con.time li.active {
+    border: solid 1px #4a4d9f;
+    background-color: #e8eaff;
+}
+
+.pop-left .con.time li:hover {
+    border: solid 1px #4a4d9f;
+    background-color: #f6f7ff;
+}
+
+.pop-left .con.time li{
+	border-radius: 4px;
+	border: solid 1px #e3e3e3;
+	background-color: #fff;
+	display: flex;
+	padding: 9px 10px 11px;
+	width: 100%;
+  	justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 0 10px 0;
+}
+
+.pop-left .con.time li:last-child{
+	margin-bottom: 0;
+}
+
+.pop-left .con.time li p{
+  	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-bold);
+	color: #555;
+}
+
+.pop-left .con.time li p > bold{
+	font-size: inherit;
+	color: #111;
+}
+
+.popup .datepickers-container{
+	z-index: 9999;
+}
+
+.popup-con > div.pop-right{
+	width: 430px;
+	margin-left: 40px;
+}
+
+.pop-right > div{
+	display: flex;
+  	justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 5px;
+}
+
+.pop-right > div label{
+	margin:0;
+}
+
+/* 팝업 - 전체 현황 확인 */
+i.unlimit{
+    margin: 0 10px 5px 0;
+    box-shadow: none;
+    height: 25px;
+}
+
+.table{
+    position: relative;
+    width: 600px;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+}
+
+.time-table label.tit-table{
+	margin: 0 0 15px 0;  
+    display: inline-flex;
+    width: 120px;
+    justify-content: flex-start;
+    padding: 0 0 0 35px;
+    border-right: 1px solid #fff;
+}
+
+.time-table label{
+	display: block;
+    width: 100px;
+    height: 30px;
+    margin: 0 0 10px;
+}
+
+label.tit-table{
+    background-color: #f1f4f8;
+  	font-size: var(--font-size-regular);
+  	font-weight: var(--font-weight-bold);
+    color: #555;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 15px 0 !important;
+    padding: 0 10px 0 0;
+    word-break: keep-all;
+    text-align: center;
+}
+
+ul.time-table > li{
+  	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-regular);
+    color: #555;
+    background-color: #f8f9fb;
+    width: 100px;
+    height: 30px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+ul.time-table > li:nth-child(odd), .data-table > li:nth-child(odd),
+.person-table > li:nth-child(odd), i.unlimit:nth-child(odd){
+    margin-bottom: 10px;
+}
+
+.num-area{
+    display: flex;
+    overflow-x: auto;
+    width: 400px;
+    height: 100%;
+}
+
+.data-table > li, .person-table > li{
+    margin: 0 10px 5px 0;
+    width: 50px;
+    height: 30px;
+    box-shadow: inset 0 0 0 1px #e6e6e6;	
+    background-color: #fff;
+    border-radius: 0;
+    text-align: center;
+  	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-regular);	
+    padding: 3px 0 0 0;
+    line-height: 25px;
+}
+
+.data-table > li > span:first-child, .person-table > li > span:first-child{
+  	font-weight: var(--font-weight-bold);	
+}
+
+.person-table{
+	position: relative;
+    border-left: 1px solid #fff;
+    height: fit-content;
+}
+
+.person-table::after{
+	content:'';
+	display: inline-block;
+	width: 5px;
+    height: calc(100% - 48px);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	box-shadow: -2px -2px 2px 0 rgba(227, 227, 227, 0.5);
+}
+
+.person-table label{
+    margin-right: 0;
+    padding: 0 10px 0 0;
+}
+
+.person-table > li{
+	margin-left: 8px;
+   	background-color: #f8f9fb;
+}
+
+.time-table > li.active, .data-table > li.active, .person-table > li.active{
+	border: solid 1px #4a4d9f;
+	background-color: #e8eaff;
+}
+
+.data-table > li.disable{
+	background-color: #f1f1f1;
+}
+
+.prd-sub-wrap{
+	border: 1px solid;
+    height: 200px;
+    position: absolute;
+    width: 400px;
+    padding: 20px 20px 20px 32px;
+  	border: solid 1px #eee;
+  	background-color: #fff;
+}
+
+.popup-con.all-sub{
+	padding: 75px 30px 20px 20px;
+	border-left: solid 1px #e3e7ee;
+	width: 450px;
+	flex-direction: column;
+	justify-content: initial;
+}
+
+ul.all-sub{
+    height: 545px;
+    overflow-y: auto;
+}
+
+ul.all-sub > li:last-child {
+    margin-bottom: 0;
+}
+
+ul.all-sub > li {
+    border: solid 1px #eee;
+    background-color: #fff;
+    padding: 20px 30px 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+/* 예약 인원 현황 */
+.right-area{
+    width: 420px;
+    display: none;
+    transition: 0.25s;
+}
+
+.right-area.active{
+    transition: 0.25s;
+	top: 0;
+    right: 0;
+    position: sticky;
+}
+
+.right-area .top{
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgba(204, 204, 204, 0.5);
+    background-color: #f5f5f5;
+    padding: 0 20px 0;
+	display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 60px;
+    line-height: 60px;
+    gap: 5px;
+}
+
+.right-area > .top span{
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-bold);
+    color: #000;
+}
+
+.right-area > .top span.date-txt{
+    color: #4a4d9f;
+}
+
+.pop-right > div.right-inner{
+	display: initial;
+}
+
+.pop-right > div.right-inner .right-con{
+    max-height: 538px;
+    overflow-y: auto;
+}
+
+div.right-inner.all{
+	background: none;
+	padding: 0;
+	border: 1px solid #e3e3e3;
+	max-width: 600px;
+	margin-top: 5px;
+	display: flex;
+	max-height: 540px;
+	overflow-y: auto; 
+    justify-content: initial;
+    align-items: initial;
+}
+
+ul.right-inner.all input{
+	min-height: 30px;
+	width: 50px;
+	border-radius:0;
+}
+
+ul.right-con{
+    background-color: #f9f9f9;
+    padding: 20px 16px 100px 14px;
+    width: 100%;
+}
+
+ul.right-con > li{
+    border: solid 1px #eee;
+    background-color: #fff;
+    padding: 20px 30px 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+ul.right-con > li:last-child{
+    margin-bottom: 0;
+}
+
+.prd-sub .count-area{
+	width: 100%;
+}
+
+.count-area p{
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 7px;
+}
+
+.count-area > div{
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+    color: #111;
+    width: 45px;
+    height: 20px;
+}
+
+.count-area .prd-sub-inner {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+	border-bottom: 1px solid #eee;
+}
+
+.count-area .prd-sub-inner:last-child{
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+.count-area .prd-sub-inner > div{
+	width: 45px;
+}
+
+.detail-area{
+    width: 210px;
+}
+
+.detail-area li{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px 2px;
+    margin-bottom: 5px;
+    line-height: 1.5
+}
+
+.detail-area li.active{
+	background-color: rgba(74, 77, 159, 0.1);
+}
+
+.detail-area li:last-child{
+    margin-bottom: 0;
+}
+
+.detail-area li > span, .detail-area li > span > i{
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-bold);
+    color: #111;
+}
+
+.detail-area li > span > i{
+	font-style: initial;
+}

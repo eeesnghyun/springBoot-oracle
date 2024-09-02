@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="31.734" viewBox="0 0 30 31.734">
+    <defs>
+        <filter id="rdali6xh6a" x="3" y="23.734" width="24" height="8" filterUnits="userSpaceOnUse">
+            <feOffset/>
+            <feGaussianBlur stdDeviation="1" result="blur"/>
+            <feFlood flood-color="#ccc"/>
+            <feComposite operator="in" in2="blur"/>
+        </filter>
+    </defs>
+    <path data-name="사각형 2852" style="fill:none" d="M0 0h30v30H0z"/>
+    <g data-name="그룹 2949">
+        <g style="filter:url(#rdali6xh6a)">
+            <ellipse data-name="타원 570" cx="9" cy="1" rx="9" ry="1" transform="translate(6 26.727)" style="fill:#fff"/>
+        </g>
+        <g data-name="그룹 2927">
+            <path data-name="빼기 83" d="M10 22.734a3.645 3.645 0 0 1-3.6-3.124h7.2a3.645 3.645 0 0 1-3.6 3.124zm10-4.141H0l2.036-3.419V9.95a7.975 7.975 0 0 1 4.746-7.289l.312-.138-.01-.341v-.046C7.085.958 8.323 0 9.844 0A2.546 2.546 0 0 1 12.6 2.083l.011.334.311.122a7.925 7.925 0 0 1 5.04 7.411v5.224L20 18.592z" transform="translate(5 -.001)" style="fill:#666"/>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28.284" height="28.284" viewBox="0 0 28.284 28.284">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #666;
+        stroke-linecap: round;
+        stroke-width: 4px;
+      }
+    </style>
+  </defs>
+  <path id="Icon_tap" class="cls-1" d="M0,16V0H16" transform="translate(14.142 2.828) rotate(45)"/>
+</svg>

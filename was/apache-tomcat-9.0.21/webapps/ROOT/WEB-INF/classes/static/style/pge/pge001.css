@@ -1,0 +1,77 @@
+textarea.big , input.big{
+	width: 600px;
+}
+
+.con{
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.con:last-child{
+    margin-bottom: 0;
+}
+
+.con > .inputs{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.con > .inputs input{
+    margin: 0 10px 10px 0;
+}
+
+.con > .inputs input:nth-last-child(-n+2){
+    margin-bottom: 0;
+}
+
+.con > .inputs input:nth-of-type(2n){
+    margin-right: 0;
+}
+
+/* 파일업로드 */
+.con > .files{
+    display: flex;
+    gap: 20px;
+}
+
+.file-upload {
+    width: 330px;
+    height: 200px;
+}
+
+.file-upload.parking-img{
+    width: 600px;
+    height: 450px;
+}
+
+.file-upload img{
+	object-fit: contain;
+}
+
+.h-logo img{
+    height: 54px;
+   	position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.f-logo .file-upload{
+	background-color: #fcfcfc;
+}
+
+.f-logo img{
+	height: 15px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.i-logo img{
+	height: 90px;
+	width: 90px;	
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50% , -50%);
+}

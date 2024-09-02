@@ -1,0 +1,20 @@
+.btn-area{
+	width: 140px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.sort-area{
+	margin-left: 83px;
+}
+
+.col0 input:last-of-type {
+	max-width: 100%;
+	width: 100%;
+}
+
+button.edit-prd , button.del-prd{
+	min-width: 60px;
+}

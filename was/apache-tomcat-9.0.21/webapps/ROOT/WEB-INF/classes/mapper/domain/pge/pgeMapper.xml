@@ -1,0 +1,1662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwl.app.domain.pge.dao.PgeDAO">
+	
+	<select id="getHomepage" parameterType="com.wwl.app.domain.pge.dto.PgeHomepageDTO" resultType="com.wwl.app.domain.pge.dto.PgeHomepageDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomepage
+			 * Description : 홈페이지 기본정보 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   H1.OFFICE_CODE
+			     , H1.LOGO_TOP
+			     , H1.LOGO_BOTTOM
+			     , CONCAT('https://beautyall.app/files/', H2.HOSPITAL_CODE, '/', H1.OFFICE_CODE, H1.LOGO_OPEN_GRAPH) AS LOGO_OPEN_GRAPH
+			     , H1.LOGO_FAVICON
+			     , H1.SITE_COLOR
+			     , H1.SITE_GRD_COLOR
+			     , H1.SITE_SUB_COLOR
+			     , H1.OFFICE_NAME
+			     , H1.OFFICE_OWNER
+			     , H1.OFFICE_PHONE
+			     , H1.BUSINESS_NUM
+			     , H1.ADDRESS
+			     , H1.SITE_INTRO
+			     , H1.KAKAO_NAME
+			     , H1.KAKAO_URL
+				 , H1.CLINIC_DAY01
+			     , H1.CLINIC_TIME01
+			     , H1.CLINIC_DAY02
+			     , H1.CLINIC_TIME02
+			     , H1.CLINIC_DAY03
+			     , H1.CLINIC_TIME03
+			     , H1.MAP_NAVER
+			     , H1.MAP_KAKAO
+			     , H1.MAP_GOOGLE
+			     , H1.PARKING_YN
+			     , H1.PARKING_COMMENT
+			     , H1.PARKING_IMG
+			     , H1.SNS_INSTAGRAM
+			     , H1.SNS_YOUTUBE
+			     , H1.SNS_FACEBOOK
+			     , H1.SNS_BLOG
+			     , H1.CREATE_USER
+			     , H1.CREATE_DATE
+			 FROM HOME_BASIC H1
+			      INNER JOIN HOSPITAL_OFFICE_INFO H2
+			         ON H1.OFFICE_CODE = H2.OFFICE_CODE
+			WHERE H1.OFFICE_CODE = #{officeCode} 			  
+		]]>	
+	</select>
+	
+	<update id="updateHomepage" parameterType="com.wwl.app.domain.pge.dto.PgeHomepageDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.updateHomepage
+			 * Description : 홈페이지 기본정보 등록/수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.16  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_BASIC (
+				  OFFICE_CODE				
+				, LOGO_TOP
+				, LOGO_BOTTOM
+				, LOGO_OPEN_GRAPH
+				, LOGO_FAVICON
+				, SITE_COLOR
+				, SITE_GRD_COLOR
+				, SITE_SUB_COLOR
+				, OFFICE_NAME
+				, OFFICE_OWNER
+				, OFFICE_PHONE
+				, BUSINESS_NUM
+				, ADDRESS
+				, SITE_INTRO
+				, KAKAO_NAME
+				, KAKAO_URL
+				, CLINIC_DAY01
+				, CLINIC_TIME01
+				, CLINIC_DAY02
+				, CLINIC_TIME02
+				, CLINIC_DAY03
+				, CLINIC_TIME03
+				, MAP_NAVER
+				, MAP_KAKAO
+				, MAP_GOOGLE
+				, PARKING_YN
+				, PARKING_COMMENT
+				, PARKING_IMG
+				, SNS_INSTAGRAM
+				, SNS_YOUTUBE
+				, SNS_FACEBOOK
+				, SNS_BLOG				
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+				  #{officeCode}
+				, #{logoTop}
+				, #{logoBottom}
+				, #{logoOpenGraph}
+				, #{logoFavicon}
+				, #{siteColor}
+				, #{siteGrdColor}
+				, #{siteSubColor}
+				, #{officeName}
+				, #{officeOwner}
+				, #{officePhone}
+				, #{businessNum}
+				, #{address}
+				, #{siteIntro}
+				, #{kakaoName}
+				, #{kakaoUrl}
+				, #{clinicDay01}
+				, #{clinicTime01}
+				, #{clinicDay02}
+				, #{clinicTime02}
+				, #{clinicDay03}
+				, #{clinicTime03}
+				, #{mapNaver}
+				, #{mapKakao}
+				, #{mapGoogle}
+				, (SELECT CASE WHEN #{parkingYn} = 'on' THEN 'Y'
+			                   ELSE 'N'
+				  END)
+				, #{parkingComment}
+				, #{parkingImg}
+				, #{snsInstagram}
+				, #{snsYoutube}
+				, #{snsFacebook}
+				, #{snsBlog}				
+				, #{createUser}
+				, NOW()
+			)
+			ON DUPLICATE KEY
+			UPDATE LOGO_TOP 	   = #{logoTop}
+				 , LOGO_BOTTOM 	   = #{logoBottom}
+				 , LOGO_OPEN_GRAPH = IFNULL(#{logoOpenGraph}, LOGO_OPEN_GRAPH) 
+				 , LOGO_FAVICON    = #{logoFavicon}
+				 , SITE_COLOR 	   = #{siteColor}
+				 , SITE_GRD_COLOR  = #{siteGrdColor}
+				 , SITE_SUB_COLOR  = #{siteSubColor}
+				 , OFFICE_NAME     = #{officeName}
+				 , OFFICE_OWNER    = #{officeOwner}
+				 , OFFICE_PHONE    = #{officePhone}
+				 , BUSINESS_NUM    = #{businessNum}
+				 , ADDRESS 		   = #{address}
+				 , SITE_INTRO      = #{siteIntro}
+				 , KAKAO_NAME 	   = #{kakaoName}
+				 , KAKAO_URL 	   = #{kakaoUrl}
+				 , CLINIC_DAY01    = #{clinicDay01}
+				 , CLINIC_TIME01   = #{clinicTime01}
+				 , CLINIC_DAY02    = #{clinicDay02}
+				 , CLINIC_TIME02   = #{clinicTime02}
+				 , CLINIC_DAY03    = #{clinicDay03}
+				 , CLINIC_TIME03   = #{clinicTime03}
+				 , MAP_NAVER 	   = #{mapNaver}
+				 , MAP_KAKAO 	   = #{mapKakao}
+				 , MAP_GOOGLE 	   = #{mapGoogle}
+				 , PARKING_YN 	   = (SELECT CASE WHEN #{parkingYn} = 'on' THEN 'Y'
+					                   			  ELSE 'N'
+									  END)
+				 , PARKING_COMMENT = #{parkingComment}
+				 , PARKING_IMG     = #{parkingImg}
+				 , SNS_INSTAGRAM   = #{snsInstagram}
+				 , SNS_YOUTUBE     = #{snsYoutube}
+				 , SNS_FACEBOOK    = #{snsFacebook}
+				 , SNS_BLOG        = #{snsBlog}
+		]]>
+	</update>
+	
+	<select id="getHomePopupList" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomePopupList
+			 * Description : 홈페이지 팝업관리 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   HP.OFFICE_CODE
+				 , X.HOSPITAL_NAME
+				 , X.OFFICE_LOCATION
+			     , CONCAT(X.HOSPITAL_NAME, ' ', X.OFFICE_LOCATION) HOSPITAL
+				 , HP.SEQ				 
+				 , HP.POP_TYPE
+				 , (SELECT COMMON_NAME 
+					  FROM COMMON_CODE 
+					 WHERE GROUP_CODE  = 'POP001' 
+					   AND COMMON_CODE = HP.POP_TYPE) POP_TYPE_NM
+				 , HP.POP_TITLE
+				 , IFNULL(HP.POP_ORDER, '-') POP_ORDER
+				 , IF(HP.DISPLAY_YN = 'Y', '노출', '미노출') DISPLAY_YN
+				 , CONCAT(DATE_FORMAT(HP.START_DATE,'%y년 %m월 %d일'),' ~ ',
+						DATE_FORMAT(HP.END_DATE,'%y년 %m월 %d일')) AS POPUP_DATE
+				 , CONCAT(REPLACE(
+						REPLACE(
+							DATE_FORMAT(HP.CREATE_DATE,'%y년 %m월 %d일 %p %I:%i')
+							,'AM','오전')
+						,'PM','오후')) AS CREATE_DATE
+				 , CONCAT((SELECT SYS_NAME
+			          		 FROM SYS_USER_INFO A
+					 		WHERE SYS_USER_ID = HP.CREATE_USER), '(', HP.CREATE_USER, ')') CREATE_USER
+			     , CASE WHEN HP.START_DATE <= DATE_FORMAT(NOW(),'%Y%m%d') AND DATE_FORMAT(NOW(),'%Y%m%d') <= HP.END_DATE THEN 'Y'
+					    ELSE 'N'
+				    END IS_INCLUDE
+			  FROM HOME_POPUP HP
+				   INNER JOIN (
+				   	   	      SELECT 
+								     HI.HOSPITAL_NAME
+								   , HOI.OFFICE_CODE
+								   , HOI.OFFICE_LOCATION
+							    FROM HOSPITAL_INFO HI
+								 	 INNER JOIN HOSPITAL_OFFICE_INFO HOI
+										ON HI.HOSPITAL_CODE = HOI.HOSPITAL_CODE
+				   ) X				 
+					ON HP.OFFICE_CODE = X.OFFICE_CODE
+			 WHERE 1=1
+			   AND HP.CONFIRM_YN = 'Y'
+		]]>			
+		<if test="officeCode != null and officeCode != ''">		     
+		      AND HP.OFFICE_CODE   = #{officeCode}			  
+		</if>
+			ORDER BY 
+				HOSPITAL, HP.START_DATE DESC
+	</select>
+	
+	<select id="getPopupType" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="String">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getPopupType
+			 * Description : 홈페이지 팝업 타입 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT POP_TYPE
+			  FROM HOME_POPUP
+			 WHERE OFFICE_CODE = #{officeCode}
+			   AND CONFIRM_YN  = 'Y'
+			   AND SEQ		   = #{seq}
+		]]>
+	</select>
+	
+	<select id="getPopupEvent" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getPopupEvent
+			 * Description : 홈페이지 팝업이벤트 내용 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   HP.SEQ
+				 , HP.POP_TYPE
+			     , HP.POP_TITLE     
+			     , HP.DISPLAY_YN     
+			     , DATE_FORMAT(HP.START_DATE, '%Y년 %m월 %d일') START_DATE
+			     , DATE_FORMAT(HP.END_DATE, '%Y년 %m월 %d일') END_DATE
+			     , HPE.EVENT_TYPE
+			     , HPE.EVENT_CONTENT1
+			     , HPE.EVENT_CONTENT2
+			     , FORMAT(HPE.EVENT_PRICE, 0) EVENT_PRICE
+			     , HPE.EVENT_URL
+			  FROM HOME_POPUP HP
+				   INNER JOIN HOME_POPUP_EVENT HPE
+			          ON HP.OFFICE_CODE = HPE.OFFICE_CODE
+				     AND HP.CONFIRM_YN  = HPE.CONFIRM_YN
+			         AND HP.SEQ = HPE.SEQ
+			 WHERE HP.OFFICE_CODE = #{officeCode}
+			   AND HP.CONFIRM_YN  = 'Y'
+			   AND HP.SEQ 		  = #{seq}
+		]]>
+	</select>
+	
+	<select id="getPopupBottom" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getPopupBottom
+			 * Description : 홈페이지 팝업하단탭 내용 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   HP.SEQ
+				 , HP.POP_TYPE
+			     , HP.POP_TITLE     
+			     , HP.DISPLAY_YN     
+ 				 , DATE_FORMAT(HP.START_DATE, '%Y년 %m월 %d일') START_DATE
+			     , DATE_FORMAT(HP.END_DATE, '%Y년 %m월 %d일') END_DATE
+				 , HPB.SUBSEQ	
+			     , HPB.BOTTOM_TABNAME	
+			     , HPB.BOTTOM_IMAGE	
+			     , HPB.BOTTOM_URL	
+			  FROM HOME_POPUP HP
+				   INNER JOIN HOME_POPUP_BOTTOM HPB
+			          ON HP.OFFICE_CODE = HPB.OFFICE_CODE
+			         AND HP.CONFIRM_YN	= HPB.CONFIRM_YN
+			         AND HP.SEQ 		= HPB.SEQ
+			 WHERE HP.OFFICE_CODE = #{officeCode}
+			   AND HP.CONFIRM_YN  = 'Y'
+			   AND HP.SEQ 		  = #{seq}   
+		]]>
+	</select>
+	
+	<select id="getPopupRight" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getPopupRight
+			 * Description : 홈페이지 팝업우측탭 내용 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 	
+				   HP.SEQ
+				 , HP.POP_TYPE
+			     , HP.POP_TITLE     
+			     , HP.DISPLAY_YN     
+ 				 , DATE_FORMAT(HP.START_DATE, '%Y년 %m월 %d일') START_DATE
+			     , DATE_FORMAT(HP.END_DATE, '%Y년 %m월 %d일') END_DATE
+			     , HPR.SUBSEQ	
+				 , HPR.RIGHT_TABNAME	
+				 , HPR.RIGHT_IMAGE	
+				 , HPR.RIGHT_URL	
+			  FROM HOME_POPUP HP
+				   INNER JOIN HOME_POPUP_RIGHT HPR
+					  ON HP.OFFICE_CODE = HPR.OFFICE_CODE
+			         AND HP.CONFIRM_YN 	= HPR.CONFIRM_YN
+			         AND HP.SEQ 	    = HPR.SEQ
+			 WHERE HP.OFFICE_CODE   = #{officeCode}
+			   AND HP.CONFIRM_YN 	= 'Y'
+			   AND HP.SEQ 		    = #{seq}  
+		]]>
+	</select>
+	
+	<select id="getPopupTop" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getPopupTop
+			 * Description : 홈페이지 팝업상단 내용 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   HP.SEQ
+				 , HP.POP_TYPE
+			     , HP.POP_TITLE     
+			     , HP.DISPLAY_YN     
+			     , HP.LINK_YN
+			     , SUBSTRING(LINK_YN,1,1) AS TOP_PC_LINK_YN
+			     , SUBSTRING(LINK_YN,3,1) AS TOP_MOBILE_LINK_YN			          
+			     , DATE_FORMAT(HP.START_DATE, '%Y년 %m월 %d일') START_DATE
+			     , DATE_FORMAT(HP.END_DATE, '%Y년 %m월 %d일') END_DATE
+				 , HPT.TOP_PC_COLOR	
+				 , HPT.TOP_PC_IMAGE	
+				 , HPT.TOP_PC_URL	
+				 , HPT.TOP_MOBILE_COLOR	
+			     , HPT.TOP_MOBILE_IMAGE	
+				 , HPT.TOP_MOBILE_URL	
+			  FROM HOME_POPUP HP
+				   INNER JOIN HOME_POPUP_TOP HPT
+					  ON HP.OFFICE_CODE = HPT.OFFICE_CODE
+			         AND HP.CONFIRM_YN 	= HPT.CONFIRM_YN
+			         AND HP.SEQ 		= HPT.SEQ
+			 WHERE HP.OFFICE_CODE   = #{officeCode}
+			   AND HP.CONFIRM_YN    = 'Y'
+			   AND HP.SEQ 		    = #{seq}       
+		]]>
+	</select>
+	
+	<select id="getPopupBasic" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getPopupBasic
+			 * Description : 홈페이지 팝업일반 내용 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   SEQ
+				 , POP_TYPE
+			     , POP_TITLE
+			     , POP_ORDER
+			     , DISPLAY_YN
+			     , LINK_YN
+			     , POP_IMAGE
+			     , POP_URL
+			     , DATE_FORMAT(START_DATE, '%Y년 %m월 %d일') AS START_DATE
+			     , DATE_FORMAT(END_DATE, '%Y년 %m월 %d일')   AS END_DATE
+			  FROM HOME_POPUP
+			 WHERE OFFICE_CODE = #{officeCode}
+			   AND CONFIRM_YN  = 'Y'
+			   AND SEQ 		   = #{seq}			   			  
+		]]>
+	</select>	
+	
+	<select id="getMaxPopseq" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO" resultType="String">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getMaxPopseq
+			 * Description : 홈페이지 팝업 순번 최대값 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT IFNULL(MAX(SEQ),0) + 1
+			  FROM HOME_POPUP
+			 WHERE OFFICE_CODE = #{officeCode}
+		]]>
+	</select>
+		
+	<update id="updateHomePopup" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.updateHomePopup
+			 * Description : 홈페이지 팝업 등록/수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_POPUP (
+				  OFFICE_CODE				
+				, CONFIRM_YN
+				, SEQ		
+				, POP_TYPE									
+				, POP_TITLE	
+				, POP_ORDER	
+				, DISPLAY_YN	
+				, LINK_YN	
+				, POP_IMAGE	
+				, POP_URL	
+				, START_DATE	
+				, END_DATE							
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+				  #{officeCode}				
+				, #{confirmYn}
+				, #{seq}
+				, #{popType}		
+				, #{popTitle}	
+				, IF(#{popType} = 'basic', #{popOrder}, NULL)	
+				, #{displayYn}	
+				, #{linkYn}	
+				, #{popImage}	
+				, #{popUrl}	
+				, REPLACE(REPLACE(REPLACE(REPLACE(#{startDate}, ' ', ''),'년',''),'월',''),'일','')
+				, REPLACE(REPLACE(REPLACE(REPLACE(#{endDate}, ' ', ''),'년',''),'월',''),'일','')
+				, #{createUser}
+				, NOW()
+			)
+			ON DUPLICATE KEY
+			UPDATE POP_TITLE  = #{popTitle}	
+				 , POP_ORDER  = #{popOrder}
+				 , DISPLAY_YN = #{displayYn}
+				 , LINK_YN = #{linkYn}
+				 , POP_IMAGE  = #{popImage}	
+				 , POP_URL	  = #{popUrl}
+				 , START_DATE = REPLACE(REPLACE(REPLACE(REPLACE(#{startDate}, ' ', ''),'년',''),'월',''),'일','')
+				 , END_DATE	  = REPLACE(REPLACE(REPLACE(REPLACE(#{endDate}, ' ', ''),'년',''),'월',''),'일','')
+		]]>
+	</update>	
+	
+	<insert id="insertPopupEvent" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertPopupEvent
+			 * Description : 홈페이지 팝업이벤트 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_POPUP_EVENT (
+				  OFFICE_CODE
+				, CONFIRM_YN	
+				, SEQ	
+				, SUBSEQ	
+				, EVENT_TYPE	
+				, EVENT_CONTENT1	
+				, EVENT_CONTENT2	
+				, EVENT_PRICE	
+				, EVENT_URL					
+			) VALUES (
+			  	  #{officeCode}	
+				, #{confirmYn}
+				, #{seq}	
+				, #{subseq}	
+				, #{eventType}
+				, #{eventContent1}	
+				, #{eventContent2}	
+				, REPLACE(#{eventPrice},',','')	
+				, #{eventUrl}		
+			)		
+		]]>
+	</insert>
+	
+	<delete id="deletePopupEvent" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deletePopupEvent
+			 * Description : 홈페이지 팝업이벤트 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_POPUP_EVENT
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = #{confirmYn} 
+			   AND SEQ 			 = #{seq}
+		]]>
+	</delete>
+	
+	<insert id="insertPopupBottom" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertPopupBottom
+			 * Description : 홈페이지 팝업하단 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_POPUP_BOTTOM (
+				  OFFICE_CODE
+				, CONFIRM_YN	
+				, SEQ	
+				, SUBSEQ	
+				, BOTTOM_TABNAME	
+				, BOTTOM_IMAGE	
+				, BOTTOM_URL								
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}	
+				, #{seq}
+				, #{subseq}
+				, #{bottomTabname}	
+				, #{bottomImage}
+				, #{bottomUrl}	
+			)
+		]]>
+	</insert>
+	
+	<delete id="deletePopupBottom" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deletePopupBottom
+			 * Description : 홈페이지 팝업하단 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_POPUP_BOTTOM
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = #{confirmYn}
+			   AND SEQ 			 = #{seq} 
+		]]>
+	</delete>
+	
+	<insert id="insertPopupRight" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertPopupRight
+			 * Description : 홈페이지 팝업우측 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_POPUP_RIGHT (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, SEQ	
+				, SUBSEQ	
+				, RIGHT_TABNAME	
+				, RIGHT_IMAGE	
+				, RIGHT_URL					
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}	
+				, #{seq}
+				, #{subseq}
+				, #{rightTabname}	
+				, #{rightImage}	
+				, #{rightUrl}
+			)		
+		]]>
+	</insert>
+	
+	<delete id="deletePopupRight" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deletePopupRight
+			 * Description : 홈페이지 팝업우측 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_POPUP_RIGHT
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = #{confirmYn}
+			   AND SEQ 			 = #{seq} 
+		]]>
+	</delete>
+	
+	<insert id="insertPopupTop" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertPopupTop
+			 * Description : 홈페이지 팝업상단 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_POPUP_TOP (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, SEQ	
+				, TOP_PC_COLOR	
+				, TOP_PC_IMAGE	
+				, TOP_PC_URL	
+				, TOP_MOBILE_COLOR	
+				, TOP_MOBILE_IMAGE	
+				, TOP_MOBILE_URL								
+			) VALUES (
+			 	  #{officeCode}	
+				, #{confirmYn}
+				, #{seq}	
+				, #{topPcColor}	
+				, #{topPcImage}	
+				, #{topPcUrl}	
+				, #{topMobileColor}	
+				, #{topMobileImage}	
+				, #{topMobileUrl}
+			)
+		]]>
+	</insert>
+	
+	<delete id="deletePopupTop" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deletePopupTop
+			 * Description : 홈페이지 팝업상단 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_POPUP_TOP
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = #{confirmYn}
+			   AND SEQ 			 = #{seq} 
+		]]>
+	</delete>
+		
+	<delete id="deleteHomePopup" parameterType="com.wwl.app.domain.pge.dto.PgePopupDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteHomePopup
+			 * Description : 홈페이지 팝업삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.24  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_POPUP
+			 WHERE OFFICE_CODE   = #{officeCode}			   
+			   AND SEQ 			 = #{seq};			
+		]]>
+		<if test="popType == 'event'">	
+			DELETE FROM HOME_POPUP_EVENT
+			 WHERE OFFICE_CODE   = #{officeCode}			   
+			   AND SEQ 			 = #{seq};
+		</if>
+		<if test="popType == 'bottom'">	
+			DELETE FROM HOME_POPUP_BOTTOM
+			 WHERE OFFICE_CODE   = #{officeCode}			   
+			   AND SEQ 			 = #{seq};
+		</if>
+		<if test="popType == 'right'">	
+			DELETE FROM HOME_POPUP_RIGHT
+			 WHERE OFFICE_CODE   = #{officeCode}			   
+			   AND SEQ 			 = #{seq};
+		</if>	
+		<if test="popType == 'top'">	
+			DELETE FROM HOME_POPUP_TOP
+			 WHERE OFFICE_CODE   = #{officeCode}			   
+			   AND SEQ 			 = #{seq};
+		</if>
+	</delete>
+		
+	<select id="getHomeMain" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO" resultType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomeMain
+			 * Description : 홈페이지 메인관리 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   MAIN_TYPE
+				 , MOBILE_MAIN_TYPE
+				 , SHOW_POST	
+				 , SHOW_SEARCH	
+				 , SHOW_TAB	
+				 , ORDER_POST	
+				 , ORDER_SEARCH	
+				 , ORDER_TAB	
+	 			 , TITLE1_POST	
+				 , TITLE2_POST	
+	 			 , TITLE1_TAB	
+				 , TITLE2_TAB	
+			  FROM HOME_MAIN
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = 'Y'
+		]]>
+	</select>
+	
+	<select id="getHomeAreaMain" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO" resultType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomeAreaMain
+			 * Description : 홈페이지 메인영역 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   MAIN_TYPE	
+				 , SEQ	
+			     , MAIN_CONTENT1	
+				 , MAIN_CONTENT2	
+				 , MAIN_URL	
+				 , MAIN_IMAGE	
+				 , MAIN_VIDEO	
+			  FROM HOME_AREA_MAIN
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = 'Y'
+	      ORDER BY IF(MAIN_TYPE  = 'slide', 1, 2)		
+		]]>
+	</select>
+	
+	<select id="getHomeAreaMainMobile" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO" resultType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomeAreaMainMobile
+			 * Description : 홈페이지 메인영역 조회 - 모바일
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.11    진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   MAIN_TYPE	
+				 , M_SEQ	
+			     , M_MAIN_CONTENT1	
+				 , M_MAIN_CONTENT2	
+				 , M_MAIN_URL	
+				 , M_MAIN_IMAGE	
+				 , M_MAIN_VIDEO	
+				 , M_VIDEO_POSTER 
+			  FROM HOME_AREA_MAIN_MOBILE
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = 'Y'
+  	      ORDER BY IF(MAIN_TYPE  = 'slide', 1, 2)		
+		]]>
+	</select>
+	
+	<select id="getHomeAreaPost" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO" resultType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomeAreaPost
+			 * Description : 홈페이지 포스트영역 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   SEQ	
+			     , POST_TAG	
+				 , POST_TITLE	
+				 , POST_CONTENT	
+				 , FORMAT(POST_PRICE1, 0) POST_PRICE1
+				 , FORMAT(POST_PRICE2, 0) POST_PRICE2
+				 , POST_RATE	
+				 , POST_IMAGE	
+				 , POST_URL
+			  FROM HOME_AREA_POST
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = 'Y'
+		]]>   
+	</select>
+	
+	<select id="getHomeAreaSearch" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO" resultType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomeAreaSearch
+			 * Description : 홈페이지 검색영역 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT	
+				   SEARCH_CONTENT1
+				 , SEARCH_CONTENT2
+				 , SEARCH_CONTENT3
+			  FROM HOME_AREA_SEARCH
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = 'Y'
+		]]>		   
+	</select>
+	
+	<select id="getHomeAreaTab" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO" resultType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomeAreaTab
+			 * Description : 홈페이지 탭영역 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT	
+				   SEQ	
+				 , TAB_TYPE	
+				 , TAB_TITLE	
+				 , TAB_CONTENT	
+				 , FORMAT(TAB_PRICE1, 0) TAB_PRICE1	
+				 , FORMAT(TAB_PRICE2, 0) TAB_PRICE2	
+				 , TAB_URL_TITLE	
+				 , TAB_URL	
+				 , TAB_IMAGE	
+			  FROM HOME_AREA_TAB	
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = 'Y'
+		]]>		   
+	</select>
+	
+	<update id="updateHomeMain" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.updateHomeMain
+			 * Description : 홈페이지 메인정보 등록/수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_MAIN (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, MAIN_TYPE
+				, MOBILE_MAIN_TYPE
+				, SHOW_POST
+				, SHOW_SEARCH
+				, SHOW_TAB
+				, ORDER_POST
+				, ORDER_SEARCH
+				, ORDER_TAB
+				, TITLE1_POST
+				, TITLE2_POST
+				, TITLE1_TAB
+				, TITLE2_TAB
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, #{mainType}
+				, #{mobileMainType}
+				, (SELECT CASE WHEN #{showPost} = 'on' THEN 'Y'
+			                   ELSE 'N'
+				  END)
+				, (SELECT CASE WHEN #{showSearch} = 'on' THEN 'Y'
+			                   ELSE 'N'
+				  END)
+				, (SELECT CASE WHEN #{showTab} = 'on' THEN 'Y'
+			                   ELSE 'N'
+				  END)
+				, #{orderPost}
+				, #{orderSearch}
+				, #{orderTab}
+				, #{title1Post}
+				, #{title2Post}
+				, #{title1Tab}
+				, #{title2Tab}
+				, #{createUser}
+				, NOW()
+			) ON DUPLICATE KEY
+			UPDATE MAIN_TYPE 	    = #{mainType}
+				 , MOBILE_MAIN_TYPE = #{mobileMainType}
+				 , SHOW_POST    = (SELECT CASE WHEN #{showPost} = 'on' THEN 'Y'
+							                   ELSE 'N'
+								  END)
+				 , SHOW_SEARCH  = (SELECT CASE WHEN #{showSearch} = 'on' THEN 'Y'
+							                   ELSE 'N'
+								  END)
+				 , SHOW_TAB     = (SELECT CASE WHEN #{showTab} = 'on' THEN 'Y'
+							                   ELSE 'N'
+								  END)
+				 , ORDER_POST   = #{orderPost}
+				 , ORDER_SEARCH = #{orderSearch}
+				 , ORDER_TAB    = #{orderTab}
+				 , TITLE1_POST  = #{title1Post}
+				 , TITLE2_POST  = #{title2Post}
+				 , TITLE1_TAB   = #{title1Tab}
+				 , TITLE2_TAB   = #{title2Tab}
+		]]>	
+	</update>	
+	
+	<insert id="insertAreaMain" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertAreaMain
+			 * Description : 홈페이지 메인영역 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_AREA_MAIN (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, MAIN_TYPE
+				, SEQ
+				, MAIN_CONTENT1
+				, MAIN_CONTENT2			
+				, MAIN_URL
+				, MAIN_IMAGE
+				, MAIN_VIDEO
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, #{mainType}
+				, #{seq}
+				, #{mainContent1}
+				, #{mainContent2}
+				, #{mainUrl}
+				, #{mainImage}
+				, #{mainVideo}
+			)	
+		]]>
+	</insert>
+	
+	<insert id="insertAreaMainMobile" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertAreaMainMobile
+			 * Description : 홈페이지 모바일 메인영역 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.07  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_AREA_MAIN_MOBILE (
+				  OFFICE_CODE
+				, CONFIRM_YN		
+				, MAIN_TYPE
+				, M_SEQ
+				, M_MAIN_CONTENT1
+				, M_MAIN_CONTENT2			
+				, M_MAIN_URL
+				, M_MAIN_IMAGE
+				, M_MAIN_VIDEO
+				, M_VIDEO_POSTER 
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}		
+				, #{mobileMainType}		
+				, #{mSeq}
+				, #{mMainContent1}
+				, #{mMainContent2}
+				, #{mMainUrl}
+				, #{mMainImage}
+				, #{mMainVideo}
+				, #{mVideoPoster}
+			)	
+		]]>
+	</insert>
+	
+	<delete id="deleteAreaMain" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteAreaMain
+			 * Description : 홈페이지 메인영역 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_AREA_MAIN
+			 WHERE OFFICE_CODE = #{officeCode}
+			   AND CONFIRM_YN  = #{confirmYn}
+			   AND MAIN_TYPE   = #{mainType}
+		]]> 
+	</delete>	
+	
+	<delete id="deleteAreaMainMobile" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteAreaMainMobile
+			 * Description : 홈페이지 모바일 메인영역 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.07  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_AREA_MAIN_MOBILE
+			 WHERE OFFICE_CODE = #{officeCode}
+			   AND CONFIRM_YN  = #{confirmYn}	
+			   AND MAIN_TYPE   = #{mobileMainType}		   			   			  
+		]]> 
+	</delete>	
+	
+	<insert id="insertAreaPost" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertAreaPost
+			 * Description : 홈페이지 포스트영역 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_AREA_POST (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, SEQ
+				, POST_TAG
+				, POST_TITLE
+				, POST_CONTENT
+				, POST_PRICE1
+				, POST_PRICE2
+				, POST_RATE
+				, POST_IMAGE
+				, POST_URL
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, #{seq}
+				, #{postTag}
+				, #{postTitle}
+				, #{postContent}
+				, REPLACE(#{postPrice1},',','')
+				, REPLACE(#{postPrice2},',','')
+				, #{postRate}
+				, #{postImage}
+				, #{postUrl}
+			)
+		]]>	
+	</insert>
+	
+	<delete id="deleteAreaPost" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteAreaPost
+			 * Description : 홈페이지 포스트영역 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_AREA_POST
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = #{confirmYn}
+		]]>		   	
+	</delete>
+	
+	<insert id="insertAreaSearch" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertAreaSearch
+			 * Description : 홈페이지 검색영역 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_AREA_SEARCH (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, SEARCH_CONTENT1
+				, SEARCH_CONTENT2
+				, SEARCH_CONTENT3
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, #{searchContent1}
+				, #{searchContent2}
+				, #{searchContent3}
+			)
+		]]>
+	</insert>
+	
+	<delete id="deleteAreaSearch" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteAreaSearch
+			 * Description : 홈페이지 검색영역 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_AREA_SEARCH
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = #{confirmYn}
+		]]>		   	
+	</delete>
+	
+	<insert id="insertAreaTab" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertAreaTab
+			 * Description : 홈페이지 탭영역 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_AREA_TAB (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, SEQ
+				, TAB_TYPE
+				, TAB_TITLE
+				, TAB_CONTENT
+				, TAB_PRICE1
+				, TAB_PRICE2
+				, TAB_URL_TITLE
+				, TAB_URL
+				, TAB_IMAGE
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, #{seq}
+				, #{tabType}
+				, #{tabTitle}
+				, #{tabContent}
+				, REPLACE(#{tabPrice1},',','')
+				, REPLACE(#{tabPrice2},',','')
+				, #{tabUrlTitle}
+				, #{tabUrl}
+				, #{tabImage}
+			)
+		]]>	
+	</insert>
+	
+	<delete id="deleteAreaTab" parameterType="com.wwl.app.domain.pge.dto.PgeMainDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteAreaTab
+			 * Description : 홈페이지 탭영역 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_AREA_TAB
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN 	 = #{confirmYn}
+		]]>		   	
+	</delete>
+	
+	<select id="getHomeIntro" parameterType="com.wwl.app.domain.pge.dto.PgeIntroDTO" resultType="com.wwl.app.domain.pge.dto.PgeIntroDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getHomeIntro
+			 * Description : 홈페이지 소개 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				  OFFICE_CODE
+				, HEADER_TITLE1	
+				, HEADER_TITLE2	
+				, HEADER_CONTENT1	
+				, HEADER_CONTENT2	
+				, HEADER_IMAGE	
+				, BOTTOM_TITLE1	
+				, BOTTOM_TITLE2	
+				, BOTTOM_CONTENT1	
+				, BOTTOM_CONTENT2	
+				, BOTTOM_CONTENT3	
+				, BOTTOM_CONTENT4	
+				, BOTTOM_CONTENT5	
+				, BOTTOM_CONTENT6	
+				, BOTTOM_IMAGE	
+				, CREATE_USER	
+				, CREATE_DATE	
+			 FROM HOME_INTRO
+			WHERE OFFICE_CODE   = #{officeCode}
+ 			  AND CONFIRM_YN    = 'Y'
+		]]>	
+	</select>	
+	
+	<update id="updateHomeIntro" parameterType="com.wwl.app.domain.pge.dto.PgeIntroDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.updateHomeIntro
+			 * Description : 홈페이지 소개 등록/수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_INTRO (
+				  OFFICE_CODE	
+				, CONFIRM_YN
+				, HEADER_TITLE1	
+				, HEADER_TITLE2	
+				, HEADER_CONTENT1	
+				, HEADER_CONTENT2	
+				, HEADER_IMAGE	
+				, BOTTOM_TITLE1	
+				, BOTTOM_TITLE2	
+				, BOTTOM_CONTENT1	
+				, BOTTOM_CONTENT2	
+				, BOTTOM_CONTENT3	
+				, BOTTOM_CONTENT4	
+				, BOTTOM_CONTENT5	
+				, BOTTOM_CONTENT6	
+				, BOTTOM_IMAGE
+				, CREATE_USER	
+				, CREATE_DATE	
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, #{headerTitle1}	
+				, #{headerTitle2}	
+				, #{headerContent1}	
+				, #{headerContent2}	
+				, #{headerImage}	
+				, #{bottomTitle1}	
+				, #{bottomTitle2}	
+				, #{bottomContent1}	
+				, #{bottomContent2}	
+				, #{bottomContent3}	
+				, #{bottomContent4}
+				, #{bottomContent5}	
+				, #{bottomContent6}	
+				, #{bottomImage}
+				, #{createUser}
+				, NOW()
+			)
+			ON DUPLICATE KEY
+			UPDATE HEADER_TITLE1   = #{headerTitle1}	
+				 , HEADER_TITLE2   = #{headerTitle2}	
+				 , HEADER_CONTENT1 = #{headerContent1}	
+				 , HEADER_CONTENT2 = #{headerContent2}	
+				 , HEADER_IMAGE    = #{headerImage}	
+				 , BOTTOM_TITLE1   = #{bottomTitle1}	
+				 , BOTTOM_TITLE2   = #{bottomTitle2}	
+				 , BOTTOM_CONTENT1 = #{bottomContent1}	
+				 , BOTTOM_CONTENT2 = #{bottomContent2}	
+				 , BOTTOM_CONTENT3 = #{bottomContent3}	
+				 , BOTTOM_CONTENT4 = #{bottomContent4}
+				 , BOTTOM_CONTENT5 = #{bottomContent5}	
+				 , BOTTOM_CONTENT6 = #{bottomContent6}	
+				 , BOTTOM_IMAGE    = #{bottomImage}
+		]]>
+	</update>	
+	
+	<select id="getMedteam" parameterType="com.wwl.app.domain.pge.dto.PgeMedteamDTO" resultType="com.wwl.app.domain.pge.dto.PgeMedteamDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getMedteam
+			 * Description : 홈페이지 의료진관리 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.23  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   MED_TYPE
+				 , TITLE1
+				 , TITLE2	
+				 , POSITION_A	
+				 , POSITION_B	
+				 , POSITION_C	
+				 , POSITION_D	
+		  	  FROM HOME_MEDTEAM
+		  	 WHERE OFFICE_CODE   = #{officeCode}
+		  	   AND CONFIRM_YN    = 'Y'
+	 	]]>	   
+	</select>
+	
+	<select id="getMedteamMember" parameterType="com.wwl.app.domain.pge.dto.PgeMedteamDTO" resultType="com.wwl.app.domain.pge.dto.PgeMedteamDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getMedteamMember
+			 * Description : 홈페이지 의료진 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.23  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   FN_GET_HOSPITAL_NAME(HMM.OFFICE_CODE) AS HOSPITAL_NAME
+				 , HMM.MED_TYPE	
+				 , HMM.SEQ	 
+				 , HMM.MEMBER_NAME	
+				 , HMM.MEMBER_POSITION	
+				 , HMM.MEMBER_INTRO	
+				 , HMM.MEMBER_IMAGE1
+				 , HMM.MEMBER_IMAGE2
+				 , HMM.MEMBER_IMAGE3
+				 , HMM.DISPLAY_POSITION	
+				 , HMM.DISPLAY_YN	 	
+			     , GROUP_CONCAT(HMP.CONTENT SEPARATOR '\n') AS CONTENT 
+			 FROM HOME_MEDTEAM_MEMBER HMM
+				  LEFT OUTER JOIN HOME_MEDTEAM_PROFILE HMP
+			        ON HMM.OFFICE_CODE  = HMP.OFFICE_CODE
+				   AND HMM.CONFIRM_YN   = HMP.CONFIRM_YN
+			       AND HMM.MED_TYPE     = HMP.MED_TYPE
+			       AND HMM.SEQ 		    = HMP.SEQ       
+			WHERE HMM.OFFICE_CODE = #{officeCode}		  
+			  AND HMM.CONFIRM_YN  = 'Y'
+			  AND HMM.MED_TYPE	  = #{medType}
+			GROUP BY HMM.MED_TYPE, HMM.SEQ
+			ORDER BY HMM.SEQ			
+  	 	]]>	   
+	</select>
+	
+	<update id="updateMedteam" parameterType="com.wwl.app.domain.pge.dto.PgeMedteamDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.updateMedteam
+			 * Description : 홈페이지 의료진관리 등록/수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_MEDTEAM (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, MED_TYPE
+				, TITLE1
+				, TITLE2
+				, POSITION_A
+				, POSITION_B
+				, POSITION_C
+				, POSITION_D
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, #{medType}
+				, #{title1}
+				, #{title2}
+				, #{positionA}
+				, #{positionB}
+				, #{positionC}
+				, #{positionD}
+				, #{createUser}
+				, NOW()
+			)
+			ON DUPLICATE KEY
+			UPDATE MED_TYPE   = #{medType}
+				 , TITLE1     = #{title1}
+				 , TITLE2     = #{title2}
+				 , POSITION_A = #{positionA}
+				 , POSITION_B = #{positionB}
+				 , POSITION_C = #{positionC}
+				 , POSITION_D = #{positionD}	 
+		]]>
+	</update>
+	
+	<insert id="insertMedteamMember" parameterType="com.wwl.app.domain.pge.dto.PgeMedteamDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertMedteamMember
+			 * Description : 홈페이지 의료진 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_MEDTEAM_MEMBER (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, MED_TYPE	
+				, SEQ	
+				, MEMBER_NAME	
+				, MEMBER_POSITION	
+				, MEMBER_INTRO	
+				, MEMBER_IMAGE1	
+				, MEMBER_IMAGE2	
+				, MEMBER_IMAGE3	
+				, DISPLAY_POSITION	
+				, DISPLAY_YN
+				, SORT_ORDER	
+				, CREATE_USER	
+				, CREATE_DATE						
+			) VALUES (
+				  #{officeCode}	
+				, #{confirmYn}
+				, #{medType}	
+				, #{seq}
+				, #{memberName}	
+				, #{memberPosition}	
+				, #{memberIntro}	
+				, #{memberImage1}
+				, #{memberImage2}	
+				, #{memberImage3}	
+				, #{displayPosition}	
+				, #{displayYn}
+				, #{sortOrder}	
+				, #{createUser}	
+				, NOW()
+			)
+		]]>
+	</insert>
+	
+	<delete id="deleteMedteamMember" parameterType="com.wwl.app.domain.pge.dto.PgeMedteamDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteMedteamMember
+			 * Description : 홈페이지 의료진 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_MEDTEAM_MEMBER
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN    = #{confirmYn}
+			   AND MED_TYPE      = #{medType}
+		]]>
+	</delete>
+	
+	<insert id="insertMedteamProfile" parameterType="com.wwl.app.domain.pge.dto.PgeMedteamDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.insertMedteamProfile
+			 * Description : 홈페이지 의료진 약력 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_MEDTEAM_PROFILE (
+				  OFFICE_CODE
+				, CONFIRM_YN
+				, MED_TYPE	
+				, SEQ	
+				, SUBSEQ	
+				, CONTENT	
+				, CREATE_USER	
+				, CREATE_DATE								
+			) VALUES (
+				  #{officeCode}
+				, #{confirmYn}
+				, 'profile'
+				, #{seq} 				  
+				, (SELECT IFNULL(MAX(SUBSEQ),0) + 1
+					 FROM HOME_MEDTEAM_PROFILE A
+					WHERE OFFICE_CODE   = #{officeCode}
+					  AND CONFIRM_YN    = #{confirmYn}
+					  AND SEQ = #{seq})	
+				, #{content}	
+				, #{createUser}	
+				, NOW()
+			)
+		]]>
+	</insert>
+	
+	<delete id="deleteMedteamProfile" parameterType="com.wwl.app.domain.pge.dto.PgeMedteamDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.deleteMedteamProfile
+			 * Description : 홈페이지 의료진 약력 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOME_MEDTEAM_PROFILE
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND CONFIRM_YN	 = #{confirmYn}
+			   AND MED_TYPE 	 = 'profile'
+			   AND SEQ 			 = #{seq}
+		]]>
+	</delete>
+	
+	<select id="getClause" parameterType="com.wwl.app.domain.pge.dto.PgeClauseDTO" resultType="com.wwl.app.domain.pge.dto.PgeClauseDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.getClause
+			 * Description : 홈페이지 약관 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   SITE_CLAUSE	 -- 사이트 이용약관
+				 , PERSONAL_INFO -- 개인정보처리방침
+			  FROM HOME_CLAUSE
+			 WHERE OFFICE_CODE   = #{officeCode}
+		]]>
+	</select>
+	
+	<update id="updateClause" parameterType="com.wwl.app.domain.pge.dto.PgeClauseDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : pge.updateClause
+			 * Description : 홈페이지 약관 등록/수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.18  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOME_CLAUSE (
+				  OFFICE_CODE
+				, SITE_CLAUSE
+				, PERSONAL_INFO
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+				  #{officeCode}
+				, #{siteClause}
+				, #{personalInfo}
+				, #{createUser}
+				, NOW()
+			)
+			ON DUPLICATE KEY
+			UPDATE SITE_CLAUSE 	 = #{siteClause}
+				 , PERSONAL_INFO = #{personalInfo}				 
+		]]>
+	</update>
+	
+</mapper>

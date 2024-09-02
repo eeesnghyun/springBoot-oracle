@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwl.app.domain.mbr.dao.MbrDAO">
+
+	<select id="getGradeList" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO" resultType="com.wwl.app.domain.mbr.dto.MbrGradeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.getGradeList
+			 * Description : 등급 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.05.30  이승현      최초 생성
+		     */
+		]]>
+		<if test="view == 'all'">
+			SELECT 
+				   'G999' AS GRADE_CODE
+				 , '일반' AS GRADE_NAME
+			     , '' 	  AS GRADE_DISPLAY
+			     , '' 	  AS GRADE_COLOR
+			     , 0 	  AS TOTAL_PAY
+			     , ''  	  AS DOCTOR_FIXED
+			     , 0   	  AS USER_CNT 
+			UNION ALL
+		</if>
+		<![CDATA[
+			SELECT 			 
+				   UG.GRADE_CODE       -- 등급코드
+				 , UG.GRADE_NAME	   -- 등급내용 
+				 , UG.GRADE_DISPLAY    -- 등급표시 
+				 , UG.GRADE_COLOR	   -- 등급색상
+				 , FORMAT(UG.TOTAL_PAY, 0) TOTAL_PAY    		 -- 총 결제 금액 
+				 , UG.DOCTOR_FIXED     -- 의료진지정여부
+			     , CNT.USER_CNT		   -- 등급별회원수
+			  FROM USER_GRADE UG
+			       LEFT OUTER JOIN (
+								SELECT GRADE_CODE
+									 , COUNT(USER_ID) USER_CNT
+								  FROM USER_INFO
+								 WHERE OFFICE_CODE = #{officeCode}
+								GROUP BY GRADE_CODE   
+			       ) CNT
+			       ON UG.GRADE_CODE = CNT.GRADE_CODE
+			 WHERE UG.OFFICE_CODE	= #{officeCode}
+		]]>
+	</select>
+	
+	<insert id="insertGrade" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.insertGrade
+			 * Description : 등급코드 추가
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.05.30  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO USER_GRADE (
+				  OFFICE_CODE	
+				, GRADE_CODE	
+				, GRADE_NAME
+				, GRADE_DISPLAY	
+				, GRADE_COLOR	
+				, TOTAL_PAY	
+				, DOCTOR_FIXED	
+				, CREATE_USER	
+				, CREATE_DATE						
+			) VALUES (
+				  #{officeCode}	
+				, (
+					SELECT CONCAT('G', LPAD(CAST(SUBSTR(IFNULL(MAX(GRADE_CODE),'G000'),2) AS SIGNED INTEGER) + 1, '3', '0'))
+					  FROM USER_GRADE A
+					 WHERE OFFICE_CODE = #{officeCode}
+			      )
+				, #{gradeName}	
+				, #{gradeDisplay}	
+				, #{gradeColor}	
+				, REPLACE(#{totalPay},',','')
+				, #{doctorFixed}	
+				, #{createUser}	
+				, NOW()		
+			)
+		]]>
+	</insert>
+	
+	<select id="getGradeChangeCnt" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO" resultType="int">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.getGradeChangeCnt
+			 * Description : 등급 변경시 변동정보
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.04  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[		
+			SELECT COUNT(U1.USER_ID) AS CNT
+			  FROM USER_INFO U1
+			       INNER JOIN (
+								SELECT Y.USER_ID
+								  FROM (
+										-- 일반시술
+										SELECT 			 
+											   OFFICE_CODE
+											 , CONCAT('N', UPDATE_SEQ, PRD_ITEM_CODE) AS ITEM_CODE	
+											 , PRICE AS ITEM_PRICE
+										  FROM PRODUCT_SURGICAL_ITEM
+										 WHERE OFFICE_CODE = #{officeCode}
+										 UNION ALL
+										-- 이벤트시술
+										SELECT	 
+											   OFFICE_CODE
+											 , CONCAT('E', EVENT_UPDATE_SEQ, EVENT_SEQ, EVENT_SUB_SEQ, EVENT_PRODUCT_CODE) AS ITEM_CODE
+											 , EVENT_SALE AS ITEM_PRICE
+										 FROM EVENT_PRODUCT_SURGICAL
+										WHERE OFFICE_CODE = #{officeCode}
+										) X INNER JOIN (
+														SELECT 
+															   USER_ID
+															 , RES_GROUP_CODE
+														  FROM USER_PRODUCT
+														 WHERE OFFICE_CODE = #{officeCode}
+														 GROUP BY USER_ID, RES_NO, RES_GROUP_CODE
+										) Y
+										ON X.ITEM_CODE = Y.RES_GROUP_CODE				
+									 GROUP BY Y.USER_ID HAVING SUM(X.ITEM_PRICE) > REPLACE(#{totalPay},',','')
+					  ) U2
+			         ON U1.USER_ID = U2.USER_ID       
+			  WHERE U1.OFFICE_CODE = #{officeCode}
+			    AND IF(IFNULL(CONCAT(U1.FIXED_DOCTOR, U1.FIXED_STAFF),'') = '', 'N', 'Y') = #{doctorFixed}
+		]]>							 
+	</select>
+	
+	<update id="updateGrade" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.updateGrade
+			 * Description : 등급정보 수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.06.02  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[				
+			UPDATE USER_GRADE
+			   SET GRADE_NAME	 = #{gradeName}
+			   	 , GRADE_DISPLAY = #{gradeDisplay}	
+				 , GRADE_COLOR	 = #{gradeColor}	
+				 , TOTAL_PAY	 = REPLACE(#{totalPay},',','')
+				 , DOCTOR_FIXED  = #{doctorFixed}
+				 , CREATE_USER   = #{createUser}	
+				 , CREATE_DATE   = NOW()
+			 WHERE OFFICE_CODE	 = #{officeCode}
+			   AND GRADE_CODE	 = #{gradeCode}				 	
+		]]>
+	</update>	
+	
+	<update id="updateNewUserGrade" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.updateNewUserGrade
+			 * Description : 수정되는 등급 기준을 만족하는 회원의 등급 저장
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.04  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE USER_INFO
+			   SET GRADE_CODE    = #{gradeCode}
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND USER_ID	    IN (
+			   					    SELECT USER_ID
+									  FROM (
+											SELECT U1.USER_ID
+											  FROM USER_INFO U1
+											       INNER JOIN (
+																SELECT X.USER_ID
+																  FROM (
+																		SELECT 
+																			   U1.USER_ID
+																			 , U1.RES_NO
+																			 , U1.RES_GROUP_CODE
+																			 , U1.RES_GROUP_SEQ
+																			 , P1.PRICE AS ITEM_PRICE
+																		  FROM USER_PRODUCT U1
+																			   INNER JOIN ALL_PRODUCT_INFO A1
+																				  ON U1.OFFICE_CODE    = A1.OFFICE_CODE
+																				 AND U1.RES_GROUP_CODE = A1.ITEM_CODE
+																			   INNER JOIN PRODUCT_SURGICAL_ITEM P1
+																				 ON A1.OFFICE_CODE     = P1.OFFICE_CODE
+																				AND A1.UPDATE_SEQ	   = P1.UPDATE_SEQ
+																				AND A1.PRD_ITEM_CODE   = P1.PRD_ITEM_CODE
+																		 WHERE U1.OFFICE_CODE   = #{officeCode}
+																		   AND U1.ITEM_TYPE     = 'N' 
+																		 UNION ALL
+																		SELECT 
+																			   U1.USER_ID
+																			 , U1.RES_NO
+																			 , U1.RES_GROUP_CODE
+																			 , U1.RES_GROUP_SEQ
+																			 , E1.EVENT_SALE AS ITEM_PRICE
+																		  FROM USER_PRODUCT U1
+																			   INNER JOIN ALL_EVENT_PRODUCT_INFO A1
+																				  ON U1.OFFICE_CODE       = A1.OFFICE_CODE
+																				 AND U1.RES_GROUP_CODE    = A1.ITEM_CODE
+																			   INNER JOIN EVENT_PRODUCT_SURGICAL E1
+																				 ON A1.OFFICE_CODE        = E1.OFFICE_CODE
+																				AND A1.EVENT_UPDATE_SEQ	  = E1.EVENT_UPDATE_SEQ
+																				AND A1.EVENT_SEQ		  = E1.EVENT_SEQ
+																				AND A1.EVENT_SUB_SEQ      = E1.EVENT_SUB_SEQ
+																				AND A1.EVENT_PRODUCT_CODE = E1.EVENT_PRODUCT_CODE        
+																		 WHERE U1.OFFICE_CODE  = #{officeCode}
+																		   AND U1.ITEM_TYPE    <> 'N' 
+																		 ) X
+																 GROUP BY X.USER_ID	
+																HAVING SUM(X.ITEM_PRICE) > REPLACE(#{totalPay},',','')
+													  ) U2
+											         ON U1.USER_ID = U2.USER_ID       
+											  WHERE U1.OFFICE_CODE   = #{officeCode}
+											    AND IF(IFNULL(CONCAT(U1.FIXED_DOCTOR, U1.FIXED_STAFF),'') = '', 'N', 'Y') = #{doctorFixed}
+											) U3
+										) 
+		]]>
+	</update>
+	
+	<delete id="deleteGrade" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.deleteGrade
+			 * Description : 등급정보 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.05.30  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM USER_GRADE
+			 WHERE OFFICE_CODE = #{officeCode}
+			   AND GRADE_CODE  = #{gradeCode}
+		]]>
+	</delete>
+	
+	<update id="updateUserGrade" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.updateUserGrade
+			 * Description : 등급정보 삭제 후 관련 회원 등급 초기화
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.05.30  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE USER_INFO
+			   SET GRADE_CODE  = 'G999'
+			 WHERE OFFICE_CODE = #{officeCode}
+			   AND GRADE_CODE  = #{gradeCode}
+		]]>
+	</update>
+	
+	<delete id="deleteHospitalGrade" parameterType="com.wwl.app.domain.mbr.dto.MbrGradeDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.deleteHospitalGrade
+			 * Description : 예약 설정에 등록된 등급 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.04  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOSPITAL_RESERVE_GRADE
+		     WHERE OFFICE_CODE = #{officeCode}
+			   AND GRADE_CODE  = #{gradeCode} 
+		]]>
+	</delete>
+	
+	<select id="getMaxUserOpinion" parameterType="com.wwl.app.domain.mbr.dto.MbrCustDTO" resultType="int">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.getMaxUserOpinion
+			 * Description : 칭찬,불만 리스트 페이지 구하기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.26  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT COUNT(X.ROWNUM)
+			  FROM (
+					SELECT @RNUM := @RNUM + 1 AS ROWNUM
+						 , A.OFFICE_CODE
+						 , A.REGIST_SEQ
+					  FROM USER_INFO C
+                           INNER JOIN USER_OPINION A
+				  			  ON C.OFFICE_CODE   = A.OFFICE_CODE
+                             AND C.USER_ID		 = A.USER_ID
+						    LEFT OUTER JOIN USER_OPINION_REPLY B
+							  ON A.OFFICE_CODE   = B.OFFICE_CODE
+							 AND A.REGIST_SEQ    = B.REGIST_SEQ
+						   INNER JOIN (SELECT @RNUM := 0) TMP   
+					 WHERE C.OFFICE_CODE   = #{officeCode}
+		]]>		
+			<if test="start != null and start != '' and end != null and end != ''">	
+					   AND DATE_FORMAT(A.CREATE_DATE, '%Y%m%d') BETWEEN #{start} AND #{end}
+			</if>
+					 GROUP BY 
+						C.OFFICE_CODE, A.REGIST_SEQ
+					) X
+   </select>
+
+	<select id="getUserOpinionList" parameterType="com.wwl.app.domain.mbr.dto.MbrCustDTO" resultType="com.wwl.app.domain.mbr.dto.MbrCustDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.getUserOpinionList
+			 * Description : 칭찬,불만 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.26  이승현      최초 생성
+		     */
+		]]> 
+		<![CDATA[
+			SELECT 
+				   CAST(XX2.PAGENUM AS SIGNED INTEGER) AS PAGENUM
+				 , XX1.DATA_TYPE	-- Q:접수,A:답변
+				 , XX1.REGIST_SEQ	-- 접수SEQ
+				 , XX1.REPLY_SEQ	-- 답변SEQ
+			     , XX1.USER_ID		-- 아이디
+			     , XX1.NAME			-- 이름
+			     , XX1.GENDER		-- 성별
+			     , XX1.BIRTHDATE	-- 생년월일
+			     , XX1.MOBILE		-- 연락처
+			     , XX1.MEMBER_YN	-- 회원여부
+			     , XX1.TYPE			-- 칭찬,불만
+			     , XX1.CONTENT		-- 질문,답변 내용
+			     , XX1.REGIST_DATE	-- 등록일(검색에 사용)
+			     , XX1.CREATE_DATE  -- 접수,답변등록일
+			     , XX1.STATUS		-- 답변상태
+			  FROM (
+						SELECT
+							   X.DATA_TYPE			
+							 , X.REGIST_SEQ			
+							 , X.REPLY_SEQ			
+							 , X.USER_ID 			
+							 , X.NAME				
+							 , IF(X.BIRTHDATE = '', '', IF(X.GENDER = 'male', '남', '여')) GENDER								
+							 , IF(X.BIRTHDATE = '', '', (DATE_FORMAT(NOW(), '%Y') - SUBSTR(X.BIRTHDATE, 1, 4) + 1)) BIRTHDATE		
+							 , X.MOBILE					     
+							 , IF(X.BIRTHDATE = '', '', IF(X.MEMBER_YN = 'Y', '회원', '비회원')) MEMBER_YN					
+							 , IF(X.TYPE = 'sms', X.TYPE, IF(X.TYPE = 'tel', X.TYPE, IF(X.TYPE = 'G', '칭찬', '불만'))) TYPE    
+							 , X.CONTENT			
+							 , X.REGIST_DATE		
+							 , IFNULL(REPLACE(
+										REPLACE(
+											DATE_FORMAT(X.CREATE_DATE,'%Y년 %m월 %d일 %p %I:%i')
+												,'AM','오전')
+											,'PM','오후'),'-') CREATE_DATE									
+							 , IF(X.DATA_TYPE = 'Q', IF(X.STATUS = 0, '답변대기', '답변완료'), '') STATUS	
+						  FROM (
+								SELECT 
+									   Q.OFFICE_CODE
+									 , 'Q' DATA_TYPE
+									 , Q.REGIST_SEQ
+									 , '' AS REPLY_SEQ
+									 , Q.USER_ID
+									 , UI.NAME
+									 , UI.GENDER
+									 , UI.BIRTHDATE
+									 , UI.MOBILE
+									 , UI.MEMBER_YN
+									 , Q.CREATE_DATE AS REGIST_DATE
+									 , Q.CREATE_DATE
+									 , Q.TYPE			 
+									 , Q.CONTENT       
+									 , (SELECT IFNULL(COUNT(REGIST_SEQ), 0)
+										  FROM USER_OPINION_REPLY 
+										 WHERE OFFICE_CODE	 = Q.OFFICE_CODE
+										   AND REGIST_SEQ    = Q.REGIST_SEQ) STATUS
+								  FROM USER_OPINION Q
+									   INNER JOIN USER_INFO UI
+										 ON Q.OFFICE_CODE   = UI.OFFICE_CODE
+										AND Q.USER_ID  	    = UI.USER_ID
+								 WHERE Q.OFFICE_CODE = #{officeCode}
+								 UNION ALL
+								SELECT 
+									   A.OFFICE_CODE
+									 , 'A' DATA_TYPE
+									 , A.REGIST_SEQ
+									 , A.REPLY_SEQ
+									 , A.REPLY_USER AS USER_ID
+									 , SI.SYS_NAME  AS NAME			 
+									 , '' GENDER
+									 , '' BIRTHDATE
+									 , '' MOBILE
+									 , '' MEMBER_YN
+									 , '' AS REGIST_DATE
+									 , A.REPLY_DATE AS CREATE_DATE			 
+									 , A.REPLY_TYPE AS TYPE
+									 , A.REPLY_CONTENT AS CONTENT
+									 , 0 AS STATUS
+								  FROM USER_OPINION_REPLY A
+									   INNER JOIN SYS_USER_INFO SI
+										  ON A.REPLY_USER = SI.SYS_USER_ID
+								 WHERE A.OFFICE_CODE   = #{officeCode}
+								) X
+						  WHERE 1=1
+			]]>
+			<if test="start != null and start != '' and end != null and end != ''">	
+	 			<![CDATA[						  
+							AND X.REGIST_SEQ IN (SELECT REGIST_SEQ 
+												   FROM USER_OPINION 
+												  WHERE OFFICE_CODE = #{officeCode}
+													AND DATE_FORMAT(CREATE_DATE, '%Y%m%d') BETWEEN #{start} AND #{end})
+				]]>
+			</if>
+			<![CDATA[						
+					) XX1
+			        INNER JOIN (
+								SELECT @RNUM := @RNUM + 1 AS PAGENUM
+									 , A.REGIST_SEQ
+								  FROM USER_INFO C
+                                       INNER JOIN USER_OPINION A
+										  ON C.OFFICE_CODE   = A.OFFICE_CODE
+                                         AND C.USER_ID		 = A.USER_ID
+									    LEFT OUTER JOIN USER_OPINION_REPLY B
+										  ON A.OFFICE_CODE   = B.OFFICE_CODE
+										 AND A.REGIST_SEQ    = B.REGIST_SEQ
+									   INNER JOIN (SELECT @RNUM := 0) TMP   
+								 WHERE C.OFFICE_CODE   = #{officeCode}
+			]]>
+			<if test="start != null and start != '' and end != null and end != ''">	
+	 			<![CDATA[
+								   AND DATE_FORMAT(A.CREATE_DATE, '%Y%m%d') BETWEEN #{start} AND #{end}
+				]]>
+			</if>
+			<![CDATA[
+								 GROUP BY A.REGIST_SEQ
+			        ) XX2
+			        ON XX1.REGIST_SEQ = XX2.REGIST_SEQ
+			WHERE XX2.PAGENUM > IF((#{offset} - 15) < 0, 0, (#{offset} - 15))
+    		  AND XX2.PAGENUM <= #{offset}    		
+		 	ORDER BY
+				XX2.PAGENUM DESC, XX1.REPLY_SEQ ASC	
+    		]]>	
+	</select>
+	
+	<insert id="insertReply" parameterType="com.wwl.app.domain.mbr.dto.MbrCustDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.insertReply
+			 * Description : 답변 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.27  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO USER_OPINION_REPLY (
+				  OFFICE_CODE	
+				, REGIST_SEQ
+				, REPLY_SEQ							
+				, REPLY_TYPE	
+				, REPLY_CONTENT	
+				, REPLY_USER	
+				, REPLY_DATE								
+			) VALUES (
+				  #{officeCode}
+				, #{registSeq}
+				, (SELECT IFNULL(MAX(REPLY_SEQ), 0) + 1
+					 FROM USER_OPINION_REPLY A 
+					WHERE OFFICE_CODE	= #{officeCode}
+					  AND REGIST_SEQ	= #{registSeq})						
+				, #{replyType}	
+				, #{replyContent}	
+				, #{replyUser}	
+				, NOW()
+			)
+		]]>
+	</insert>
+	
+	<select id="getOpinionHistory" parameterType="com.wwl.app.domain.mbr.dto.MbrCustDTO" resultType="com.wwl.app.domain.mbr.dto.MbrCustDTO"> 
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.getOpinionHistory
+			 * Description : 칭찬,불만 이전 내역 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.05.09  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   Z.TYPE			-- 칭찬,불만
+				 , Z.CONTENT		-- 접수내용
+				 , Z.CREATE_DATE	-- 접수등록일
+			     , GROUP_CONCAT(Z.REPLY_TYPE SEPARATOR '|') REPLY_TYPE			-- 답변타입
+			     , GROUP_CONCAT(Z.REPLY_CONTENT SEPARATOR '|') REPLY_CONTENT	-- 답변내용
+			     , GROUP_CONCAT(Z.REPLY_NAME SEPARATOR '|') SYS_NAME			-- 답변자
+			     , GROUP_CONCAT(Z.REPLY_DATE SEPARATOR '|') REPLY_DATE			-- 답변 등록일
+			  FROM (
+					SELECT 
+						   X.REGIST_SEQ	 
+						 , X.NAME
+						 , X.TYPE
+						 , X.CONTENT
+						 , X.CREATE_DATE     
+						 , IFNULL(Y.REPLY_SEQ, 1) REPLY_SEQ
+						 , Y.REPLY_TYPE
+						 , Y.REPLY_CONTENT
+						 , Y.REPLY_NAME
+						 , Y.REPLY_DATE
+					  FROM (
+							SELECT 
+								   Q.OFFICE_CODE
+								 , Q.REGIST_SEQ
+								 , Q.USER_ID
+								 , UI.NAME
+								 , IF(Q.TYPE = 'G', '칭찬', '불만') TYPE
+								 , Q.CONTENT
+								 , IFNULL(REPLACE(
+										REPLACE(
+											DATE_FORMAT(Q.CREATE_DATE,'%Y년 %m월 %d일 %p %I:%i')
+												,'AM','오전')
+											,'PM','오후'),'-') CREATE_DATE	
+							  FROM USER_OPINION Q
+								   INNER JOIN USER_INFO UI
+								      ON Q.OFFICE_CODE   = UI.OFFICE_CODE
+								     AND Q.USER_ID  	 = UI.USER_ID
+							 WHERE Q.REGIST_SEQ <> #{registSeq}
+							   AND (Q.OFFICE_CODE, Q.USER_ID) 
+									IN (SELECT OFFICE_CODE
+											 , USER_ID
+										  FROM USER_OPINION
+										 WHERE OFFICE_CODE   = #{officeCode}
+										   AND REGIST_SEQ    = #{registSeq})
+							) X LEFT OUTER JOIN (
+								SELECT 
+									   A.OFFICE_CODE
+									 , A.REGIST_SEQ
+									 , A.REPLY_SEQ
+									 , A.REPLY_TYPE
+									 , A.REPLY_CONTENT
+									 , A.REPLY_USER
+									 , IFNULL(REPLACE(
+												REPLACE(
+													DATE_FORMAT(A.REPLY_DATE,'%Y년 %m월 %d일 %p %I:%i')
+														,'AM','오전')
+													,'PM','오후'),'-') REPLY_DATE	
+									 , SUI.SYS_NAME AS REPLY_NAME
+								  FROM USER_OPINION_REPLY A
+									   LEFT OUTER JOIN SYS_USER_INFO SUI
+										 ON A.REPLY_USER = SUI.SYS_USER_ID
+							)  Y
+							  ON X.OFFICE_CODE	 = Y.OFFICE_CODE
+							 AND X.REGIST_SEQ 	 = Y.REGIST_SEQ
+					ORDER BY 
+						X.REGIST_SEQ DESC, REPLY_SEQ ASC
+				) Z
+			GROUP BY Z.REGIST_SEQ
+			ORDER BY Z.REGIST_SEQ DESC
+			LIMIT 10 OFFSET #{index}
+		]]>
+	</select>
+	
+	<select id="getTemplateList" parameterType="com.wwl.app.domain.mbr.dto.MbrCustDTO" resultType="com.wwl.app.domain.mbr.dto.MbrCustDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.getTemplateList
+			 * Description : 답변 템플릿 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.27  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   TEMPLATE_SEQ
+			 	 , TITLE
+			 	 , CONTENT
+			  FROM REPLY_TEMPLATE
+			 WHERE OFFICE_CODE	 = #{officeCode}
+			   AND TEMPLATE_TYPE = 'cust'
+		]]>
+		<if test="templateSeq != null and templateSeq != ''">
+			AND TEMPLATE_SEQ = #{templateSeq}
+		</if>		
+			 ORDER BY TITLE		
+	</select>
+	
+	<insert id="insertReplyTemplate" parameterType="com.wwl.app.domain.mbr.dto.MbrCustDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.insertReplyTemplate
+			 * Description : 답변 템플릿 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.27  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO REPLY_TEMPLATE (
+				  OFFICE_CODE	
+				, TEMPLATE_TYPE
+				, TEMPLATE_SEQ
+				, TITLE	
+				, CONTENT	
+				, CREATE_USER	
+				, CREATE_DATE				
+			) VALUES (
+				  #{officeCode}
+				, 'cust'
+				, IFNULL(#{templateSeq}, 
+					(SELECT IFNULL(MAX(TEMPLATE_SEQ),0) + 1
+				       FROM REPLY_TEMPLATE A
+				      WHERE OFFICE_CODE   = #{officeCode}
+				        AND TEMPLATE_TYPE = 'cust'))
+				, #{title}
+				, #{content}	
+				, #{createUser}	
+				, NOW()
+			) 		
+			ON DUPLICATE KEY
+			UPDATE TITLE  	   = #{title}	
+				 , CONTENT 	   = #{content}	
+				 , CREATE_USER = #{createUser}
+				 , CREATE_DATE = NOW()		
+		]]>
+	</insert>
+	
+	<delete id="deleteReplyTemplate" parameterType="com.wwl.app.domain.mbr.dto.MbrCustDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : mbr.deleteReplyTemplate
+			 * Description : 답변 템플릿 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.04.27  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM REPLY_TEMPLATE
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND TEMPLATE_TYPE = 'cust'
+			   AND TEMPLATE_SEQ	 = #{templateSeq}
+		]]> 
+	</delete>
+	
+	
+</mapper>

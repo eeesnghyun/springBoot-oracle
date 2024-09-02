@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwl.app.domain.psh.dao.PshDAO">
+	
+	<select id="getPushList" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getPushList
+			 * Description : 푸쉬 발송 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   M1.PUSH_SEQ	
+				 , M1.PUSH_TYPE
+				 , M1.PUSH_TARGET_ADR
+				 , M1.PUSH_TARGET_IOS
+				 , M1.PUSH_TARGET_ETC				 
+				 , M1.MESSAGE_TITLE	
+				 , M1.MESSAGE_CONTENT					 
+				 , M1.EXPECT_COUNT 
+				 , IFNULL(M2.SUCCESS_CNT, 0) AS SUCCESS_CNT
+			     , M1.PUSH_STATUS
+			     , M1.TEST_YN
+			     , REPLACE(
+						REPLACE(DATE_FORMAT(M1.TEST_TIME, '%Y년 %m월 %d일 %p %I:%i')
+							,'AM','오전')
+						,'PM','오후') AS TEST_TIME 
+				 , IF(PUSH_TYPE = 0, 
+						REPLACE(
+							REPLACE(DATE_FORMAT(M1.CREATE_DATE, '%Y년 %m월 %d일 %p %I:%i')
+								,'AM','오전')
+							,'PM','오후'),
+						REPLACE(
+							REPLACE(DATE_FORMAT(STR_TO_DATE(M1.PUSH_TIME, '%Y%m%d%H%i'), '%Y년 %m월 %d일 %p %I:%i')
+								,'AM','오전')
+							,'PM','오후')
+				   ) AS PUSH_TIME   	  									 
+			  FROM MOBILE_PUSH_INFO M1
+				   LEFT OUTER JOIN MOBILE_PUSH_STATISTICS M2
+			         ON M1.OFFICE_CODE = M2.OFFICE_CODE
+			        AND M1.PUSH_SEQ	   = M2.PUSH_SEQ
+			 WHERE M1.OFFICE_CODE = #{officeCode}
+		]]>
+		<if test="start != null and start != '' and end != null and end != ''">
+			   AND IF(M1.PUSH_TYPE = '0', DATE_FORMAT(M1.CREATE_DATE, '%Y%m%d'), SUBSTR(M1.PUSH_TIME,1,8))
+				   BETWEEN #{start} AND #{end}
+		</if>		
+			 ORDER BY M1.PUSH_SEQ DESC		
+	</select>
+	
+	<select id="getMaxPushSeq" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="int">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getMaxPushSeq
+			 * Description : 푸쉬 Key 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.09.07  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT IFNULL(MAX(PUSH_SEQ), 0) + 1
+			  FROM MOBILE_PUSH_INFO
+			 WHERE OFFICE_CODE   = #{officeCode}
+		]]>
+	</select>
+	
+	<insert id="insertPushInfo" parameterType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.insertPushInfo
+			 * Description : 푸쉬 발송 정보 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO MOBILE_PUSH_INFO (
+				  OFFICE_CODE	
+				, PUSH_SEQ	
+				, PUSH_TYPE	
+				, PUSH_TARGET_ADR	
+				, PUSH_TARGET_IOS	
+				, PUSH_TARGET_ETC	
+				, MESSAGE_TITLE	
+				, MESSAGE_CONTENT	
+				, MESSAGE_IMAGE	
+				, PUSH_LINK	
+				, PUSH_TIME	
+				, EXPECT_COUNT	
+				, TEST_TARGET
+				, PUSH_STATUS	
+				, CREATE_USER	
+				, CREATE_DATE					
+			) VALUES (
+				  #{officeCode}	
+				, #{pushSeq}
+				, #{pushType}
+				, #{pushTargetAdr}	
+				, #{pushTargetIos}	
+				, #{pushTargetEtc}	
+				, #{messageTitle}
+				, #{messageContent}	
+				, #{messageImage}	
+				, #{pushLink}	
+				, #{pushTime}
+				, REPLACE(#{expectCount},',','')				
+				, #{testTarget}
+				, 'W'
+				, #{createUser}	
+				, NOW()	
+			)
+			ON DUPLICATE KEY
+			UPDATE PUSH_TYPE 	   = #{pushType}
+			 	 , PUSH_TARGET_ADR = #{pushTargetAdr}	
+				 , PUSH_TARGET_IOS = #{pushTargetIos}	
+				 , PUSH_TARGET_ETC = #{pushTargetEtc}	
+				 , MESSAGE_TITLE   = #{messageTitle}
+				 , MESSAGE_CONTENT = #{messageContent}	
+				 , MESSAGE_IMAGE   = #{messageImage}	
+				 , PUSH_LINK       = #{pushLink}	
+				 , PUSH_TIME	   = #{pushTime}
+				 , EXPECT_COUNT    = REPLACE(#{expectCount},',','')
+				 , TEST_YN		   = 'N'
+				 , TEST_TARGET     = #{testTarget}
+		]]>
+	</insert>
+	
+	<insert id="insertPushCondition" parameterType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.insertPushCondition
+			 * Description : 푸쉬 특정 조건 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.22  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO MOBILE_PUSH_CONDITION (
+				  OFFICE_CODE	
+				, PUSH_SEQ	
+				, COND_SEQ
+				, PUSH_COND
+				, COND_VALUE
+			) VALUES (
+				  #{officeCode}	
+				, #{pushSeq}
+				, (SELECT IFNULL(MAX(COND_SEQ),0) + 1
+				     FROM MOBILE_PUSH_CONDITION A
+				    WHERE OFFICE_CODE   = #{officeCode}
+				      AND PUSH_SEQ	    = #{pushSeq})
+				, #{pushCond}
+				, #{condValue}
+			)
+		]]>				
+	</insert>
+	
+	<update id="updateTestUser" parameterType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.updatePushCancel
+			 * Description : 푸쉬 테스트 유저 변경
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.11.04  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE MOBILE_PUSH_INFO
+			   SET TEST_TARGET   = #{testTarget}
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND PUSH_SEQ		 = #{pushSeq}
+		]]>
+	</update>
+	
+	<update id="updatePushCancel" parameterType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.updatePushCancel
+			 * Description : 푸쉬 발송 취소
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.09.20  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE MOBILE_PUSH_INFO
+			   SET PUSH_STATUS = 'C'
+			 WHERE OFFICE_CODE   = #{officeCode}
+			   AND PUSH_SEQ		 = #{pushSeq} 
+		]]>
+	</update>
+	
+	<select id="getPushInfo" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getPushInfo
+			 * Description : 푸쉬 정보 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.09.07  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   FN_GET_HOSPITAL_NAME(M1.OFFICE_CODE) AS HOSPITAL_NAME
+				 , M1.PUSH_SEQ
+				 , M1.PUSH_TYPE
+				 , M1.PUSH_STATUS
+				 , M1.PUSH_TARGET_ADR
+			     , M1.PUSH_TARGET_IOS
+			     , M1.PUSH_TARGET_ETC
+			     , M1.MESSAGE_TITLE
+			     , M1.MESSAGE_CONTENT
+			     , IF(IFNULL(M1.MESSAGE_IMAGE, 'N') = 'N', '', 
+			     		CONCAT('https://beautyall.app/files/', H1.HOSPITAL_CODE, '/', H1.OFFICE_CODE, M1.MESSAGE_IMAGE)) AS MESSAGE_IMAGE
+			     , M1.PUSH_LINK
+			     , CASE WHEN M1.PUSH_TYPE = '0' THEN REPLACE(REPLACE(
+			     										DATE_FORMAT(M1.CREATE_DATE, '%Y년 %m월 %d일 %p %I:%i')
+			     											,'AM','오전')
+														,'PM','오후') 
+						ELSE REPLACE(REPLACE(
+								DATE_FORMAT(STR_TO_DATE(M1.PUSH_TIME, '%Y%m%d%H%i'), '%Y년 %m월 %d일 %p %I:%i')
+									,'AM','오전')
+								,'PM','오후')
+					END PUSH_TIME
+			     , M1.EXPECT_COUNT     
+                 , IFNULL(M3.SUCCESS_CNT, 0) AS SUCCESS_CNT
+                 , IFNULL(M3.CLICK_CNT, 0)   AS CLICK_CNT
+                 , M1.TEST_YN
+			     , M2.PUSH_COND1
+			     , M2.PUSH_COND2
+			     , M2.PUSH_COND3
+			     , M2.PUSH_COND4
+			     , M2.PUSH_COND5
+			     , M2.PUSH_COND6
+			     , CASE WHEN M2.FIXED_DOCTOR = '0' THEN '의사 전체'
+						WHEN M2.FIXED_DOCTOR = '1' THEN '의사 제외'
+						ELSE (SELECT CONCAT(S.SYS_NAME, ' ', C.COMMON_NAME)
+								FROM SYS_USER_INFO S
+									 LEFT OUTER JOIN COMMON_CODE C
+									   ON C.GROUP_CODE   = 'POS001'
+									  AND S.SYS_POSITION = C.COMMON_CODE
+							   WHERE S.SYS_USER_ID = M2.FIXED_DOCTOR)
+					END FIXED_DOCTOR
+                 , CASE WHEN M2.FIXED_STAFF = '0' THEN '의료진 전체'
+						WHEN M2.FIXED_STAFF = '1' THEN '의료진 제외'
+						ELSE (SELECT CONCAT(S.SYS_NAME, ' ', C.COMMON_NAME)
+								FROM SYS_USER_INFO S
+									 LEFT OUTER JOIN COMMON_CODE C
+									   ON C.GROUP_CODE   = 'POS001'
+									  AND S.SYS_POSITION = C.COMMON_CODE
+							   WHERE S.SYS_USER_ID = M2.FIXED_DOCTOR)
+					END FIXED_STAFF
+				 , IF(M2.FIXED_DOCTOR = '0', '', M2.FIXED_DOCTOR) AS FIXED_DOCTOR_CODE  
+				 , IF(M2.FIXED_STAFF  = '0', '', M2.FIXED_STAFF)  AS FIXED_STAFF_CODE
+			  FROM MOBILE_PUSH_INFO M1
+			       INNER JOIN HOSPITAL_OFFICE_INFO H1
+			          ON M1.OFFICE_CODE = H1.OFFICE_CODE
+				   LEFT OUTER JOIN (
+									SELECT 
+										   MAX(X.PUSH_SEQ)   AS PUSH_SEQ
+										 , MAX(X.PUSH_COND1) AS PUSH_COND1
+										 , MAX(X.PUSH_COND2) AS PUSH_COND2
+										 , MAX(X.PUSH_COND3) AS PUSH_COND3
+										 , MAX(X.PUSH_COND4) AS PUSH_COND4
+										 , MAX(X.PUSH_COND5) AS PUSH_COND5
+										 , MAX(X.PUSH_COND6) AS PUSH_COND6
+										 , IF(MAX(X.PUSH_COND5) = 1, Y.FIXED_DOCTOR, 'X') AS FIXED_DOCTOR
+										 , IF(MAX(X.PUSH_COND5) = 1, Y.FIXED_STAFF, 'X')  AS FIXED_STAFF
+									  FROM (
+											SELECT 
+												   M.PUSH_SEQ
+												 , IF(M.PUSH_COND = 'A', M.COND_VALUE, '') 			     AS PUSH_COND1 
+												 , IF(M.PUSH_COND = 'B', M.COND_VALUE, '') 				 AS PUSH_COND2
+												 , IF(M.PUSH_COND = 'C', GROUP_CONCAT(M.COND_VALUE), '') AS PUSH_COND3
+												 , IF(M.PUSH_COND = 'D', M.COND_VALUE, '')			     AS PUSH_COND4
+												 , IF(M.PUSH_COND = 'E', IF(COUNT(M.COND_SEQ) = 1, 0, 1), '') AS PUSH_COND5
+												 , IF(M.PUSH_COND = 'F', IF(M.COND_VALUE = '0', '0', (SELECT GRADE_NAME
+																										FROM USER_GRADE 
+																									   WHERE OFFICE_CODE   = M.OFFICE_CODE
+							                                                                             AND GRADE_CODE	   = M.COND_VALUE)), '') AS PUSH_COND6
+											  FROM MOBILE_PUSH_CONDITION M
+											 WHERE M.OFFICE_CODE   = #{officeCode}
+											   AND M.PUSH_SEQ	   = #{pushSeq}
+											 GROUP BY 
+												   M.PUSH_SEQ, M.PUSH_COND
+											) X LEFT OUTER JOIN (
+																 SELECT
+																	   B.PUSH_SEQ
+																	 , MAX(B.FIXED_DOCTOR) AS FIXED_DOCTOR
+																	 , MAX(B.FIXED_STAFF)  AS FIXED_STAFF
+																  FROM (
+																		SELECT 
+																			   A.PUSH_SEQ     
+																			 , IF(A.GUBUN = 'doctor', A.COND_VALUE, '') AS FIXED_DOCTOR
+																			 , IF(A.GUBUN = 'staff' , A.COND_VALUE, '') AS FIXED_STAFF      
+																		  FROM (
+																				SELECT 
+																					   PUSH_SEQ
+																					 , IF(PUSH_SEQ = LAG(PUSH_SEQ) OVER (ORDER BY PUSH_SEQ, COND_SEQ), 'staff', 'doctor') AS GUBUN
+																					 , COND_SEQ
+																					 , COND_VALUE
+																				  FROM MOBILE_PUSH_CONDITION
+																				 WHERE OFFICE_CODE   = #{officeCode}
+																				   AND PUSH_SEQ	     = #{pushSeq}
+																				   AND PUSH_COND 	 = 'E'
+																				 GROUP BY COND_SEQ
+																				) A
+																		) B
+																 GROUP BY B.PUSH_SEQ					
+											) Y ON X.PUSH_SEQ = Y.PUSH_SEQ   
+			       ) M2
+			       ON M1.PUSH_SEQ = M2.PUSH_SEQ
+			       LEFT OUTER JOIN MOBILE_PUSH_STATISTICS M3
+                     ON M1.OFFICE_CODE   = M3.OFFICE_CODE
+                    AND M1.PUSH_SEQ		 = M3.PUSH_SEQ
+			 WHERE M1.OFFICE_CODE   = #{officeCode}
+			   AND M1.PUSH_SEQ      = #{pushSeq}
+		]]>
+	</select>
+	
+	<select id="getPushExpectCount" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="int">   
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getPushExpectCount
+			 * Description : 푸쉬 예상 발송 대상 구하기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.09.07  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT COUNT(U1.USER_ID) AS CNT
+			  FROM USER_INFO U1
+			       LEFT OUTER JOIN ( -- 초진/재진 여부(1:초진,2:재진)
+									SELECT
+										   USER_ID
+										 , IF(COUNT(USER_ID) = 0, 1, 2) AS IS_FIRST
+									  FROM USER_PRODUCT
+									 WHERE OFFICE_CODE   = #{officeCode}
+									 GROUP BY USER_ID
+			        ) U2 
+			       ON U1.USER_ID = U2.USER_ID
+			       LEFT OUTER JOIN ( -- 총 결제 금액
+									SELECT 
+										   X.USER_ID
+										 , SUM(X.ITEM_PRICE) AS USER_TOTAL_PAY
+									  FROM (
+											SELECT 			 
+												   P2.OFFICE_CODE
+												 , P2.USER_ID
+												 , P1.PRICE  AS ITEM_PRICE		
+											  FROM PRODUCT_SURGICAL_ITEM P1
+												   INNER JOIN (
+																SELECT 
+																	   R1.RES_NO
+																	 , R1.OFFICE_CODE
+																	 , R1.USER_ID
+																	 , R2.ITEM_TYPE
+																	 , R3.UPDATE_SEQ
+																	 , R3.PRD_ITEM_CODE																	 
+																 FROM USER_RESERVE R1
+																	  INNER JOIN USER_RESERVE_ITEM R2
+																		 ON R1.OFFICE_CODE   = R2.OFFICE_CODE
+																		AND R1.RES_NO		 = R2.RES_NO
+																		AND R2.ITEM_TYPE     = 'N'
+																      INNER JOIN USER_RESERVE_ITEM_DETAIL R3
+																         ON R2.OFFICE_CODE    = R3.OFFICE_CODE
+																		AND R2.RES_NO		  = R3.RES_NO
+																		AND R2.RES_GROUP_CODE = R3.RES_GROUP_CODE 
+																WHERE R1.CONFIRM_YN	= 'Y'
+													) P2
+												    ON P1.OFFICE_CODE   = P2.OFFICE_CODE
+												   AND P1.UPDATE_SEQ    = P2.UPDATE_SEQ
+												   AND P1.PRD_ITEM_CODE = P2.PRD_ITEM_CODE
+											 WHERE P1.OFFICE_CODE   = #{officeCode}
+											 UNION ALL
+											SELECT 			 
+												   P2.OFFICE_CODE
+												 , P2.USER_ID
+												 , P1.EVENT_SALE  AS ITEM_PRICE          
+											  FROM EVENT_PRODUCT_SURGICAL P1
+												   INNER JOIN (
+																SELECT 
+																	   R1.RES_NO
+																	 , R1.OFFICE_CODE
+																	 , R1.USER_ID
+																	 , R2.ITEM_TYPE
+																	 , R3.EVENT_UPDATE_SEQ																	 
+																	 , R3.EVENT_SEQ
+																	 , R3.EVENT_SUB_SEQ
+																	 , R3.EVENT_PRODUCT_CODE
+																 FROM USER_RESERVE R1
+																	  INNER JOIN USER_RESERVE_ITEM R2
+																		 ON R1.OFFICE_CODE   = R2.OFFICE_CODE
+																		AND R1.RES_NO		 = R2.RES_NO
+																		AND R2.ITEM_TYPE    <> 'N'
+																	  INNER JOIN ALL_EVENT_PRODUCT_INFO R3
+																	     ON R2.OFFICE_CODE    = R3.OFFICE_CODE																		
+																		AND R2.RES_GROUP_CODE = R3.ITEM_CODE
+																WHERE R1.CONFIRM_YN	= 'Y'
+													) P2        
+												     ON P1.OFFICE_CODE	      = P2.OFFICE_CODE
+												    AND P1.EVENT_UPDATE_SEQ   = P2.EVENT_UPDATE_SEQ
+												    AND P1.EVENT_SEQ	      = P2.EVENT_SEQ
+												    AND P1.EVENT_SUB_SEQ      = P2.EVENT_SUB_SEQ
+												    AND P1.EVENT_PRODUCT_CODE = P2.EVENT_PRODUCT_CODE      
+											  WHERE P1.OFFICE_CODE   = #{officeCode}
+										   ) X
+									GROUP BY X.USER_ID
+			        ) U3
+			       ON U1.USER_ID = U3.USER_ID 
+			 WHERE U1.OFFICE_CODE   = #{officeCode}
+			   AND U1.USE_YN		= 'Y'	-- 회원탈퇴여부
+			   AND U1.MARKETING_YN  = 'Y'	-- 마케팅동의여부
+			   -- 발송 대상
+			   AND CASE WHEN #{pushTargetAdr} = 'Y' AND #{pushTargetIos} = 'Y' THEN U1.MOBILE_DEVICE IN ('ios', 'android')
+						WHEN #{pushTargetAdr} = 'Y' THEN U1.MOBILE_DEVICE = 'android'
+				        WHEN #{pushTargetIos} = 'Y' THEN U1.MOBILE_DEVICE = 'ios'
+						ELSE 1 = 1
+				    END
+			   -- 초진/재진
+			   AND IF(#{pushCond1} = '0', 1, IFNULL(U2.IS_FIRST,1)) 
+			   		= IF(#{pushCond1} = '0', 1, #{pushCond1})      
+			   -- 성별
+			   AND IF(#{pushCond2} = '0', 1, U1.GENDER) 
+			   		= IF(#{pushCond2} = '0', 1, #{pushCond2})
+		   	   -- 나이
+			   AND IF(#{pushCond3} = '0', 1, FN_CALCULATE_COND_AGE(#{pushCond3}, FN_GET_AGE(U1.BIRTHDATE))) 
+					= IF(#{pushCond3} = '0', 1, 'Y')
+			   -- 결제		  
+			   AND IF(#{pushCond4} = '0', 1, #{pushCond4}) 
+			   		<= IF(#{pushCond4} = 0, 1, U3.USER_TOTAL_PAY)
+			   -- 의료진 지정
+			    AND (CASE WHEN #{pushCond5} = '0' THEN 1 = 1
+						  ELSE CASE WHEN #{fixedDoctor}  = '0' THEN IFNULL(U1.FIXED_DOCTOR, '') <> ''	-- 의사 전체
+								    WHEN #{fixedDoctor}  = '1' THEN IFNULL(U1.FIXED_DOCTOR, '') = ''	-- 의사 제외
+			                        ELSE U1.FIXED_DOCTOR = #{fixedDoctor}
+							    END 
+					  END)
+			    AND (CASE WHEN #{pushCond5} = '0' THEN 1 = 1
+						  ELSE CASE WHEN #{fixedStaff}  = '0' THEN IFNULL(U1.FIXED_STAFF, '') <> ''	-- 의료진 전체
+								    WHEN #{fixedStaff}  = '1' THEN IFNULL(U1.FIXED_STAFF, '') = ''	-- 의료진 제외
+			                        ELSE U1.FIXED_STAFF = #{fixedStaff}
+							    END 
+					 END)			   
+			   -- 등급
+			   AND (CASE WHEN #{pushCond6} = '0' THEN 1 = 1
+					     ELSE IFNULL(U1.GRADE_CODE, '') = #{pushCond6}
+			   		 END)
+		 ]]>
+	</select>
+	
+	<select id="getTestUserList" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getTestUserList
+			 * Description : 푸쉬 테스트 대상 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.09.27  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[			
+			SELECT 
+				   S.SYS_USER_ID	
+				 , CONCAT(S.SYS_NAME, ' ', 
+							IFNULL((SELECT COMMON_NAME
+							  		  FROM COMMON_CODE
+									 WHERE GROUP_CODE = 'POS001'
+									   AND COMMON_CODE = S.SYS_POSITION),'')) AS SYS_NAME
+			  FROM SYS_USER_INFO S
+			 WHERE S.OFFICE_CODE   = #{officeCode}
+			   AND S.ROLE_CODE 	   = 'ROLE_ADMIN'
+			   AND S.USE_YN		   = 'Y'
+			 ORDER BY IF(S.SYS_POSITION = 'A', 1, 2)
+		]]>
+	</select>
+	
+	<select id="getSendPushList" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="camelHashMap">	
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getSendPushList
+			 * Description : 푸쉬 발송 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.11  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   PUSH_SEQ      AS CODE
+				 , MESSAGE_TITLE AS NAME
+			  FROM MOBILE_PUSH_INFO
+			 WHERE OFFICE_CODE = #{officeCode}
+			 ORDER BY PUSH_SEQ DESC
+		]]>
+	</select>
+	
+	<select id="getMaxPushStatistic" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="int">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getMaxPushStatistic
+			 * Description : 푸쉬 날짜/시간별 데이터 개수 구하기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.12  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[			
+			SELECT COUNT(X.PUSH_SEQ)			 			 
+			  FROM (
+					SELECT 
+						   P4.PUSH_SEQ			 	         								
+						 , P4.TOTAL_CNT
+						 , P4.FAILED_CNT
+						 , P4.SUCCESS_CNT
+						 , P4.CLICK_CNT
+					  FROM (
+							SELECT 
+								   P1.PUSH_SEQ
+                                 , DATE_FORMAT(IF(P1.PUSH_TYPE = '0', P1.CREATE_DATE, STR_TO_DATE(P1.PUSH_TIME, '%Y%m%d')), '%Y%m%d')   AS PUSH_DATE
+								 , DATE_FORMAT(IF(P1.PUSH_TYPE = '0', P1.CREATE_DATE, STR_TO_DATE(P1.PUSH_TIME, '%Y%m%d%H%i')), '%H00') AS PUSH_TIME
+								 , IFNULL(P3.TOTAL_CNT, 0)   AS TOTAL_CNT	 
+								 , IFNULL(P2.FAILED_CNT, 0)	 AS FAILED_CNT	 
+								 , IFNULL(P2.SUCCESS_CNT, 0) AS SUCCESS_CNT	 
+								 , IFNULL(P2.CLICK_CNT, 0)   AS CLICK_CNT    
+							  FROM MOBILE_PUSH_INFO P1
+								   LEFT OUTER JOIN MOBILE_PUSH_STATISTICS P2
+									 ON P1.OFFICE_CODE   = P2.OFFICE_CODE
+									AND P1.PUSH_SEQ	     = P2.PUSH_SEQ
+								   LEFT OUTER JOIN (
+													SELECT 
+														   PUSH_SEQ
+														 , COUNT(USER_ID) AS TOTAL_CNT                      
+													  FROM USER_PUSH_INFO
+													 WHERE OFFICE_CODE   = #{officeCode}
+													 GROUP BY PUSH_SEQ
+								   ) P3
+								   ON P1.PUSH_SEQ = P3.PUSH_SEQ
+							 WHERE P1.OFFICE_CODE   = #{officeCode}
+		]]>
+		<if test="start != null and start != '' and end != null and end != ''">			
+							   AND DATE_FORMAT(IF(P1.PUSH_TYPE = '0', P1.CREATE_DATE, STR_TO_DATE(P1.PUSH_TIME, '%Y%m%d')), '%Y%m%d') BETWEEN #{start} AND #{end}
+		</if>		
+							) P4
+		<choose>
+			<when test="view == 'date'">
+				GROUP BY P4.PUSH_DATE
+			</when>
+			<otherwise>
+				GROUP BY P4.PUSH_TIME
+			</otherwise>
+		</choose>			
+				 ) X		
+	</select>
+	
+	<select id="getTotalPushStatistic" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getTotalPushStatistic
+			 * Description : 전체 푸쉬 발송 통계 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.11  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   SUM(X.TOTAL_CNT) AS TOTAL_CNT   -- 전체발송수	 
+			     , TRUNCATE(ROUND(( SUM(X.SUCCESS_CNT)/SUM(X.TOTAL_CNT) * 100 ), 2), 0) AS SUCCESS_PERCENT	-- 성공률
+			     , TRUNCATE(ROUND(( SUM(X.CLICK_CNT)/SUM(X.TOTAL_CNT) * 100 ), 2), 0)   AS CLICK_PERCENT	-- 수신확인률
+			     , TRUNCATE(ROUND(( SUM(X.IOS_CNT)/SUM(X.TOTAL_CNT) * 100 ), 2), 0)     AS IOS_PERCENT		-- 점유율 : ios
+			     , TRUNCATE(ROUND(( SUM(X.ANDROID_CNT)/SUM(X.TOTAL_CNT) * 100 ), 2), 0) AS ANDROID_PERCENT	-- 점유율 : android
+			  FROM (
+					SELECT 
+						   P1.PUSH_SEQ
+						 , IFNULL(P3.TOTAL_CNT, 0)   AS TOTAL_CNT	
+						 , IFNULL(P2.SUCCESS_CNT, 0) AS SUCCESS_CNT	
+						 , IFNULL(P2.CLICK_CNT, 0)   AS CLICK_CNT
+						 , IFNULL(P3.IOS_CNT, 0)     AS IOS_CNT
+						 , IFNULL(P3.ANDROID_CNT, 0) AS ANDROID_CNT     
+					  FROM MOBILE_PUSH_INFO P1
+						   LEFT OUTER JOIN MOBILE_PUSH_STATISTICS P2
+							 ON P1.OFFICE_CODE   = P2.OFFICE_CODE
+							AND P1.PUSH_SEQ	     = P2.PUSH_SEQ
+						   LEFT OUTER JOIN (
+											SELECT 
+												   U1.PUSH_SEQ
+												 , COUNT(U1.USER_ID) AS TOTAL_CNT
+												 , COUNT(CASE WHEN U2.MOBILE_DEVICE = 'ios' THEN 1 END) 	AS IOS_CNT
+												 , COUNT(CASE WHEN U2.MOBILE_DEVICE = 'android' THEN 1 END) AS ANDROID_CNT
+											  FROM USER_PUSH_INFO U1
+												   INNER JOIN USER_INFO U2
+													  ON U1.OFFICE_CODE = U2.OFFICE_CODE
+													 AND U1.USER_ID		= U2.USER_ID
+											 WHERE U1.OFFICE_CODE = #{officeCode}   
+											 GROUP BY U1.PUSH_SEQ
+						   ) P3
+						   ON P1.PUSH_SEQ = P3.PUSH_SEQ
+					 WHERE P1.OFFICE_CODE = #{officeCode}
+		]]>
+		<if test="pushSeq != null and pushSeq != ''">
+			AND P1.PUSH_SEQ	= #{pushSeq}
+		</if>		
+		<if test="start != null and start != '' and end != null and end != ''">
+			AND DATE_FORMAT(IF(P1.PUSH_TYPE = '0', P1.CREATE_DATE, STR_TO_DATE(P1.PUSH_TIME, '%Y%m%d')), '%Y%m%d') BETWEEN #{start} AND #{end}			   
+		</if>				
+					) X		
+	</select>
+	
+	<select id="getPushStatisticDateDetail" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getPushStatisticDateDetail
+			 * Description : 푸쉬 날짜별 데이터 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.05  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   X.PUSH_DATE						 
+				 , X.TOTAL_CNT		-- 전체발송
+				 , X.FAILED_CNT		-- 발송실패
+				 , X.SUCCESS_CNT	-- 수신성공
+				 , X.CLICK_CNT		-- 수신확인
+			  FROM (
+					SELECT 
+						   P4.PUSH_DATE												 
+						 , SUM(P4.TOTAL_CNT)   AS TOTAL_CNT
+						 , SUM(P4.FAILED_CNT)  AS FAILED_CNT
+						 , SUM(P4.SUCCESS_CNT) AS SUCCESS_CNT
+						 , SUM(P4.CLICK_CNT)   AS CLICK_CNT
+					  FROM (
+							SELECT 
+								   DATE_FORMAT(IF(PUSH_TYPE = '0', CREATE_DATE, STR_TO_DATE(PUSH_TIME, '%Y%m%d')), '%Y%m%d') AS PUSH_DATE								 
+								 , IFNULL(P3.TOTAL_CNT, 0)   AS TOTAL_CNT	 
+								 , IFNULL(P2.FAILED_CNT, 0)	 AS FAILED_CNT	 
+								 , IFNULL(P2.SUCCESS_CNT, 0) AS SUCCESS_CNT	 
+								 , IFNULL(P2.CLICK_CNT, 0)   AS CLICK_CNT    
+							  FROM MOBILE_PUSH_INFO P1
+								   LEFT OUTER JOIN MOBILE_PUSH_STATISTICS P2
+									 ON P1.OFFICE_CODE   = P2.OFFICE_CODE
+									AND P1.PUSH_SEQ	     = P2.PUSH_SEQ
+								   LEFT OUTER JOIN (
+													SELECT 
+														   PUSH_SEQ
+														 , COUNT(USER_ID) AS TOTAL_CNT                      
+													  FROM USER_PUSH_INFO
+													 WHERE OFFICE_CODE   = #{officeCode}
+													 GROUP BY PUSH_SEQ
+								   ) P3 
+								   ON P1.PUSH_SEQ = P3.PUSH_SEQ								   
+							 WHERE P1.OFFICE_CODE = #{officeCode}
+		]]>
+		<if test="pushSeq != null and pushSeq != ''">
+			AND P1.PUSH_SEQ = #{pushSeq}
+		</if>		
+		<![CDATA[			
+							) P4
+					 WHERE 1=1
+		]]>		
+		<if test="start != null and start != '' and end != null and end != ''">
+				AND P4.PUSH_DATE BETWEEN #{start} AND #{end}			   
+		</if>
+		<![CDATA[	
+					 GROUP BY P4.PUSH_DATE
+					 ORDER BY P4.PUSH_DATE DESC
+				   ) X 
+			 LIMIT 10 OFFSET #{offset}
+		]]>				
+	</select>
+	
+	<select id="getPushStatisticTimeDetail" parameterType="com.wwl.app.domain.psh.dto.PshDTO" resultType="com.wwl.app.domain.psh.dto.PshDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : psh.getPushStatisticTimeDetail
+			 * Description : 푸쉬 시간별 데이터 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.05  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   X.PUSH_DATE						 
+				 , X.TOTAL_CNT	 -- 전체발송
+				 , X.FAILED_CNT  -- 발송실패
+				 , X.SUCCESS_CNT -- 수신성공
+				 , X.CLICK_CNT   -- 수신확인
+			  FROM (
+					SELECT 
+						   P4.PUSH_DATE						 
+						 , SUM(P4.TOTAL_CNT)   AS TOTAL_CNT
+						 , SUM(P4.FAILED_CNT)  AS FAILED_CNT
+						 , SUM(P4.SUCCESS_CNT) AS SUCCESS_CNT
+						 , SUM(P4.CLICK_CNT)   AS CLICK_CNT
+					  FROM (
+							SELECT 
+								   DATE_FORMAT(IF(P1.PUSH_TYPE = '0', P1.CREATE_DATE, STR_TO_DATE(P1.PUSH_TIME, '%Y%m%d%H%i')), '%H00') AS PUSH_DATE
+								 , IFNULL(P3.TOTAL_CNT, 0)   AS TOTAL_CNT	 
+								 , IFNULL(P2.FAILED_CNT, 0)	 AS FAILED_CNT	 
+								 , IFNULL(P2.SUCCESS_CNT, 0) AS SUCCESS_CNT	 
+								 , IFNULL(P2.CLICK_CNT, 0)   AS CLICK_CNT   
+							  FROM MOBILE_PUSH_INFO P1
+								   LEFT OUTER JOIN MOBILE_PUSH_STATISTICS P2
+									 ON P1.OFFICE_CODE = P2.OFFICE_CODE
+									AND P1.PUSH_SEQ	   = P2.PUSH_SEQ
+								   LEFT OUTER JOIN (
+													SELECT 
+														   PUSH_SEQ
+														 , COUNT(USER_ID) AS TOTAL_CNT                      
+													  FROM USER_PUSH_INFO
+													 WHERE OFFICE_CODE   = #{officeCode}
+													 GROUP BY PUSH_SEQ
+								   ) P3
+								   ON P1.PUSH_SEQ = P3.PUSH_SEQ
+							 WHERE P1.OFFICE_CODE   = #{officeCode}
+		]]>
+		<if test="pushSeq != null and pushSeq != ''">
+			AND P1.PUSH_SEQ = #{pushSeq}
+		</if>		
+		<if test="start != null and start != '' and end != null and end != ''">			   
+			AND DATE_FORMAT(IF(P1.PUSH_TYPE = '0', P1.CREATE_DATE, STR_TO_DATE(P1.PUSH_TIME, '%Y%m%d')), '%Y%m%d') BETWEEN #{start} AND #{end}		   
+		</if>
+		<![CDATA[									   	
+							) P4							
+					 GROUP BY P4.PUSH_DATE
+					 ORDER BY P4.PUSH_DATE DESC
+	    		   ) X 
+			 LIMIT 10 OFFSET #{offset}
+		]]>  				
+	</select>
+	
+</mapper>

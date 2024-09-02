@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard-dynamic-subset.css");
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+	font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+/* 인풋 자동 채우기 */
+input:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0 1000px transparent inset;
+}
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+input:focus{
+	border-bottom: 1px solid #000 !important;
+}
+
+input.active , select.active{
+	border-bottom: 1px solid red !important;
+}
+
+fieldset{
+	border: none;
+	position:relative;
+}
+
+.login-back{
+    width: 100%;
+    margin: 220px 0 100px;
+}
+
+.login-back .login-wrap{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.login-back h1{
+	font-size: 34px;
+	font-weight: 700;
+	color: #373757;	
+	margin-bottom: 4px;
+  	font-family: 'Montserrat', sans-serif;
+}
+
+.info-text{
+	color: #aaa;
+	font-size: 14px;
+	font-weight: 400;
+	letter-spacing: 7px;
+  	margin-bottom: 40px;
+}
+
+.login-box label span{
+	font-size: 12px;
+	font-weight: 500;
+  	color: #999;
+	margin-bottom: 5px;
+	cursor: pointer;
+	position: relative;
+}
+
+.login-box input{
+	border: none;
+    border-bottom: solid 1px #e9e9e9;
+    background-color: #fff;
+    padding: 15px 9px;
+    font-size: 14px;
+    width: 100%;
+    color: #333;
+    font-weight: 400;
+   	outline: none;
+}
+
+.login-box input::placeholder {
+	 color: #333;
+}
+
+.login-box label:first-child {
+	margin-bottom: 5px;
+}
+
+.login-box{
+	box-shadow: 0 0 4px 0 rgba(204, 204, 204, 0.2);
+	border: solid 1px #fefefe;
+	background-color: #fff;
+	width: 520px;
+	padding: 50px 100px 30px;	
+}
+
+/* 오류 메세지 */
+p.wrong{
+	font-size: 12px;
+	font-weight: 400;
+	color: #d62c2c;
+	background-color: #f9f9f9;
+	padding: 16px 12px;
+	margin-top: 30px;
+	line-height: 1.5;
+}
+
+/* 아이디 저장 체크박스 */
+.chk-box{
+	position: relative;
+	margin: 10px 0 0 4px;
+}
+
+.chk-box label {
+	display: inline;
+	font-size: 14px;
+	font-weight: 400;	
+	cursor: pointer;
+	color: #c4c4c4;
+	padding-left: 35px;
+}
+
+.chk-box .id-save {
+	display:none;
+}
+
+.chk-box .id-save:checked + label {
+	color: #111;
+	font-weight: 500;	
+}
+
+ input[type="checkbox"] + label:before {
+    position: absolute;
+    top:-2px;
+    left:0;
+    display:block;
+    content:''; 
+    width: 24px;
+    height: 24px;
+    border: 2px solid #c4c4c4;
+    border-radius: 4px;
+    transition: all ease-out 200ms;
+    white-space: nowrap;
+    color: #555;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+        user-select: none;  
+} 
+
+input[type="checkbox"] + label:after {
+    content: "";
+    position: absolute;
+    width: 0px;
+    height: 5.5px;
+    border-left: 2px solid #c4c4c4;
+    border-bottom: 2px solid #c4c4c4;
+    top: 5px;
+    left:10px;
+    transform-origin: bottom left;
+    transform: rotate(-45deg);
+    opacity: 0;
+    transition: all ease-out 200ms;
+}
+
+input[type="checkbox"]:checked + label:before {
+    border: 2px solid #3b3e86 !important;
+}
+
+input[type="checkbox"]:checked + label:after {
+    opacity: 1;
+    width: 16px;
+    background: #fff;
+    border-left: 3px solid #3b3e86;
+    border-bottom: 3px solid #3b3e86;
+}
+
+/* 로그인 버튼 */
+.btn-login{
+	width: 100%;
+	height: 48px;
+	border-radius: 4px;
+	font-size: 16px;
+	font-weight: 400;
+	color: #fff;
+	text-align : center;
+	background-color: #4b4d6a;
+	transition: all 0.5s ease-out;
+	cursor: pointer;
+	outline: none;
+	border: none;
+	margin: 20px 0 0;
+}
+
+.btn-login:hover{
+	background-color: #eee;
+	box-shadow: 400px 0 0 0 rgba(75, 77, 106, 1) inset;
+	color: #fff;	
+}
+
+/* 회원가입 텍스트 */
+div.join-txt , div.resend-txt{
+	color: #333;
+	font-size: 12px;
+	font-weight: 400;
+	text-align: center;
+	margin-top: 20px;
+}
+
+div.join-txt > span , div.resend-txt > span{
+	color: #111;
+	font-weight: 500;
+	text-decoration: underline;	
+	display: inline-block;
+	margin-left: 8px;
+	cursor: pointer;
+}
+
+/* 카피라이터 */
+.copy{
+	font-size: 10px;
+	color: #999;
+	font-weight: 400;
+	margin-top: 20px;
+}
+
+.copy > span:nth-child(2){
+	color: #333;
+}
+
+/* 로그인 2차 인증 */
+.second-check h2, .join-area h2 , .password-check h2{
+	font-size: 20px;
+	font-weight: 500;
+	margin-bottom: 4px;
+}
+
+.second-check > p , .join-area p{
+	font-size: 14px;
+	font-weight: 300;
+	color: #666;
+	margin-bottom: 20px;
+}
+
+.second-check label span:last-child{
+	display: block;
+}
+
+small.access-btn{
+	border-radius: 14px;
+	border: solid 1px #ccc;
+	background-color: #f3f3f3;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 28px;
+	padding: 0 16px;
+	position: absolute;
+	top: 0;
+	right: 0;
+   	cursor: pointer;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #333;		
+    display: none;
+}
+
+small.access-btn.active{
+	display: block
+}
+
+#timer{
+	position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    color: #FF4141;
+}
+
+/* 신규 비밀번호 */
+.password-check h2{
+	margin-bottom: 20px;
+}
+
+/* 회원가입 신청 - 2 */
+/* 회원가입 - 셀렉트 박스 */
+.select-box {
+    position: relative;
+    display: inline-block;
+   	width: 100%;
+}
+
+.position-area .select-box{
+    width: 50%;
+}
+
+select {
+	width: 100%;
+    height: 40px;
+    color: #333;
+	font-size: 14px;
+	font-weight: 400;
+	border: none;
+    border-bottom: solid 1px #e9e9e9;;
+    outline: 0;
+    position: relative;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 7px 20px 10px 10px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    outline: none;
+}
+
+.icon-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    z-index: 5;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url(/resources/images/common/Icon_SelecTrgg.svg) no-repeat center center;
+    background-size: contain;
+    opacity: .5;
+}
+
+label.need::before , .login-box label span.need::before{
+    content: '*';
+    display: inline-block;
+    color: #ff5454;
+    font-size: inherit;
+    font-weight: inherit;
+    vertical-align: inherit;
+    width: 8px;
+    margin-right:2px;
+}
+
+.join-area fieldset > div{
+	margin-bottom: 20px;
+}
+
+.join-area fieldset > div > div{
+	position: relative;
+	text-align: left;
+}
+
+.join-area .resend-txt{
+	padding: 10px 0 0 10px;
+}
+
+.join-area fieldset > div:last-child{
+	margin-bottom: 0;
+}
+
+.join-area label{
+	font-size: 12px;
+	font-weight: 300;
+	color: #999;
+}
+
+.join-area .select-area{
+	display: flex;
+	gap: 10px;
+	margin-top: 5px;
+}
+
+.join-area #timer{
+	right: 90px;
+	font-size: 12px;
+}

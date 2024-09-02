@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="26" viewBox="0 0 14 26">
+    <g data-name="그룹 1231" transform="translate(-2 -1)">
+        <rect data-name="사각형 1678" width="14" height="26" rx="4" transform="translate(2 1)" style="fill:#f6f6f6"/>
+        <path data-name="다각형 37" d="M3.7 1.067a1 1 0 0 1 1.6 0L7.8 4.4A1 1 0 0 1 7 6H2a1 1 0 0 1-.8-1.6z" transform="translate(4.5 4)" style="fill:#aaa"/>
+        <path data-name="다각형 41" d="M3.7 1.067a1 1 0 0 1 1.6 0L7.8 4.4A1 1 0 0 1 7 6H2a1 1 0 0 1-.8-1.6z" transform="rotate(180 6.75 12)" style="fill:#aaa"/>
+    </g>
+</svg>

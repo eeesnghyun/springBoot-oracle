@@ -1,0 +1,299 @@
+.prd-area ul li:nth-last-child(2)::after{
+	display: none;
+}
+
+/* 팝업 */
+/* 팝업 - 대분류 추가 */
+.popup .add-mst{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.popup .add-mst input{
+	width: 200px;
+	margin-right: 10px;
+}
+
+.popup .add-mst button{
+	min-width: 100px;
+	height: 38px;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+  	padding: 8px 0 9px;
+  	border: none;
+}
+
+.popup .mst-list{
+	padding-top: 10px;
+}
+
+.popup .mst-list li{
+	display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.popup .mst-list li:last-child{
+	margin-bottom: 0;
+}
+
+.popup .mst-list input{
+	width: 200px;
+	margin-right: 20px;
+}
+
+.popup .mst-list div.sort{
+    width: 22px;
+    height: 24px;
+    margin-right: 20px;
+    background: url(/resources/images/common/Icon_ListChange.svg) no-repeat center center;
+    background-size: contain;
+}
+
+.popup .mst-list button.del-btn{
+	height: 14px;
+	width: 14px;
+	background-size: 14px 14px;
+	opacity: 0.7;
+}
+
+.popup .del-mst input{
+	width: 160px;
+}
+
+.popup .del-mst{
+	padding-bottom: 10px;
+}
+
+.popup-con .select-del{
+	border-top: 1px solid #eee;
+	padding-top: 40px;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+}
+
+.popup-con .select-del > div{
+	display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-left: 9.5px;
+}
+
+.popup-con .select-del > div .select-box{
+	margin: 0 7px;
+}
+
+.popup-con .select-del > div:last-child{
+    margin-bottom:0;
+}
+
+.popup-con .select-del input + label{
+	width: 22px;
+	height: 22px;
+	margin: 0 8px 0 0;
+}
+
+.popup-con .select-del i{
+	color:#ff5454;
+}
+
+/* 시술 검색 영역 */
+.search-area{
+    position: relative;
+    max-width: 400px;
+    margin: 110px auto 0;
+}
+
+.search-area::after{
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url(/resources/images/prd/Icon_search_black.svg) no-repeat center center;
+    background-size: contain;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.search-area::before{
+    content: '';
+    display: inline-block;
+    width: 0px;
+    height: 1px;
+    background-color: #111;
+    position: absolute;
+    bottom: 0;
+    transition: 0.5s ease-in-out;
+}
+
+.search-area:hover::before{
+    transition: 0.5s ease-in-out;
+    width: 100%;
+}
+
+.search-area input{
+    border: none;
+    width: 100%;
+    padding: 10px 0 10px 10px;
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-regular);
+    border-bottom: 1px solid #cfcfcfd3;
+    border-radius: 0;
+}
+
+.search-area input:focus , .search-area input:hover{
+	box-shadow: none;
+	border: none;
+}
+
+/* 시술 리스트 영역 */
+.col1 ul.prd-sub{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 40px 20px;
+    max-width: 1200px;
+    margin: 50px auto 0;
+    padding:0 0 55px 0;
+    align-items: end;
+    justify-items: center;
+}
+
+ul.prd-sub li{
+	width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+ul.prd-sub li.add-prd-sub{
+	position: relative;
+	border: solid 1px #ccc;
+    background-color: #fcfdfe;
+    height: 360px;
+    cursor: pointer;
+}
+
+ul.prd-sub li button{
+	margin-bottom:2px;
+}
+
+ul.prd-sub li button.prd-edit{
+    width: 80px;
+}
+
+ul.prd-sub .con{
+    width: 100%;
+    height: 360px;
+    border: solid 1px #efefef;
+    background-color: #fcfcfd;
+    position: relative;
+    transition: 0.3s;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+ul.prd-sub li .overlay{
+    width: 100%;
+    height: 100%;
+	border: solid 1px #efefef;
+	background-color: rgba(56, 59, 130, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+button.prd-edit{
+    border: solid 1px #fff;
+    background: transparent;
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-regular);
+    color: #fff;
+    padding: 3.6px 0 6.4px;
+    max-height: 35px;
+    min-width: 120px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+ul.prd-sub li:hover .overlay{
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+ul.prd-sub .con:hover{
+    background-color: #fff;
+    transition: 0.3s;
+}
+
+ul.prd-sub .con .area{
+	width: 100%;
+	height: 100%;
+}
+
+ul.prd-sub .con .area.show{
+	opacity: 0.5;
+}
+
+ul.prd-sub .con .source{
+    width: 100%;
+ 	height: 160px;
+    overflow: hidden;
+}
+
+.embed-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+}
+
+ul.prd-sub .source img{
+    transition: 0.25s ease-in-out;
+}
+
+ul.prd-sub .con:hover img{
+    transform: scale(1.1);
+    transition: 0.25s ease-in-out;
+}
+
+ul.prd-sub .con .txt{
+    padding: 16px 16px 24px 24px;
+    text-align: left;
+    width: 100%;
+}
+
+ul.prd-sub .con p.pro-name{
+    font-size: var(--font-size-regular5);
+    font-weight: var(--font-weight-bold);
+    color: #111;
+    margin-bottom: 10px;
+    word-break: break-all;	
+}
+
+ul.prd-sub .con span.pro-desc{
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-light);
+    color: #666;
+}
+
+/* 순서정렬 */
+ul#prdList li.active::after {
+    background-image: url(/resources/images/prd/Icon_tap_white.svg);
+}
+
+ul#prdList li::after {
+    content: '';
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    background: url(/resources/images/prd/Icon_tap_black.svg) no-repeat center center;
+    background-size: contain;
+    margin-top: 3px;
+}

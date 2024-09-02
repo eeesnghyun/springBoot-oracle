@@ -1,0 +1,11 @@
+<svg id="PlusDoc" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="90" height="90" viewBox="0 0 90 90">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#575867"/>
+      <stop offset="1" stop-color="#292939"/>
+    </linearGradient>
+  </defs>
+  <path id="IconPlus" d="M45,0A45,45,0,1,1,0,45,45,45,0,0,1,45,0Z" fill="url(#linear-gradient)"/>
+  <path id="DOC" d="M.03,28.365c-.019-.232-.03-.466-.03-.7C0,21.611,6.715,16.7,15,16.7s15,4.907,15,10.961q0,.353-.03.7C28.3,30.058,21.648,30.9,15,30.9S1.7,30.058.03,28.365Zm7.955-21.4a6.964,6.964,0,1,1,6.964,6.964A6.964,6.964,0,0,1,7.985,6.964Z" transform="translate(40.425 29.4)" fill="#fff"/>
+  <path id="패스_1246" data-name="패스 1246" d="M10.424,1.027h1.119V-8.388h9.284v-.856H11.543V-18.66H10.424v9.416H1.14v.856h9.284Z" transform="translate(15.066 53.398)" fill="#494a58" stroke="#fff" stroke-linecap="round" stroke-width="3"/>
+</svg>

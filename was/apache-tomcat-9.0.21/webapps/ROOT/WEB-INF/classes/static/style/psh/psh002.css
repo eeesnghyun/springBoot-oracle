@@ -1,0 +1,304 @@
+.col{
+	max-width: 1240px;
+	border-radius: 20px;
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.05);
+	background-color: #fff;
+	margin: 0 auto;
+	display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 40px 160px 45px 100px;
+    margin-bottom: 35px;
+}
+
+.col .chart p.graph-tit{
+	font-size: var(--font-size-regular5);
+    font-weight: var(--font-weight-bold);
+}
+
+ div#noSearch{
+    padding: 0;
+}
+
+div#noSearch::before{
+	margin-bottom:10px;
+}
+
+/* 상단 영역 */
+.col0 .area {
+    display: flex;
+    align-items: center;
+    margin-left: 80px;
+}
+
+.col0 .area .select-box {
+    margin-right: 20px;
+}
+
+/* 발송 통계 차트 */
+.bar-chart {
+	min-width: 362px;
+}
+
+.bar-chart.active > div{
+	display: flex;
+}
+
+.bar-chart.active #noSearch{
+	display: none;
+}
+
+.bar-chart > p{
+	margin-bottom: 47.5px;
+}
+
+.bar-chart > div{
+    align-items: center;
+    justify-content: center;
+  	display: none;
+}
+
+.bar-chart .legend{
+	margin-left: 30px;
+}
+
+.bar-chart .legend li{
+	margin-bottom: 20px;
+}
+
+.bar-chart .legend li:last-child{
+	margin: 0;
+}
+
+#bar{
+	height: 215px;
+	width: 250px;
+	border-left: solid 1px #11111140;
+	display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+#bar > div{
+	width: 0%;
+	height: 30px;
+	transition: 1s;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	box-shadow: inset 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+
+#bar .all{
+	background-image: linear-gradient(to bottom, #f77373, #b53a3a);
+}
+
+#bar .sucess{
+	background-image: linear-gradient(to bottom, #8277eb, #392daf);
+}
+
+#bar .check{
+	background-image: linear-gradient(to bottom, #6bdb75, #32913b);	
+}
+
+/* 발송 대상별 차트 */
+.round-chart{
+	width: 415px;
+}
+
+.round-chart.active > div{
+	display: flex;
+}
+
+.round-chart.active #noSearch{
+	display: none;
+}
+
+.round-chart > p{
+	margin-bottom: 47.5px;
+}
+
+.round-chart > div{
+	display: none;
+	align-items: center;
+    justify-content: center;
+}
+
+#round{
+	height: 215px;
+	width: 200px;
+}
+
+.round-chart .legend{
+	display: flex;
+	margin-left: 20px;
+}
+
+.round-chart .legend li{
+	padding: 0 20px;
+}
+
+.round-chart .legend li:first-child{
+	border-right: solid 1px #11111140;
+}
+
+.round-chart .legend span, .bar-chart .legend span{
+	font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-regular);
+}
+
+.round-chart .legend span{
+	font-family: 'Montserrat', sans-serif;
+}
+
+.round-chart .legend p, .bar-chart .legend p{
+	font-size: 30px;
+    font-weight: var(--font-weight-bold);
+	font-family: 'Montserrat', sans-serif;
+	display: flex;
+    align-items: baseline;
+}
+
+ p.percent:after{
+	content: '%';
+	font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-bold);
+    vertical-align: baseline;
+}
+
+/* 날짜별 차트 */
+.col2.active #graph{
+	display: block;
+}
+
+.col2.active .table{
+	display: grid;
+}
+
+.col2.active #noSearch{
+	display: none;
+}
+
+.pagination{
+	display: none;
+}
+
+.col2.active .pagination{
+	display: flex;
+}
+
+.graph-chart{
+	display: none;
+	width: 100%;
+}
+
+.graph-chart.active{
+	display: block;
+}
+
+#graph{
+	height: 250px;
+	width: 980px;
+	display: none
+}
+
+.graph-chart .tit-area{
+	display: flex;
+    justify-content: space-between;
+}
+
+.graph-chart .tit-area > div{
+	display: flex;
+	align-items: center;	
+}
+
+.graph-chart .btn-area{
+	margin-left: 30px;
+	gap: 0
+}
+
+.graph-chart .btn-area button{
+	font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+	border: solid 1px #e3e3e3;
+	background-color: #f9f9f9;
+	width: 75px;
+	height: 40px;
+	margin: 0;
+}
+
+.graph-chart .btn-area button.active{
+	border: solid 1px #34353d;
+	background-color: #34353d;
+	color: #fff;
+}
+
+.graph-chart .btn-area button:first-of-type{
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.graph-chart .btn-area button:last-of-type{
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+.graph-chart .legend{
+	display: flex;
+	margin-top: 16.5px;
+}
+
+.graph-chart .legend li{
+	font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-regular);
+	display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.graph-chart .legend li:last-child{
+	margin: 0;
+}
+
+.graph-chart .legend i{
+	margin: 0 4px 0 0;
+	height: 6px;
+	width: 9px;
+    display: block;
+	border-radius: 3px;
+}
+
+/* 표 */
+.col2{
+	 flex-direction: column;
+}
+
+.table{
+	width: 100%;
+	display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin-top: 95px;
+    display: none;
+}
+
+.table li{
+	font-size: var(--font-size-regular1);
+  	font-weight: var(--font-weight-bold);
+	padding: 12px 0;
+	text-align: center;
+	border-top: solid 1px #eee;	
+	border-right: solid 1px #eee;
+}
+
+.table li:last-child{
+	border-bottom: solid 1px #eee;
+}
+
+.table li.table-tit{
+	border-top: solid 2px #383b82;
+	background-color: #f1f4f8;
+}
+
+.table .date-table li{
+	background-color: #f1f4f8;
+	border-left:solid 1px #eee;
+}

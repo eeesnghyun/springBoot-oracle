@@ -1,0 +1,1107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwl.app.domain.sys.dao.SysDAO">
+	
+	<select id="getHospital" resultType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getHospital
+			 * Description : 병원 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   HOSPITAL_CODE
+				 , HOSPITAL_NAME  
+			  FROM HOSPITAL_INFO
+			 WHERE USE_YN = 'Y' 
+			 ORDER BY HOSPITAL_CODE
+		]]>
+	</select>
+	
+	<insert id="insertHospital" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.isOfficeExist
+			 * Description : 병원 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOSPITAL_INFO (
+				  HOSPITAL_CODE
+				, HOSPITAL_NAME
+				, USE_YN
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+			      (SELECT CONCAT('W', LPAD(CAST(SUBSTRING(MAX(HOSPITAL_CODE), 2) AS UNSIGNED)+1, '3', '0'))			      				
+			      	 FROM HOSPITAL_INFO A) 
+			    , #{hospitalName}
+			    , 'Y'
+			    , #{createUser}
+			    , NOW()
+			)
+		]]>		
+	</insert>
+	
+	<update id="deleteHospital" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.deleteHospital
+			 * Description : 병원 삭제(데이터를 고려하여 미사용 처리)
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE HOSPITAL_INFO
+			   SET USE_YN = 'N'
+			 WHERE HOSPITAL_CODE = #{hospitalCode}
+		]]>		
+	</update>
+	
+	<select id="getOffice" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getOffice
+			 * Description : 병원 지점 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   OFFICE_CODE
+				 , HOSPITAL_CODE
+				 , OFFICE_LOCATION
+				 , OFFICE_SITE  
+				 , PAGE_INTRO	
+				 , NAVER_KEY	
+				 , GOOGLE_KEY
+				 , KAKAO_KEY	
+				 , FACEBOOK_KEY		
+				 , KAKAO_NATIVE_KEY
+				 , MAX_USR_COUNT		 
+			  FROM HOSPITAL_OFFICE_INFO
+			 WHERE HOSPITAL_CODE = #{hospitalCode}
+			   AND USE_YN		 = 'Y'
+			 ORDER BY OFFICE_LOCATION
+		]]>
+	</select>
+	
+	<select id="getAccessKeyList" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getAccessKeyList
+			 * Description : 병원 앱 코드 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.05    진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   H2.OFFICE_CODE
+				 , H3.ACCESS_KEY 
+			  FROM HOSPITAL_INFO H1
+			       INNER JOIN HOSPITAL_OFFICE_INFO H2
+			          ON H1.HOSPITAL_CODE = H2.HOSPITAL_CODE
+			         AND H2.USE_YN	      = 'Y'
+                   INNER JOIN HOSPITAL_ACCESS_INFO H3
+                      ON H2.OFFICE_CODE  = H3.OFFICE_CODE                      
+			 WHERE H1.HOSPITAL_CODE = #{hospitalCode}
+			   AND H1.USE_YN	    = 'Y'
+		]]>
+	</select>
+	
+	<select id="isOfficeExist" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="boolean">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.isOfficeExist
+			 * Description : 지점 존재여부 확인
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT IF(COUNT(OFFICE_CODE) = 1, 1, 0)  
+			  FROM HOSPITAL_OFFICE_INFO
+			 WHERE HOSPITAL_CODE   = #{hospitalCode}
+			   AND OFFICE_LOCATION = #{officeLocation}
+		]]>
+	</select>
+	
+	<select id="getNewOfficeCode" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="String">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getNewOfficeCode
+			 * Description : 신규 지점 코드 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.06  이승현      최초 생성
+			 * 2022.11.28  이승현      지점 코드 규칙 변경
+		     */
+		]]>
+		<![CDATA[
+			SELECT CONCAT('CL', 
+					LPAD(CAST(IFNULL(MAX(SUBSTR(OFFICE_CODE,3)), '000') AS UNSIGNED) + 1, '3', '0')) 
+			  FROM HOSPITAL_OFFICE_INFO
+			 WHERE OFFICE_CODE < 'CL900'
+		]]>
+	</select>
+	
+	<insert id="insertOffice" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertOffice
+			 * Description : 병원 지점 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOSPITAL_OFFICE_INFO (				 
+				  OFFICE_CODE
+				, HOSPITAL_CODE
+				, OFFICE_LOCATION
+				, OFFICE_SITE
+				, M_APP_TOKEN
+				, USE_YN
+				, MAX_USR_COUNT
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+			      #{officeCode}
+			    , #{hospitalCode}			    
+			    , #{officeLocation}
+			    , #{officeSite}
+			    , #{mAppToken}
+			    , 'Y'
+			    , CASE WHEN #{maxUsrCount} = 1 THEN '5'
+					   WHEN #{maxUsrCount} = 2 THEN '10'
+					   WHEN #{maxUsrCount} = 3 THEN '15'
+					   WHEN #{maxUsrCount} = 4 THEN '99999'
+					   ELSE #{maxUsrCount} = 0
+				   END	
+			    , #{createUser}
+			    , NOW()
+			)
+		]]>
+	</insert>
+	
+	<insert id="insertAccessKey" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertAccessKey
+			 * Description : 병원 앱 코드 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.10.05    진가영      최초 생성
+		     */
+		]]>
+		
+		<![CDATA[
+			INSERT INTO HOSPITAL_ACCESS_INFO (
+				  OFFICE_CODE
+				, ACCESS_KEY			
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+			      #{officeCode}
+			    , #{accessKey}
+			    , #{createUser}
+			    , NOW()
+			)
+		]]>
+	</insert>
+	
+	<insert id="insertDefaultProduct" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertDefaultProduct
+			 * Description : 신규 지점 기본 대분류 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO PRODUCT_SURGICAL_MASTER
+			SELECT 
+				   #{officeCode} AS OFFICE_CODE
+				 , PRD_MST_CODE
+				 , PRD_MST_NAME
+				 , DISPLAY_YN
+				 , SORT_ORDER
+				 , #{createUser} AS CREATE_USER
+				 , NOW() 		 AS CREATE_DATE
+			  FROM PRODUCT_SURGICAL_MASTER
+			 WHERE OFFICE_CODE = 'CL001'
+		]]>
+	</insert>
+	
+	<insert id="insertUserReserveStatus" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertUserReserveStatus
+			 * Description : 지점별 예약회원 상태색상 기본값 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.05  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO USER_RESERVE_STATUS
+			SELECT 
+				   #{officeCode}   AS OFFICE_CODE 
+			     , STATUS_CODE
+			     , STATUS_COLOR
+			     , STATUS_NAME
+			     , #{createUser} AS CREATE_USER
+			     , NOW() 		 AS CREATE_DATE
+			  FROM USER_RESERVE_STATUS
+			 WHERE OFFICE_CODE = 'CL001'
+		]]>
+	</insert>
+	
+	<update id="updateOffice" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.updateOffice
+			 * Description : 지점 정보 수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE HOSPITAL_OFFICE_INFO 
+			   SET OFFICE_SITE      = #{officeSite} 
+			   	 , PAGE_INTRO       = #{pageIntro}	
+				 , NAVER_KEY	    = #{naverKey}
+				 , GOOGLE_KEY	    = #{googleKey}
+				 , KAKAO_KEY	    = #{kakaoKey}
+				 , FACEBOOK_KEY     = #{facebookKey}
+				 , KAKAO_NATIVE_KEY = #{kakaoNativeKey}
+				 , MAX_USR_COUNT = CASE WHEN #{maxUsrCount} = 1 THEN '5'
+				 						WHEN #{maxUsrCount} = 2 THEN '10'
+				 						WHEN #{maxUsrCount} = 3 THEN '15'
+				 						WHEN #{maxUsrCount} = 4 THEN '99999'
+				 						ELSE #{maxUsrCount} = 0
+				 					END	
+			 WHERE OFFICE_CODE = #{officeCode}
+		]]>
+	</update>	
+	
+	<delete id="deleteAccessKey" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.deleteAccessKey
+			 * Description : 병원 앱 키 수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08    진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[	
+			DELETE FROM HOSPITAL_ACCESS_INFO
+			 WHERE OFFICE_CODE = #{officeCode}
+		]]>			
+	</delete>
+	
+	<update id="deleteOffice" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.deleteOffice
+			 * Description : 지점 삭제(데이터를 고려하여 미사용 처리)
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.07.06  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE HOSPITAL_OFFICE_INFO
+			   SET OFFICE_SITE = ''
+			   	 , USE_YN 	   = 'N'
+			 WHERE HOSPITAL_CODE = #{hospitalCode}
+		]]>
+		<if test="officeCode != null and officeCode != ''">	
+			   AND OFFICE_CODE   = #{officeCode}
+		</if>			
+	</update>
+	
+	<select id="getSysUserList" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getSysUserList
+			 * Description : 관리자 리스트 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 				    
+				  CONCAT(SUI.SYS_NAME, '(', SUI.SYS_USER_ID, ')') FULL_NAME
+				, SUI.SYS_USER_ID
+    		    , SUI.SYS_NAME
+				, IFNULL((SELECT CONCAT('최근 로그인 : ', REPLACE(
+					REPLACE(
+						DATE_FORMAT(MAX(LOGIN_DATE),'%Y년 %m월 %d일 %p %I:%i')
+                    	,'AM','오전')
+			 		,'PM','오후'))
+                    FROM LOG_SYS_LOGIN 
+                   WHERE SYS_USER_ID = SUI.SYS_USER_ID),'-') LOGIN_DATE
+		 	FROM SYS_USER_INFO SUI
+		   WHERE SUI.ROLE_CODE = 'ROLE_WWL'
+		     AND SUI.USE_YN    = 'Y'
+		]]>
+	</select>
+	
+	<select id="getSysUserInfo" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO" resultType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getSysUserInfo
+			 * Description : 관리자 정보 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2021.11.30  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   X.HOSPITAL_CODE                  
+				 , X.OFFICE_CODE				
+				 , S.SYS_USER_ID
+				 , S.SYS_NAME
+				 , S.ROLE_CODE
+				 , S.RESET_PW_YN
+				 , S.WEB_PUSH_YN
+				 , X.HOSPITAL_NAME				
+				 , X.OFFICE_LOCATION
+				 , X.ACCESS_TOKEN				 
+			  FROM SYS_USER_INFO S
+				   INNER JOIN (
+					           SELECT 
+								      HI.HOSPITAL_CODE
+							        , HI.HOSPITAL_NAME
+								    , HOI.OFFICE_CODE
+								    , HOI.OFFICE_LOCATION
+								    , HOI.M_APP_TOKEN AS ACCESS_TOKEN
+							     FROM HOSPITAL_INFO HI
+								      INNER JOIN HOSPITAL_OFFICE_INFO HOI
+								         ON HI.HOSPITAL_CODE = HOI.HOSPITAL_CODE								      
+		           ) X 
+		          ON S.OFFICE_CODE = X.OFFICE_CODE
+		   WHERE S.SYS_USER_ID = #{username}
+		]]>
+	</select>
+	
+	<select id="getLogSysUserLogin" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getLogSysUserLogin
+			 * Description : 관리자 로그인 기록 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.10  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				  SYS_USER_ID
+				, ACCESS_IP
+			    , BROWSER
+			    , REPLACE(
+						REPLACE(DATE_FORMAT(LOGIN_DATE,'%Y년 %m월 %d일 %p %I:%i')
+						,'AM','오전')
+					,'PM','오후') LOGIN_DATE				     
+			 FROM LOG_SYS_LOGIN
+			WHERE SYS_USER_ID = #{sysUserId}
+			  AND DATE_FORMAT(LOGIN_DATE,'%Y%m') = DATE_FORMAT(NOW(),'%Y%m')	-- 당월만 조회
+			ORDER BY
+				LOGIN_DATE DESC
+		]]>
+	</select>
+
+	<insert id="insertSyslog" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertSyslog
+			 * Description : 로그인 기록 추가
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO LOG_SYS_LOGIN (
+				  SYS_USER_ID
+				, ACCESS_IP
+				, BROWSER
+				, LOGIN_DATE
+			) VALUES (
+				  #{username}
+				, #{accessIp}
+				, #{browser}
+				, NOW()
+			)
+		]]>
+	</insert>	
+	
+	<select id="getSysUser" parameterType="String" resultType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getSysUser
+			 * Description : 관리자 인증
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.07  이승현      테이블 변경
+		     */
+		]]>
+		<![CDATA[
+			SELECT 				    
+				  SYS_USER_ID
+				, SYS_USER_PW
+				, PW_SALT
+				, USE_YN
+				, ROLE_CODE
+				, AUTH_CHECK
+				, SYS_MOBILE
+				, OFFICE_CODE
+			 FROM SYS_USER_INFO
+			WHERE SYS_USER_ID = #{username}
+		]]>
+	</select>
+	
+	<select id="isSysUserExist" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="boolean">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.isSysUserExist
+			 * Description : 관리자 아이디 존재여부
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.11  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT IF(COUNT(SYS_USER_ID) = 1, 1, 0)  
+			  FROM SYS_USER_INFO
+			 WHERE SYS_USER_ID = #{sysUserId}
+		]]>
+	</select>
+	
+	<insert id="insertSysUser" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertSysUser
+			 * Description : 윈윈랩 관리자 계정 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.10  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO SYS_USER_INFO (
+				  SYS_USER_ID
+				, OFFICE_CODE
+				, SYS_USER_PW
+				, PW_SALT
+				, SYS_NAME
+				, SYS_MOBILE
+				, SYS_IMG
+				, SYS_POSITION
+				, ROLE_CODE
+				, USE_YN
+				, CREATE_DATE
+			) VALUES (
+				  #{sysUserId}
+  				, 'CL001'
+				, #{sysUserPw}
+				, #{pwSalt}
+				, #{sysName}
+				, ''
+				, ''			
+				, ''
+				, 'ROLE_WWL'
+				, 'Y'
+				, NOW()
+			)
+		]]>
+	</insert>
+	
+	<update id="updateSysUser" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.updateSysUser
+			 * Description : 관리자 계정 수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.11  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_INFO 
+			   SET SYS_USER_PW  = #{sysUserPw}
+				 , PW_SALT	    = #{pwSalt}
+				 , SYS_NAME     = #{sysName}
+				 , SYS_MOBILE   = ''
+				 , SYS_IMG      = ''				 
+			 WHERE SYS_USER_ID  = #{sysUserId} 		
+		]]>
+	</update>
+	
+	<insert id="insertSysMenuAuth" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertSysMenuAuth
+			 * Description : 관리자 메뉴 권한 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.11  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO SYS_MENU_AUTH
+			SELECT 
+				   #{sysUserId} AS SYS_USER_ID
+			     , MENU_CODE
+			  FROM MENU_INFO 
+			 WHERE PARENT_MENU = 'ROOT'
+		]]>			
+	</insert>
+	
+	<delete id="deleteSysUser" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.deleteSysUser
+			 * Description : 관리자 계정 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.16  이승현      본사 계정도 삭제되지 않도록 변경
+		     */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_INFO
+			   SET USE_YN = 'N'
+			     , BLOCK_DATE = NOW()
+			 WHERE SYS_USER_ID = #{sysUserId}		 
+		]]>
+	</delete>
+	
+	<update id="updateSysUserLock" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.updateSysUserLock
+			 * Description : 로그인 차단
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.08  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE SYS_USER_INFO
+			   SET USE_YN = 'N'
+			     , BLOCK_DATE = NOW()
+			 WHERE SYS_USER_ID = #{sysUserId}
+		]]>
+	</update>
+	
+	<select id="getHospitalLaw" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO" resultType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getHospitalLaw
+			 * Description : 병원의료법 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   SEQ
+				 , CONTENT
+			  FROM HOSPITAL_LAW
+			 WHERE OFFICE_CODE = #{officeCode}
+			 ORDER BY SEQ
+		]]>
+	</select>
+	
+	<insert id="insertHospitalLaw" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertHospitalLaw
+			 * Description : 병원의료법 등록
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO HOSPITAL_LAW (
+				  OFFICE_CODE
+				, SEQ
+				, CONTENT
+				, CREATE_USER
+				, CREATE_DATE
+			) VALUES (
+				  #{officeCode}
+				, (SELECT IFNULL(MAX(SEQ),0) + 1 
+					 FROM HOSPITAL_LAW A 
+					WHERE OFFICE_CODE = #{officeCode})
+				, #{content}
+				, #{createUser}
+				, NOW()	  
+			)
+		]]>
+	</insert>
+	
+	<delete id="deleteHospitalLaw" parameterType="com.wwl.app.domain.sys.dto.SysHospitalDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.deleteHospitalLaw
+			 * Description : 병원의료법 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.03.17  진가영      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM HOSPITAL_LAW
+			 WHERE OFFICE_CODE 	 = #{officeCode}
+			   AND SEQ 			 = #{seq};
+			   
+             ALTER TABLE HOSPITAL_LAW AUTO_INCREMENT=1;   		
+   			 SET @COUNT = 0;
+			 UPDATE HOSPITAL_LAW SET SEQ = @COUNT:=@COUNT+1;		
+		]]>
+	</delete>
+	
+	<select id="getRootMenu" resultType="com.wwl.app.domain.sys.dto.SysMenuDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getRootMenu
+			 * Description : 부모 메뉴 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.12  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   MENU_CODE
+			     , MENU_NAME
+			  FROM MENU_INFO
+			 WHERE PARENT_MENU = 'ROOT'
+			   AND MENU_CODE  <> 'BRD000'
+			 ORDER BY MENU_ORDER
+		]]>
+	</select>
+	
+	<select id="getSysMenuList" resultType="com.wwl.app.domain.sys.dto.SysMenuDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getSysMenuList
+			 * Description : 관리자 메뉴 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.12  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   X.MENU_CODE
+				 , X.MENU_NAME                   
+			     , X.PARENT_MENU
+			     , IF(IFNULL(X.MENU_URL, '')='', '-', X.MENU_URL) AS MENU_URL                		         
+			     , X.MENU_ORDER
+			     , X.MENU_IMG
+			     , X.USE_YN
+			  FROM 
+				  (
+			      SELECT
+			             MENU_CODE
+			  		   , MENU_NAME
+					   , PARENT_MENU
+					   , MENU_ORDER
+					   , MENU_URL
+					   , MENU_IMG
+					   , USE_YN
+				    FROM MENU_INFO
+			      ) X 
+			      LEFT OUTER JOIN MENU_INFO Y
+					ON X.PARENT_MENU = Y.MENU_CODE
+			 ORDER BY 
+				  IF(X.PARENT_MENU = Y.MENU_CODE, Y.MENU_ORDER, X.MENU_ORDER), 
+				  IF(X.PARENT_MENU = 'ROOT', 0, X.MENU_ORDER)
+		]]>
+	</select>
+	
+	<insert id="insertMenu" parameterType="com.wwl.app.domain.sys.dto.SysMenuDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.insertMenu
+			 * Description : 관리자 메뉴 추가
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.12  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			INSERT INTO MENU_INFO (
+				  MENU_CODE	
+				, MENU_NAME	
+				, PARENT_MENU	
+				, MENU_URL	
+				, MENU_ORDER	
+				, MENU_IMG	
+				, USE_YN	
+				, CREATE_DATE						
+			) VALUES (  
+				  (SELECT CONCAT(SUBSTR(#{parentMenu} , 1, 3),			  
+              					 LPAD(CAST(IFNULL(MAX(SUBSTR(MENU_CODE,4)),'000') AS UNSIGNED) + 1, '3', '0'))
+  					 FROM MENU_INFO A
+ 				    WHERE PARENT_MENU = #{parentMenu})
+				, #{menuName}
+				, #{parentMenu}	
+				, #{menuUrl}
+				, IF(#{menuOrder} = 0, 
+						(SELECT IFNULL(MAX(MENU_ORDER),0) + 1
+  					 	   FROM MENU_INFO A
+ 				    	  WHERE PARENT_MENU = #{parentMenu}),
+ 				    	#{menuOrder})
+				, #{menuImg}	
+				, #{useYn}	
+				, NOW()
+			)
+		]]>
+	</insert>
+	
+	<update id="updateMenu" parameterType="com.wwl.app.domain.sys.dto.SysMenuDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.updateMenu
+			 * Description : 관리자 메뉴 수정
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.12  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			UPDATE MENU_INFO
+			   SET MENU_NAME   = #{menuName}
+			     , PARENT_MENU = #{parentMenu}
+			     , MENU_URL	   = #{menuUrl}
+			     , MENU_ORDER  = IF(#{menuOrder} = 0, 
+										(SELECT A.MENU_ORDER
+										   FROM (SELECT IFNULL(MAX(MENU_ORDER),0) + 1 AS MENU_ORDER
+				  					 	   		   FROM MENU_INFO
+				 				    	  		  WHERE PARENT_MENU = #{parentMenu}) A
+				 				    	),
+				 				    	#{menuOrder})
+			     , MENU_IMG    = #{menuImg}
+			     , USE_YN	   = #{useYn}
+			 WHERE MENU_CODE = #{menuCode}
+		]]>
+	</update>
+		
+	<update id="deleteMenu" parameterType="com.wwl.app.domain.sys.dto.SysMenuDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.deleteMenu
+			 * Description : 관리자 메뉴 삭제
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.12  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			DELETE FROM MENU_INFO			   
+			 WHERE MENU_CODE = #{menuCode}
+		]]>
+	</update>
+	
+	<select id="getUserMenuList" resultType="com.wwl.app.domain.sys.dto.SysMenuDTO">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getUserMenuList
+			 * Description : 관리자 권한메뉴 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.08.12  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 				    
+			 	   S1.SYS_USER_ID
+			 	 , S1.SYS_NAME
+			     , S2.MENU_CODE
+			     , IF(S1.ROLE_CODE = 'ROLE_WWL', '윈윈랩', FN_GET_HOSPITAL_NAME(S1.OFFICE_CODE)) AS HOSPITAL_NAME
+			     , S1.USE_YN
+		 	 FROM SYS_USER_INFO S1
+				  LEFT OUTER JOIN (
+								  SELECT SYS_USER_ID
+									   , GROUP_CONCAT(MENU_CODE SEPARATOR '/') AS MENU_CODE
+									FROM SYS_MENU_AUTH 
+								   GROUP BY SYS_USER_ID
+			      ) S2
+			     ON S1.SYS_USER_ID = S2.SYS_USER_ID
+			ORDER BY 
+				IF(S1.ROLE_CODE  = 'ROLE_WWL', 1, 2), S1.SYS_NAME
+		]]>
+	</select>
+	
+	<select id="getAllProductList" parameterType="com.wwl.app.domain.prd.dto.PrdProductDTO" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getAllProductList
+			 * Description : 관리자 전용 전체 일반 시술 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.11.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT 
+				   P1.UPDATE_SEQ
+				 , CONCAT(E1.START_DATE, '~', E1.END_DATE) AS APPLY_DATE
+				 , P4.PRD_MST_CODE
+			     , P4.PRD_MST_NAME
+			     , P3.PRD_CODE
+			     , P3.PRD_NAME
+			     , P2.PRD_SUB_CODE
+			     , P2.PRD_SUB_NAME		
+			     , P1.PRD_ITEM_CODE
+				 , P1.PRD_ITEM_NAME     
+				 , IF(A1.UPDATE_SEQ = U1.UPDATE_SEQ, 'Y', 'N') AS APPLY_YN
+			  FROM ALL_PRODUCT_INFO A1
+				   INNER JOIN PRODUCT_SURGICAL_ITEM P1
+			          ON A1.OFFICE_CODE   = P1.OFFICE_CODE
+			         AND A1.UPDATE_SEQ	  = P1.UPDATE_SEQ
+			         AND A1.PRD_ITEM_CODE = P1.PRD_ITEM_CODE
+				   INNER JOIN PRODUCT_SURGICAL_SUB P2
+			          ON P1.OFFICE_CODE   = P2.OFFICE_CODE
+			         AND P1.UPDATE_SEQ	  = P2.UPDATE_SEQ
+			         AND P1.PRD_SUB_CODE  = P2.PRD_SUB_CODE
+			       INNER JOIN PRODUCT_SURGICAL P3
+			          ON P2.OFFICE_CODE   = P3.OFFICE_CODE
+			         AND P2.UPDATE_SEQ	  = P3.UPDATE_SEQ
+			         AND P2.PRD_CODE      = P3.PRD_CODE
+				   INNER JOIN PRODUCT_SURGICAL_MASTER P4
+			          ON P3.OFFICE_CODE   = P4.OFFICE_CODE         
+			         AND P3.PRD_MST_CODE  = P4.PRD_MST_CODE
+				   INNER JOIN EVENT_MASTER E1
+			          ON A1.OFFICE_CODE   = E1.OFFICE_CODE
+			         AND A1.UPDATE_SEQ	  = E1.EVENT_UPDATE_SEQ	
+			       LEFT OUTER JOIN (
+			       					SELECT IFNULL(MAX(E1.EVENT_UPDATE_SEQ), 
+													(SELECT MAX(EVENT_UPDATE_SEQ)				
+													   FROM EVENT_MASTER
+													  WHERE OFFICE_CODE = #{officeCode})) AS UPDATE_SEQ	 
+									  FROM EVENT_MASTER E1	   
+									 WHERE E1.OFFICE_CODE = #{officeCode}		
+									   AND DATE_FORMAT(NOW(), '%Y%m%d') BETWEEN E1.START_DATE AND E1.END_DATE	
+			        ) U1
+			       ON A1.UPDATE_SEQ = U1.UPDATE_SEQ
+			 WHERE A1.OFFICE_CODE   = #{officeCode}			   
+		]]>
+		<if test="field != null and field != ''">
+			AND (A1.ITEM_CODE     LIKE CONCAT('%', #{field}, '%') OR
+				 P4.PRD_MST_CODE  LIKE CONCAT('%', #{field}, '%') OR
+				 P4.PRD_MST_NAME  LIKE CONCAT('%', #{field}, '%') OR
+				 P3.PRD_CODE 	  LIKE CONCAT('%', #{field}, '%') OR
+				 P3.PRD_NAME 	  LIKE CONCAT('%', #{field}, '%') OR
+				 P2.PRD_SUB_CODE  LIKE CONCAT('%', #{field}, '%') OR
+				 P2.PRD_SUB_NAME  LIKE CONCAT('%', #{field}, '%') OR
+				 P1.PRD_ITEM_CODE LIKE CONCAT('%', #{field}, '%') OR
+				 P1.PRD_ITEM_NAME LIKE CONCAT('%', #{field}, '%'))					
+		</if>
+		<if test="start != null and start != '' and end != null and end != ''">
+		<![CDATA[
+			AND E1.START_DATE >= #{start}
+			AND E1.END_DATE   <= #{end}
+		]]>
+		</if>
+	</select>	
+	
+	
+	<select id="getAllEventProductList" parameterType="com.wwl.app.domain.prd.dto.PrdProductDTO" resultType="camelHashMap">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getAllProductList
+			 * Description : 관리자 전용 전체 일반 시술 조회
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.11.17  이승현      최초 생성
+		     */
+		]]>
+		<![CDATA[
+			SELECT
+				   E1.EVENT_UPDATE_SEQ 
+				 , CONCAT(E6.START_DATE, '~', E6.END_DATE) AS APPLY_DATE 
+				 , E1.ITEM_CODE 
+				 , E2.EVENT_SEQ 
+				 , E2.EVENT_NAME 
+				 , E3.EVENT_SUB_SEQ 
+				 , E3.EVENT_TITLE 
+				 , CASE WHEN E4.EVENT_PRODUCT_TYPE = 'P' THEN '패키지'
+				 		WHEN E4.EVENT_PRODUCT_TYPE = 'C' THEN '포인트'
+				 		ELSE '1회체험'
+				    END EVENT_PRODUCT_TYPE
+				 , E4.EVENT_PRODUCT_CODE 
+				 , E4.EVENT_PRODUCT_TITLE 	
+				 , E7.EVENT_DETAIL_SEQ
+				 , E7.PRD_MST_NAME
+				 , E7.PRD_ITEM_NAME
+				 , IF(E1.EVENT_UPDATE_SEQ = U1.UPDATE_SEQ, 'Y', 'N') AS APPLY_YN
+			  FROM ALL_EVENT_PRODUCT_INFO E1
+			       INNER JOIN EVENT_GROUP E2
+			          ON E1.OFFICE_CODE 	 = E2.OFFICE_CODE
+			         AND E1.EVENT_UPDATE_SEQ = E2.EVENT_UPDATE_SEQ 
+			         AND E1.EVENT_SEQ        = E2.EVENT_SEQ 
+			       INNER JOIN EVENT_GROUP_SUB E3
+			          ON E1.OFFICE_CODE  	 = E3.OFFICE_CODE 
+			         AND E1.EVENT_UPDATE_SEQ = E3.EVENT_UPDATE_SEQ 
+			         AND E1.EVENT_SEQ        = E3.EVENT_SEQ      
+			         AND E1.EVENT_SUB_SEQ    = E3.EVENT_SUB_SEQ
+			       INNER JOIN EVENT_PRODUCT_SURGICAL E4
+			          ON E1.OFFICE_CODE  	   = E4.OFFICE_CODE
+			         AND E1.EVENT_UPDATE_SEQ   = E4.EVENT_UPDATE_SEQ 
+			         AND E1.EVENT_SEQ          = E4.EVENT_SEQ 
+			         AND E1.EVENT_SUB_SEQ 	   = E4.EVENT_SUB_SEQ  
+			         AND E1.EVENT_PRODUCT_CODE = E4.EVENT_PRODUCT_CODE 
+			   	   INNER JOIN (
+			   	   				SELECT 
+									   E5.EVENT_UPDATE_SEQ
+									 , E5.EVENT_SEQ 
+									 , E5.EVENT_SUB_SEQ 
+									 , E5.EVENT_PRODUCT_CODE
+									 , E5.EVENT_DETAIL_SEQ	 
+									 , GROUP_CONCAT(DISTINCT P1.PRD_ITEM_NAME) AS PRD_ITEM_NAME
+									 , GROUP_CONCAT(DISTINCT P4.PRD_MST_NAME)  AS PRD_MST_NAME 
+								  FROM EVENT_PRODUCT_SURGICAL_ITEM E5
+								       INNER JOIN PRODUCT_SURGICAL_ITEM P1
+								          ON E5.OFFICE_CODE 	 = P1.OFFICE_CODE 
+								         AND E5.EVENT_UPDATE_SEQ = P1.UPDATE_SEQ 
+								         AND E5.PRD_ITEM_CODE    = P1.PRD_ITEM_CODE  
+								       INNER JOIN PRODUCT_SURGICAL_SUB P2
+								          ON P1.OFFICE_CODE  = P2.OFFICE_CODE 
+								         AND P1.UPDATE_SEQ   = P2.UPDATE_SEQ 
+								         AND P1.PRD_SUB_CODE = P2.PRD_SUB_CODE 
+								       INNER JOIN PRODUCT_SURGICAL P3
+								          ON P2.OFFICE_CODE  = P3.OFFICE_CODE 
+								         AND P2.UPDATE_SEQ   = P3.UPDATE_SEQ 
+								         AND P2.PRD_CODE     = P3.PRD_CODE 
+								       INNER JOIN PRODUCT_SURGICAL_MASTER P4
+								          ON P3.OFFICE_CODE  = P4.OFFICE_CODE 
+								         AND P3.PRD_MST_CODE = P4.PRD_MST_CODE 
+								 WHERE E5.OFFICE_CODE = #{officeCode}
+								 GROUP BY 
+								 	 E5.EVENT_UPDATE_SEQ, E5.EVENT_SEQ, E5.EVENT_SUB_SEQ, E5.EVENT_PRODUCT_CODE, E5.EVENT_DETAIL_SEQ 
+			   	   ) E7
+			   	     ON E4.EVENT_UPDATE_SEQ = E7.EVENT_UPDATE_SEQ 
+			   	    AND E4.EVENT_SEQ 	    = E7.EVENT_SEQ
+			   	    AND E4.EVENT_SUB_SEQ    = E7.EVENT_SUB_SEQ
+			   	    AND E4.EVENT_PRODUCT_CODE = E7.EVENT_PRODUCT_CODE 
+			       INNER JOIN EVENT_MASTER E6
+			          ON E1.OFFICE_CODE      = E6.OFFICE_CODE
+			         AND E1.EVENT_UPDATE_SEQ = E6.EVENT_UPDATE_SEQ	
+			       LEFT OUTER JOIN (
+			       					SELECT IFNULL(MAX(E1.EVENT_UPDATE_SEQ), 
+													(SELECT MAX(EVENT_UPDATE_SEQ)				
+													   FROM EVENT_MASTER
+													  WHERE OFFICE_CODE = 'CL999')) AS UPDATE_SEQ	 
+									  FROM EVENT_MASTER E1	   
+									 WHERE E1.OFFICE_CODE = #{officeCode}		
+									   AND DATE_FORMAT(NOW(), '%Y%m%d') BETWEEN E1.START_DATE AND E1.END_DATE	
+			        ) U1
+			       ON E1.EVENT_UPDATE_SEQ = U1.UPDATE_SEQ
+			WHERE E1.OFFICE_CODE = #{officeCode}
+		]]>		
+		<if test="field != null and field != ''">
+			AND (E1.ITEM_CODE = #{field} OR 
+				 E2.EVENT_NAME  LIKE CONCAT('%', #{field}, '%') OR
+				 E3.EVENT_TITLE LIKE CONCAT('%', #{field}, '%') OR
+				 E4.EVENT_PRODUCT_TITLE LIKE CONCAT('%', #{field}, '%'))					
+		</if>
+		<if test="start != null and start != '' and end != null and end != ''">
+		<![CDATA[
+			AND E6.START_DATE >= #{start}
+			AND E6.END_DATE   <= #{end}
+		]]>
+		</if>
+	</select>
+	
+	<select id="getAuthNumber" parameterType="com.wwl.app.domain.sys.dto.SysUserDTO" resultType="String">
+		<![CDATA[
+			/*
+			 * SQL ID      : sys.getAuthNumber
+			 * Description : 2차 로그인시, 인증번호 가져오기
+			 * Modification Information
+		     * Date        Author      Content
+			 * ----------  ----------  ----------------------
+			 * 2022.12.09  홍민혁      최초 생성
+		     */
+		]]>
+		<![CDATA[
+		   SELECT A.AUTH_NUMBER
+			 FROM LOG_SMS_TALK A
+			WHERE A.SEQ = (
+							SELECT MAX(SEQ) AS SEQ
+							  FROM LOG_SMS_TALK
+							 WHERE OFFICE_CODE  = #{officeCode}
+							   AND MOBILE 	    = #{sysMobile}
+							   AND AUTH_NUMBER != ''
+							   AND SEND_TYPE    = 'A'
+						   )
+		]]>
+	</select>	
+	
+
+</mapper>

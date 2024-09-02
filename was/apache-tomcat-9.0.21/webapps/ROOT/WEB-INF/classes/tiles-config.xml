@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+  "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+  "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+	<!-- 타일즈 적용 -->
+	<definition name="tilesLayout" template="/WEB-INF/views/tiles/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+		<put-attribute name="left"   value="/WEB-INF/views/tiles/left.jsp" />
+		<put-attribute name="body"   value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+ 
+	<definition name="*.tiles" extends="tilesLayout">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+	
+	<definition name="*/*.tiles" extends="tilesLayout">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="*/*/*.tiles" extends="tilesLayout">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" cascade="true"/>
+	</definition>
+				
+	<!-- 타일즈 미적용 -->
+	<definition name="normalLayout" template="/WEB-INF/views/tiles/normal.jsp">
+		<put-attribute name="normalBody" value="" />
+	</definition>
+	
+	<definition name="*.do" extends="normalLayout">
+		<put-attribute name="normalBody" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+		
+	<definition name="*/*.do" extends="normalLayout">
+		<put-attribute name="normalBody" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+	
+	<definition name="*/*/*.do" extends="normalLayout">
+		<put-attribute name="normalBody" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />
+	</definition>	
+	
+</tiles-definitions>

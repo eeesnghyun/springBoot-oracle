@@ -1,0 +1,502 @@
+input.h4{
+    font-size: 32px;
+    font-weight: var(--font-weight-bold);
+    width: 400px;
+    display: block;
+    margin-bottom: 10px;
+    height: 50px;
+}
+
+input.span-desc{
+    font-size: var(--font-size-regular5); 
+    width: 800px;
+    height: 45px;
+}
+
+/* col1 - 메인영역(PC) */
+/* 메인 영역 */
+.col1 input.span{
+	text-align: center;
+    min-width: 640px;
+    margin-bottom: 10px;
+    font-size: var(--font-size-regular4);
+    min-height: 40px;
+}
+
+.col1 input.h2{
+	text-align:center;	
+    width: 640px;
+    font-size: 40px;
+    margin-bottom: 40px;
+    height: 60px;
+}
+
+.url-area{
+	border-radius: 4px;
+	border: solid 1px #ccc;
+	background-color: #fff;
+	width: 400px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 12px 10px 14px;
+    margin-bottom: 30px;
+}
+
+.url-area > span{
+	color: #333;
+	line-height: 1.5;
+	opacity: 0.5;
+    font-size: var(--font-size-regular);
+    font-weight: var(--font-weight-regular);	
+}
+
+input.url{
+	background:transparent;
+	border: none;
+	border-radius:0;
+    font-size: var(--font-size-regular);
+    padding: 0;
+    height: auto;
+	width: 75%;
+	margin-left: 10px;
+}
+
+input.url:focus , input.url:hover{
+	box-shadow: none;
+	border:none;
+}
+
+.col5 input.span{
+	width: 100%;
+	text-align: center;	
+	margin-bottom: 9.5px;
+}
+
+.col5 input.h2{
+	width: 100%;	
+	text-align: center;
+	font-size: 24px;
+	height: 65px;
+	margin-bottom: 40px;
+}
+
+.col5 .url-area{
+	width: 100%;
+}
+
+.col1 .con , .col5 .con{
+    margin-bottom: 47.5px;
+}
+
+.col1 .con > label:first-child , .col5 .con > label:first-child{
+    margin-right: 45px;
+}
+
+.col1.list .contents , .col5.list .contents{
+	padding: 20px 0;
+}
+
+.col1.list .slide{
+	height: 115px;
+}
+
+.col1.list li i{
+	display: flex;
+}
+
+.col1.list .swiper-pagination{
+	display: none;
+}
+
+.col1 .video , .col1 .slide{
+    width: 1380px;
+    max-width: 100%;
+    margin: 0;
+    height: 563px;
+    display: none;
+}
+
+.col5 .video, .col5 .slide{
+	display: none;
+}
+
+.col1 video , .col5 video{
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: 1px solid #eee;
+}
+
+.video.active , .slide.active{
+    display: flex;
+}
+
+#listOrder{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 110px;
+}
+
+.col1 li i , .col5 li i{
+	width: 30px;
+	height: 30px;
+	background-color: #494a58;
+    font-size: var(--font-size-regular1);
+    font-weight: var(--font-weight-bold);
+	color: #fff;
+	border-radius: 3.5px;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.col1 li i , .col1.list .con , .col5.list .con{
+	display: none;
+}
+
+/*  메인 - 비디오 */
+.video input[type="text"]{
+    text-align: center;
+}
+
+.col1 .video{
+  	background-color: #e3e3e3;
+}
+
+.col1 .video{
+	position: relative;
+}
+
+.col1 .video .inputs, .col5 .video .inputs{
+	top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    z-index: 10;
+    width: 100%;
+    padding: 0 20px;
+}
+
+/* 메인 - 슬라이드 */
+.slide{
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.slide li{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+	background-color: #eee;
+	border: 1px solid #eee;
+}
+
+.slide .swiper-pagination{
+    display: flex;
+    top: 20px;
+    left: 20px;
+    height: 30px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.slide .swiper-pagination-bullet{
+    width: 30px;
+    height: 30px;
+    border-radius: 3.5px;
+    background-color: #fff;
+    opacity: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 10px 0 0 !important;
+    border: solid 1px #ccc;		
+}
+
+.slide .swiper-pagination-bullet:last-child{
+    margin-right: 0;
+}
+
+.slide .swiper-pagination-bullet-active{
+    background-color: #494a58;
+    border: none;
+    color: #fff;
+}
+
+/* 모바일 메인 */
+.col5 .video{
+	height: 600px;
+	margin: 0 auto;
+	gap: 10px;
+}
+
+.col5 .video > li{
+	position: relative;
+	width: 600px;
+}
+
+/* 모바일 메인 - 슬라이드 */
+.col5.list .mobileSwiper{
+	padding: 0;
+	height: 447px;
+	width: 1380px;
+	max-width: 100%;
+}
+
+.mobileSwiper {
+ 	height: 500px;
+    padding: 0 35px 0 0;	
+}
+
+.col5 li{
+	background-color: #e3e3e3;
+	padding: 0 20px;
+	position: relative;
+	background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    display: flex;	
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* col2 - 베스트 영역 */
+/* 베스트 영역 */
+.col2 ul.item{
+	width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5 , 1fr);
+    gap: 15px;
+    margin-top: 48px;
+    min-height: 435px;
+}
+
+.col2 ul.item li{
+    border: solid 1px #f3f5f5;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.col2 ul.item .file-upload{
+	height: 132px;
+    min-height: auto;
+    overflow: hidden;
+    border: none;
+    border-radius:0;
+}
+
+.col2 ul.item .file-upload i.icon{
+    width: 46px;
+    height: 46px;
+}
+
+.col2 ul.item .item-con{
+    padding: 10px;
+    background-color: #f8f9fb;
+}
+
+.col2 .item-con > input[type="text"]{
+    width: 100%;
+    min-width: auto;
+    min-height: 36px;
+    margin-bottom: 10px;
+}
+
+.col2 .item-con > input:last-of-type{
+	margin-bottom:0;
+}
+
+.col2 textarea{
+    width: 100%;
+    min-width: auto;
+    min-height: 85px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.col2 .price-con{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom:10px;
+}
+
+.col2 .price{
+    max-width: 160px;
+}
+
+.col2 .price input[type="text"]{
+    width: 100%;
+    margin-bottom: 5px;
+}	
+
+.col2 .price input:last-child{
+	margin-bottom: 0;
+}
+
+.percent{
+    font-size: 30px;
+    color: #e92c2c;
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: baseline;
+}
+
+.percent::after{
+    content: '%';
+    font-size: var(--font-size-regular2);
+    color: #e92c2c;
+}
+
+/* col3 - 검색영역 */
+/* 검색 영역 */
+.col3 input.p{
+    width: 800px;
+    font-size: var(--font-size-regular5);
+    margin-bottom: 10px;
+    height: 50px;
+	padding: 8px 20px 10px;
+}
+
+.col3 input.span-desc{
+    width: 800px;
+    font-size: var(--font-size-regular5);
+    font-weight: var(--font-weight-light);
+	padding: 8px 20px 10px;
+}
+
+/* col4 - 탭 영역 */
+/* 검색 영역 */
+.tab{
+    display: flex;
+    margin-top: 40px;
+    height: 400px;
+}
+
+.tab-tit {
+    width: 10%;
+    min-width: 180px;
+    border-right: solid 1px #ccc;
+    margin-right: 95px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.col4 .tab-tit input{
+    width: 160px;
+    font-size: var(--font-size-regular2);
+    height: 40px;
+    color: #999;
+}
+
+.tab-tit li{
+    margin-bottom: 20px;
+    width: 100%;
+    opacity: 0.3;
+    font-size: var(--font-size-regular2);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.tab-tit li.write::before{
+    opacity: 0;
+}
+
+.tab-tit li.active.write::before{
+    opacity: 1;
+}
+
+.tab-tit li.active input{
+    font-size: var(--font-size-regular4);
+	height: 50px;
+	box-shadow: 0 1px 4px 0 #ccc;
+	border: solid 1px #ccc;
+	color: #111;
+}
+
+.tab-tit li:last-child{
+    margin-bottom: 0;
+}
+
+.tab-con{
+    width: 100%;
+    padding: 30px 0;
+    position: relative;
+}
+
+.tab-con li{
+    width:100%;
+    display: flex;
+    position: absolute;
+    display: none;
+}
+
+.tab-con .file-upload{
+    background-color: #f8f9fb;
+    width: 590px;
+    height: 340px;
+    margin-right: 40px;
+}
+
+.tab-con .txt{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tab-con .txt input{
+    min-width: 400px;
+    margin-bottom: 10px;
+}
+
+.tab-con .txt input:last-of-type{
+	margin-bottom: 0;
+}
+
+.tab-con .txt textarea{
+    min-width: 400px;
+    min-height: 100px;
+}
+
+.tab-con .txt .price{
+   	flex-direction: row;
+    width: 100%;
+    margin: 30px 0;
+    gap: 10px;
+}
+
+.tab-con .txt .price input{
+    max-width: 120px;
+    min-width: auto;
+    margin: 0;
+}
+
+.tab-con li.active{
+    display: flex;
+}
+
+.tab-tit li.active{
+    opacity: 1;
+}
